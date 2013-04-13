@@ -1,39 +1,31 @@
--- Programm that uses  the gauss algorithm to solve linear equations.
+-- Programm that uses the gauss algorithm to solve linear equations. Written by Carlos Freund
 
 import Test.HUnit
-import Debug.Trace
 
-gauss :: (Show a, Eq a, Fractional a) => [[a]] -> [a]
-
-
+gauss :: (Eq a, Fractional a) => [[a]] -> [a]
 
 gauss eqs | any (\eq -> length eqs + 1 /= length eq) eqs  
     = error "number of equations != number of variables"
           | all ( (0.0==) .head) eqs = error "all leading zeros"
 gauss [] =  error "no equations"          
---Only one equation
+--Only one equation. Solve directly
 gauss [[a,r]] = [r/a]
 --Switch until non 0 is in topleft corner
 gauss eqs | head(head eqs) == 0.0 = gauss (tail eqs++[head eqs])
--- eliminate 
-gauss eqs | otherwise = trace tracestring result 
+--Eliminate leftmost factors, then recurse
+gauss eqs | otherwise = missingvar:submatrixresult 
   where topEq = head eqs
-        submatrix = makeSubmatrix eqs
-        --multiply the multipliers with the results from the submatrix
-        inserted = zipWith (*) (init (tail topEq)) submatrixresult
-        --calculate the last remaining variable
-        missingvar = ((last topEq) - (sum inserted))/(head topEq)
-        result = missingvar:submatrixresult
-        submatrixresult = (gauss submatrix)
-        tracestring = "eqs" ++ show eqs ++ "\nresult " ++ show result ++ "\nsubmatrix" ++ show submatrix
+        submatrixresult = (gauss (submatrix eqs))
+        --Multiply the factors with the results from the submatrix to get real value.
+        real = sum (zipWith (*) (init (tail topEq)) submatrixresult)
+        --Calculate the last remaining variable
+        missingvar = ((last topEq) - real)/(head topEq)
 
-
-makeSubmatrix :: (Fractional a) => [[a]] -> [[a]]
-makeSubmatrix eqs= submatrix
-  where topEq = head eqs
-        submatrix = map eliminate (tail eqs)
-        eliminate (v:vs) = zipWith (-) vs topMult
-            where topMult = map (* (v/(head topEq))) (tail topEq)
+--Create a smaller matrix by subtracting factors in the first row to zero.
+submatrix :: (Fractional a) => [[a]] -> [[a]]
+submatrix ((topleftfactor:toprest):lowereqs) = map eliminate lowereqs
+   where eliminate (v:vs) = zipWith (-) vs topMult --subtract the lower equation with the (factored) top equation
+          where topMult = map (* (v/topleftfactor)) toprest --multiply top-equation so that the first factor matches the other equation
 
 
 tests = TestList (map (\(a, b, c) -> TestCase(assertEqual a b c)) [
@@ -48,9 +40,3 @@ tests = TestList (map (\(a, b, c) -> TestCase(assertEqual a b c)) [
    ])
 
 runall = runTestTT tests
-
-
-
-
-
-
