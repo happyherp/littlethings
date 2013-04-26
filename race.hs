@@ -37,8 +37,8 @@ runRoute route field = foldl step startstate route
 
 
 step :: Gamestate -> Direction -> Gamestate
-step (car, field, won) dir = (tankedcar, newfield, newwon)
-   where movedcar = applyDirection car dir
+step (car, field, won) dir | = (tankedcar, newfield, newwon)
+   where movedcar = move car dir
          (tankedcar, newfield) = checkFields movedcar field
          newwon = case won of 
            Nothing -> case newfield of 
@@ -47,8 +47,8 @@ step (car, field, won) dir = (tankedcar, newfield, newwon)
            x -> x
             
 
-applyDirection :: Car -> Direction -> Car
-applyDirection (pos,speed,en) dir = (addPos pos newspeed, newspeed, en-1)
+move :: Car -> Direction -> Car
+move (pos,speed,en) dir = (addPos pos newspeed, newspeed, en-1)
    where newspeed = addPos speed (case dir of
                       N -> ( 0,-1)
                       E -> ( 1, 0)
