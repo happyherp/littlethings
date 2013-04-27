@@ -1,17 +1,24 @@
 -- Für den Prog-wettbewerb der FH.
+module Game where 
+
 
 import Data.List (partition)
 
-data Direction = N | E | S | W | D
 
 
 type Pos = (Int,Int)
+
+
+type Direction = Pos
+directions =     [(0,0),(0,-1),(1,0),(0,1),(-1,0)]
+directionnames = [ 'D' , 'N'  , 'E' , 'S' , 'W'  ]
+
 
 type Gamefield = ([Checkpoint],[Booster])
 type Checkpoint = (Pos,Pos,Int) --x1,y1,x2,y2,points
 type Booster = Checkpoint -- They look the same actually.
 
-type Car = (Pos,Pos,Int) --xpos,ypox,xspeed,yspeed,energy
+type Car = (Pos,Pos,Int) --pos,speed,energy
 
 type Gamestate = (Car,Gamefield, Win) 
 
@@ -23,6 +30,24 @@ data Win = Drive | Won Int | LostNoGas
 type Racer = Gamefield -> [Direction]
 
 
+
+---- Handling Positions --------
+addPos :: Pos -> Pos -> Pos
+addPos (x1,y1) (x2,y2) = (x1+x2,y1+y2)
+
+--Acessors for positions. Useful to reuse code in diffrent dimensions.
+gx :: Pos -> Int
+gx = fst
+gy :: Pos -> Int
+gy = snd
+getDir :: (Pos->Int) -> Int -> Pos --Reverse lookup. Get the Position,from the accessor.
+getDir g i = head (filter ((== i) . g) directions)
+
+
+
+
+
+
 --Let the racer race in the gamefield. Return an int, if he makes it to the end.
 race :: Racer -> Gamefield -> Win
 race racer field = won
@@ -31,14 +56,15 @@ race racer field = won
 
 
 runRoute :: [Direction] -> Gamefield -> Gamestate
-runRoute route field = foldl step startstate route
-   where ((fstChk:rstChkPnts),bstrs) = field
-         startstate = case fstChk of  
-            ((x1,y1),(x2,y2),en)
-                -> let xpos = (x1+x2) `div` 2
-                       ypos = (y1+y2) `div` 2
-                   in (((xpos,ypos),(0,0),en),(rstChkPnts,bstrs), Drive)
+runRoute route field = foldl step (startstate field) route
 
+startstate :: Gamefield -> Gamestate
+startstate ((fstChk:rstChkPnts),bstrs) = case fstChk of  
+      ((x1,y1),(x2,y2),en) -> let xpos = (x1+x2) `div` 2
+                                  ypos = (y1+y2) `div` 2
+                               in (((xpos,ypos),(0,0),en),
+                                   (rstChkPnts,bstrs), 
+                                   Drive)
 
 step :: Gamestate -> Direction -> Gamestate
 step (car, field, won) dir = (tankedcar, newfield, newwon)
@@ -51,16 +77,10 @@ step (car, field, won) dir = (tankedcar, newfield, newwon)
                   (_,_,0) -> LostNoGas            
                   x -> Drive
            x -> x
-            
 
 move :: Car -> Direction -> Car
 move (pos,speed,en) dir = (addPos pos newspeed, newspeed, en-1)
-   where newspeed = addPos speed (case dir of
-                      N -> ( 0,-1)
-                      E -> ( 1, 0)
-                      S -> ( 0, 1)
-                      W -> (-1, 0)
-                      D -> ( 0, 0))
+   where newspeed = addPos speed dir
          
 checkFields :: Car -> Gamefield -> (Car,Gamefield)
 checkFields (p,s,en) (checkpoints, boosters) = 
@@ -71,18 +91,9 @@ checkFields (p,s,en) (checkpoints, boosters) =
          
 
 doesHit :: Pos -> Checkpoint -> Bool
-doesHit (x,y) ((cpx1,cpy1),(cpx2,cpy2),_) = 
-   cpx1 <= x && x <= cpx2 && cpy1 <= y && y <= cpy2
+doesHit pos chk = (doesHitG gx pos chk) && (doesHitG gy pos chk)
+
+doesHitG :: (Pos->Int) -> Pos -> Checkpoint -> Bool 
+doesHitG g carpos (chkpos1,chkpos2,_) = g chkpos1 <= g carpos && g carpos <= g chkpos2
 
 
-strToRoute :: String -> [Direction]
-strToRoute = map (\c -> case c of 
-   'N' -> N 
-   'E' -> E
-   'S' -> S
-   'W' -> W
-   'D' -> D)
-
-
-addPos :: Pos -> Pos -> Pos
-addPos (x1,y1) (x2,y2) = (x1+x2,y1+y2)
