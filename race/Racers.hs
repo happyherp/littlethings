@@ -29,5 +29,5 @@ driftToG g (carpos,_,_) chkpoint | doesHitG g carpos chkpoint = []
                   (dirp, dirm)  = (getDir g 1, getDir g (-1)) 
                   (push, stop) = if mindist < 0 then (dirp, dirm) else (dirm, dirp)
 
-field = ([((10,10),(20,20),40), ((50,19),(60,20),40)],[((30,30),(40,40),100)]) :: Gamefield
+
 

@@ -1,18 +1,13 @@
 -- Für den Prog-wettbewerb der FH.
 module Game where 
 
-
 import Data.List (partition)
 
-
-
 type Pos = (Int,Int)
-
 
 type Direction = Pos
 directions =     [(0,0),(0,-1),(1,0),(0,1),(-1,0)]
 directionnames = [ 'D' , 'N'  , 'E' , 'S' , 'W'  ]
-
 
 type Gamefield = ([Checkpoint],[Booster])
 type Checkpoint = (Pos,Pos,Int) --x1,y1,x2,y2,points
@@ -20,10 +15,10 @@ type Booster = Checkpoint -- They look the same actually.
 
 type Car = (Pos,Pos,Int) --pos,speed,energy
 
-type Gamestate = (Car,Gamefield, Win) 
+type Gamestate = (Car,Gamefield, Winstate) 
 
-data Win = Drive | Won Int | LostNoGas
-  deriving Show 
+data Winstate = Driving | Won Int | NoGas
+  deriving (Show,Eq)
 
 --A racer is a function able of creating Directions for a given gamefield.
 --Diffrent Racing-Strategies will be implemented that way.
@@ -43,13 +38,8 @@ gy = snd
 getDir :: (Pos->Int) -> Int -> Pos --Reverse lookup. Get the Position,from the accessor.
 getDir g i = head (filter ((== i) . g) directions)
 
-
-
-
-
-
---Let the racer race in the gamefield. Return an int, if he makes it to the end.
-race :: Racer -> Gamefield -> Win
+--Let the racer race in the gamefield. Return Winstate
+race :: Racer -> Gamefield -> Winstate
 race racer field = won
    where route = racer field
          (car, field, won) = runRoute route field
@@ -64,18 +54,18 @@ startstate ((fstChk:rstChkPnts),bstrs) = case fstChk of
                                   ypos = (y1+y2) `div` 2
                                in (((xpos,ypos),(0,0),en),
                                    (rstChkPnts,bstrs), 
-                                   Drive)
+                                   Driving)
 
 step :: Gamestate -> Direction -> Gamestate
 step (car, field, won) dir = (tankedcar, newfield, newwon)
    where movedcar = move car dir
          (tankedcar, newfield) = checkFields movedcar field
          newwon = case won of 
-           Drive -> case newfield of 
+           Driving -> case newfield of 
              ([],_) -> case tankedcar of (_,_,en) -> Won en
              x -> case tankedcar of 
-                  (_,_,0) -> LostNoGas            
-                  x -> Drive
+                  (_,_,0) -> NoGas            
+                  x -> Driving
            x -> x
 
 move :: Car -> Direction -> Car
@@ -95,5 +85,15 @@ doesHit pos chk = (doesHitG gx pos chk) && (doesHitG gy pos chk)
 
 doesHitG :: (Pos->Int) -> Pos -> Checkpoint -> Bool 
 doesHitG g carpos (chkpos1,chkpos2,_) = g chkpos1 <= g carpos && g carpos <= g chkpos2
+
+routeToStr :: [Direction] -> String
+routeToStr dirs = map (\dir -> lookupE dir (zip directions directionnames)) dirs
+
+strToRoute :: String -> [Direction]
+strToRoute s = map (\c -> lookupE c (zip directionnames directions)) s
+
+lookupE elem assoclist= case lookup elem assoclist of 
+        Just c -> c
+        Nothing -> error "Element not found"
 
 
