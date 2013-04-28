@@ -1,0 +1,13 @@
+#don't commit 
+
+#editor backups
+*~
+
+
+# haskell compilations
+*.o
+*.hi
+
+
+#the endresult
+run
