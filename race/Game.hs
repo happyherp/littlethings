@@ -84,14 +84,5 @@ doesHit pos chk = (doesHitG gx pos chk) && (doesHitG gy pos chk)
 doesHitG :: (Pos->Int) -> Pos -> Checkpoint -> Bool 
 doesHitG g carpos (chkpos1,chkpos2,_) = g chkpos1 <= g carpos && g carpos <= g chkpos2
 
-routeToStr :: [Direction] -> String
-routeToStr dirs = map (\dir -> lookupE dir (zip directions directionnames)) dirs
-
-strToRoute :: String -> [Direction]
-strToRoute s = map (\c -> lookupE c (zip directionnames directions)) s
-
-lookupE elem assoclist= case lookup elem assoclist of 
-        Just c -> c
-        Nothing -> error "Element not found"
 
 

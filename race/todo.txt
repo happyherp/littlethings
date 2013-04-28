@@ -3,8 +3,6 @@ TODO
 Race-Funtion
   test if it works the same as in the map editor.
 
-Test Suite
-Easy way to test a racer with a set of maps and record the result. 
 
 build some racers. maybe research travelingsalesman and linear equations with integers.
 
@@ -12,7 +10,11 @@ racer: gimick. draw some words on the screen as first route, in case i cannot fi
 
 
 INWORK
-makefile
+
+
 
 DONE
+makefile
 StdIn/Out. Make the programm work from whithin the python-tool.
+Test Suite
+Easy way to test a racer with a set of maps and record the result. 
