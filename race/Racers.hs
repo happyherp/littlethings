@@ -3,7 +3,6 @@ module Racers where
 
 import Game
 
-import Debug.Trace
 
 {- A very simple racer. Goes to all checkpoints in order by drifting. -}
 simple :: Racer
@@ -30,12 +29,6 @@ driftToG g (carpos,_,_) chkpoint | doesHitG g carpos chkpoint = []
                   drift = take ((abs mindist) - 1) (repeat (0,0))
                   (dirp, dirm) = (getDir g 1, getDir g (-1)) 
                   (push, stop) = if mindist > 0 then (dirp, dirm) else (dirm, dirp)
-
-
-mindistG :: (Pos -> Int) -> Pos -> Checkpoint -> Int
-mindistG g spos (pos1,pos2,_) = dist
-           where dist = minAbs (g (distPos spos pos1)) (g (distPos spos pos2))
-                 minAbs a b = if abs a < abs b then a else b 
 
 
 

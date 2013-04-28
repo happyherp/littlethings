@@ -36,6 +36,9 @@ multPos (x,y) f =(f*x,f*y)
 distPos :: Pos -> Pos -> Pos
 distPos p1 p2 = p2 `addPos` (p1 `multPos` (-1))
 
+absPos :: Pos -> Pos
+absPos (x,y) = (abs x, abs y)
+
 --Acessors for positions. Useful to reuse code in diffrent dimensions.
 gx :: Pos -> Int
 gx = fst
@@ -89,6 +92,15 @@ doesHit pos chk = (doesHitG gx pos chk) && (doesHitG gy pos chk)
 
 doesHitG :: (Pos->Int) -> Pos -> Checkpoint -> Bool 
 doesHitG g carpos (chkpos1,chkpos2,_) = g chkpos1 <= g carpos && g carpos <= g chkpos2
+
+
+mindist :: Pos -> Checkpoint -> Pos
+mindist spos chkpt = (mindistG gx spos chkpt, mindistG gy spos chkpt)
+
+mindistG :: (Pos -> Int) -> Pos -> Checkpoint -> Int
+mindistG g spos (pos1,pos2,_) = dist
+           where dist = minAbs (g (distPos spos pos1)) (g (distPos spos pos2))
+                 minAbs a b = if abs a < abs b then a else b 
 
 
 
