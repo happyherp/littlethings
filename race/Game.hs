@@ -7,7 +7,7 @@ type Pos = (Int,Int)
 
 type Direction = Pos
 directions =     [(0,0),(0,-1),(1,0),(0,1),(-1,0)]
-directionnames = [ 'D' , 'N'  , 'E' , 'S' , 'W'  ]
+directionnames = [ 'D' , 'N'  , 'E' , 'S' ,  'W' ]
 
 type Gamefield = ([Checkpoint],[Booster])
 type Checkpoint = (Pos,Pos,Int) --x1,y1,x2,y2,points
@@ -39,11 +39,9 @@ getDir :: (Pos->Int) -> Int -> Pos --Reverse lookup. Get the Position,from the a
 getDir g i = head (filter ((== i) . g) directions)
 
 --Let the racer race in the gamefield. Return Winstate
-race :: Racer -> Gamefield -> Winstate
-race racer field = won
+race :: Racer -> Gamefield -> Gamestate
+race racer field = runRoute route field
    where route = racer field
-         (car, field, won) = runRoute route field
-
 
 runRoute :: [Direction] -> Gamefield -> Gamestate
 runRoute route field = foldl step (startstate field) route

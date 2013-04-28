@@ -8,10 +8,10 @@ simple :: Racer
 simple field = snd (simple' (startstate field))
 
 simple' :: Gamestate -> (Gamestate, [Direction])
-simple' (car, field, Drive) = (state2, directions1 ++ directions2)
+simple' (car, field, Driving) = (state2, directions1 ++ directions2)
     where nextChkPnt = (head . fst) field
           directions1 = driftTo car nextChkPnt
-          state1 = foldl step (car, field, Drive) directions1
+          state1 = foldl step (car, field, Driving) directions1
           (state2, directions2) = simple' state1
 simple' endstate = (endstate, [])
 
