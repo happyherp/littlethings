@@ -30,6 +30,12 @@ type Racer = Gamefield -> [Direction]
 addPos :: Pos -> Pos -> Pos
 addPos (x1,y1) (x2,y2) = (x1+x2,y1+y2)
 
+multPos :: Pos -> Int -> Pos
+multPos (x,y) f =(f*x,f*y) 
+
+distPos :: Pos -> Pos -> Pos
+distPos p1 p2 = p2 `addPos` (p1 `multPos` (-1))
+
 --Acessors for positions. Useful to reuse code in diffrent dimensions.
 gx :: Pos -> Int
 gx = fst

@@ -3,10 +3,10 @@ all: run
 
 build: clean
 	mkdir target
-	ghc -o run -outputdir target Run.hs 
+	ghc -o target/run -outputdir target Run.hs 
 
 run: build
-	./run
+	./target/run
 
 name: 
 	echo "N-Fakultät"

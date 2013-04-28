@@ -8,10 +8,11 @@ build some racers. maybe research travelingsalesman and linear equations with in
 
 racer: gimick. draw some words on the screen as first route, in case i cannot find another one.
 
+include cabal dependency management and make this cabal-package. 
+
+include timeit-package for measuring execution-time.
 
 INWORK
-
-
 
 DONE
 makefile
