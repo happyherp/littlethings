@@ -104,3 +104,8 @@ mindistG g spos (pos1,pos2,_) = dist
 
 
 
+--Only permit elements that are better than all that camebefore. 
+nextBest :: Ord a => [a]->[a]
+nextBest [] = []
+nextBest (x:xs) = [x]++filter (x<) (nextBest xs)
+

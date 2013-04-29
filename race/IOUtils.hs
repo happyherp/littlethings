@@ -5,6 +5,7 @@ import Game
 import Parser
 
 
+
 routeToStr :: [Direction] -> String
 routeToStr dirs = map (\dir -> lookupE dir (zip directions directionnames)) dirs
 
@@ -28,3 +29,4 @@ parseCheckpoints s = case result of
          convertints _ is _ = listToCheckpoint (map fromIntegral is)
          listToCheckpoint [x1,y1,x2,y2,en] = ((x1,y1),(x2,y2),en)
          listToCheckpoint x = error ((show x) ++ ":unexpected format")
+
