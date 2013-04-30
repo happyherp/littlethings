@@ -27,26 +27,13 @@ bestUntil stopat accum (next:rest) =
       else bestUntil stopat nextmax rest
 
 
-
+------ Testting ------
 fac 1 = 1
 fac x = x * fac (x-1)
 longthing = (map fac [1..]::[Integer])
 
 testSecond = do r <- bestOfNextSeconds 1 longthing
                 return (fst r)
-
 testrepeat =  repeatS longthing
-
-
-
 testProcessBest = do processBest ([1..1000000]::[Integer]) (putStrLn . show ) 
-
-
-{-
-testInterval = do 
-   result <- bestPerInterval longthing
-   return (take 2 result)
--}
-
-
 
