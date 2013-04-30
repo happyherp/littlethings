@@ -3,8 +3,12 @@
 import Data.Time.Clock
 import Control.DeepSeq
 
-
-
+processBest :: (Ord a, NFData a) => [a] -> (a -> IO() ) -> IO ()
+processBest [] p = return ()
+processBest xs p = do 
+   (f, rest ) <- bestOfNextSeconds 1 xs
+   p f
+   processBest rest p
 
 bestOfNextSeconds :: (Ord a, NFData a) => DiffTime -> [a] -> IO (a, [a])
 bestOfNextSeconds nextseconds (x:xs) = do 
@@ -26,10 +30,17 @@ bestUntil stopat accum (next:rest) =
 
 fac 1 = 1
 fac x = x * fac (x-1)
-longthing = (map fac [1..]::[Int])
+longthing = (map fac [1..]::[Integer])
 
 testSecond = do r <- bestOfNextSeconds 1 longthing
                 return (fst r)
+
+testrepeat =  repeatS longthing
+
+
+
+testProcessBest = do processBest ([1..1000000]::[Integer]) (putStrLn . show ) 
+
 
 {-
 testInterval = do 
