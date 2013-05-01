@@ -34,6 +34,5 @@ longthing = (map fac [1..]::[Integer])
 
 testSecond = do r <- bestOfNextSeconds 1 longthing
                 return (fst r)
-testrepeat =  repeatS longthing
 testProcessBest = do processBest ([1..1000000]::[Integer]) (putStrLn . show ) 
 

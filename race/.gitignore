@@ -8,6 +8,9 @@
 *.o
 *.hi
 
+#profile results
+*.prof
+
 
 #the endresult
 target

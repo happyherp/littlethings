@@ -82,7 +82,7 @@ move (pos,speed,en) dir = (addPos pos newspeed, newspeed, en-1)
 checkFields :: Car -> Gamefield -> (Car,Gamefield)
 checkFields (p,s,en) (checkpoints, boosters) = 
      ((p,s,newen) ,(unhitCp,unhitBst))
-   where (hitCp,unhitCp)   = partition (doesHit p) checkpoints
+   where (hitCp,unhitCp)   = {-# SCC partitioncheckpoint #-} partition (doesHit p) checkpoints
          (hitBst,unhitBst) = partition (doesHit p) boosters
          newen = foldr (\(_,_,e) a-> e+a) en (hitCp++hitBst)
          
