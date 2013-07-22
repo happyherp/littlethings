@@ -1,0 +1,12 @@
+
+public class RunManySleepers {
+	
+	public class Sleeper implements Runnable
+
+		@Override
+		public void run() {
+			Thread.sleep(1000*1000);
+			
+		}
+
+}
