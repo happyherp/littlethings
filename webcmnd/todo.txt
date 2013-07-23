@@ -8,3 +8,5 @@ Things i could add:
 -random id-generation to prevent guessing
 
 -persisting of old flows, so memory does not get eaten over time.
+
+-gracefully handle access to an invalid flow-id.
