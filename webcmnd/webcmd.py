@@ -34,10 +34,20 @@ class Flow:
 
   def confirm(self, message):
     '''Lets the user anser a yes/no question'''
-    def render(req, flowid):
-      pass#html = self.inForm(flowid, <input>
+    def render(flowid):
+      return Response(self.inForm(flowid, message
+                                          + '<input type="submit" name="y" value="yes" />'
+                                          +'<input type="submit" name="n" value="no" />'))
+
+    request = self.sendRead(render)
+
+    if request.GET.has_key("y"):
+      return True
+    elif request.GET.has_key("n"):
+      return False
+    else:
+      raise Exception("Unexpected parameter in resonse to confirm")
    
-    return withclient(render)
 
 class FoodFlow:
   

@@ -5,6 +5,11 @@ from pyramid.response import Response
 import stackless
 from webcmd import Flow, startFlow, followFlow, flowcount
 
+def startFlowView(flow):
+  return lambda req:startFlow(req, flow())
+
+
+
 class EchoFlow(Flow):
 
   def run(self, request):
@@ -22,25 +27,31 @@ class EchoFlow(Flow):
 
       i += 1
 
-def startEcho(request):
-  return startFlow(request, EchoFlow())
 
 class HelloFlow(Flow):
   
   def run(self,request):
     return Response("Hello there")
 
-def startHello(request):
-  return startFlow(request, HelloFlow())
+class MoreFlow(Flow):
+  
+  def run(self, request):
+    while self.confirm("BAM. One more time?"):
+      pass
+    return Response("Done already")
+
 
 if __name__ == '__main__':
   config = Configurator()
 
   config.add_route('hello', '/hello')
-  config.add_view(startHello, route_name='hello') 
+  config.add_view(startFlowView(HelloFlow), route_name='hello') 
 
   config.add_route('echo', '/echo')
-  config.add_view(startEcho, route_name='echo') 
+  config.add_view(startFlowView(EchoFlow), route_name='echo') 
+
+  config.add_route('more', '/more')
+  config.add_view(startFlowView(MoreFlow), route_name='more')
 
   config.add_route('followFlow','/followFlow/{id}')
   config.add_view(followFlow, route_name='followFlow')
