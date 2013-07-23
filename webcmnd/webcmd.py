@@ -15,32 +15,18 @@ class Flow:
   def __init__(self):
     self.channel = stackless.channel()
 
-  def sendRead(self, response):
-   '''Sends the given respons to the client, waits for the answer'''
-
-  def withClient(self,foo):
-    '''uses the given function to process then next request from the client. 
-    Function must be like 
-    def foo(request):
-      return (response, result)'''
+  def sendRead(self, foo):
+    '''Sends the given response to the client, waits for the answer'''
     global flowcount, openflows
 
     flowid = flowcount
-
     openflows[flowid] = self
     flowcount += 1
 
-    print "withclient", openflows
-    req = self.channel.receive()
-    print "withClient got request"
-
-    response, retval = foo(req,flowid)
-    self.channel.send(response)
-
+    self.channel.send(foo(flowid))
+    request = self.channel.receive()
     del openflows[flowid]
-
-    print "withclient end", openflows
-    return retval
+    return request
 
   def inForm(self, flowid, content):
     '''Wraps the passed html string into form tags with the action pointing to followFlow'''
@@ -92,15 +78,14 @@ def startFlow(request, flow):
   print "startFlow"
 
   #start new microthread containing the flow.
-  stackless.tasklet(flow.run)()
-
-  #process first page to display.
-  flow.channel.send(request)
-  response = flow.channel.receive()
-
+  def flowRunner():
+    lastresponse = flow.run(request)
+    flow.channel.send(lastresponse)
+  stackless.tasklet(flowRunner)()
+  print "startflow tasklet online"
+  firstresponse = flow.channel.receive()
   print "startFlow END"
-
-  return response
+  return firstresponse
 
 
 def followFlow(request):

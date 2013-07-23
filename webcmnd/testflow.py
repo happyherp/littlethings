@@ -7,29 +7,37 @@ from webcmd import Flow, startFlow, followFlow, flowcount
 
 class EchoFlow(Flow):
 
-  def run(self):
+  def run(self, request):
     
     i = 1
 
     while True:
       print "Iteration", i, "flowcount", flowcount
 
-      self.withClient(lambda req, flowid:
-            (Response( "iter: "+str(i)+" flow: "+str(flowid)
-                      +'You said: '+ req.params["in"]
+      request = self.sendRead(lambda flowid:
+            Response( "iter: "+str(i)+" flow: "+str(flowid)
+                      +'You said: '+ request.params["in"]
                       + self.inForm(flowid, '<input type="text" name="in" />'
-                                           +'<input type="submit" value="continue" />')),None)) 
+                                           +'<input type="submit" value="continue" />'))) 
 
       i += 1
 
 def startEcho(request):
   return startFlow(request, EchoFlow())
 
+class HelloFlow(Flow):
+  
+  def run(self,request):
+    return Response("Hello there")
 
-
+def startHello(request):
+  return startFlow(request, HelloFlow())
 
 if __name__ == '__main__':
   config = Configurator()
+
+  config.add_route('hello', '/hello')
+  config.add_view(startHello, route_name='hello') 
 
   config.add_route('echo', '/echo')
   config.add_view(startEcho, route_name='echo') 
