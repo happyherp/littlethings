@@ -74,41 +74,6 @@ class Flow:
        selected.append(options[int(index_s)])
     return selected
 
-class FoodFlow:
-  
-  def __init__(self):
-    self.channel = stackless.channel()
-
-  def run(self):
-    request = self.channel.reveive()
-
-
-
-def food(request):
-   
-  foods = ['cheese', 'apples']
-
-  
-  response = startFlow(request, EchoFlow())
-
-  #request, selected = chooseOne(request,foods) 
-  #Response("You picked " + selected )
-
-  return response
-
-
-#Options is a list of things
-def chooseOne(request, options):
-  #display website for choosing
-
-  #wait for response from user
-
-  #parse result
-
-  #return (request, answer)
-
-  return (request, options[0])
-
 def startFlow(request, flow):
   print "startFlow"
 

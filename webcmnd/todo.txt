@@ -12,3 +12,5 @@ Things i could add:
 -gracefully handle access to an invalid flow-id.
 
 -add functionality for ending a flow?
+
+-implement something that avoid the error that comes when the url is reentered.
