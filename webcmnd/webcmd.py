@@ -2,14 +2,21 @@ from pyramid.response import Response
 
 import stackless
 
-flowcount = 0
 
+#TODO: move those into some kind of container. global state is bad.
+flowcount = 0 #should maybe be renamed to stepcount. As one flow can contain any number of steps.
 openflows = {}
 
 class Flow:
+  '''Superclass for all Flows. subclasses must implement a run method. 
+  Currently the only state for the class is the channel. 
+  ''' 
 
   def __init__(self):
     self.channel = stackless.channel()
+
+  def sendRead(self, response):
+   '''Sends the given respons to the client, waits for the answer'''
 
   def withClient(self,foo):
     '''uses the given function to process then next request from the client. 
@@ -34,6 +41,17 @@ class Flow:
 
     print "withclient end", openflows
     return retval
+
+  def inForm(self, flowid, content):
+    '''Wraps the passed html string into form tags with the action pointing to followFlow'''
+    return '<form action="/followFlow/'+str(flowid)+'">'+content +'</form>'
+
+  def confirm(self, message):
+    '''Lets the user anser a yes/no question'''
+    def render(req, flowid):
+      pass#html = self.inForm(flowid, <input>
+   
+    return withclient(render)
 
 class FoodFlow:
   

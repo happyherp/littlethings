@@ -14,12 +14,11 @@ class EchoFlow(Flow):
     while True:
       print "Iteration", i, "flowcount", flowcount
 
-      self.withClient(lambda req, flowid:(Response("iter: "+str(i)+" flow: "+str(flowid)
-             +'You said: '+ req.params["in"]
-             +'<form action="/followFlow/'+str(flowid)+'">'
-                +'<input type="text" name="in" />'
-                +'<input type="submit" value="continue" />'
-             +'</form >'),None)) 
+      self.withClient(lambda req, flowid:
+            (Response( "iter: "+str(i)+" flow: "+str(flowid)
+                      +'You said: '+ req.params["in"]
+                      + self.inForm(flowid, '<input type="text" name="in" />'
+                                           +'<input type="submit" value="continue" />')),None)) 
 
       i += 1
 

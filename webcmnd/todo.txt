@@ -10,3 +10,5 @@ Things i could add:
 -persisting of old flows, so memory does not get eaten over time.
 
 -gracefully handle access to an invalid flow-id.
+
+-add functionality for ending a flow?
