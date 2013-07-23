@@ -24,7 +24,6 @@ class EchoFlow(Flow):
                       +'You said: '+ request.params["in"]
                       + self.inForm(flowid, '<input type="text" name="in" />'
                                            +'<input type="submit" value="continue" />'))) 
-
       i += 1
 
 
@@ -41,6 +40,33 @@ class MoreFlow(Flow):
     return Response("Done already")
 
 
+class SmallTalkFlow(Flow):
+  
+  def run(self, request):
+    name = self.input("Wie heisst du?")
+    while name == "" or not self.confirm("Heisst du wirklich "+name+"?"):
+      name = self.input("Geb doch endlich deinen namen ein!")
+
+    self.showMessage("Hallo %s!" %(name));
+
+    alter = None
+    alter_s = self.input("Wie Alt bist du?")
+    while alter==None:
+      try: 
+        alter = int(alter_s)
+      except:
+        alter_s = self.input("Bitte eine Zahl. Wie Alt bist du?")
+
+
+    favfoods = self.select(["Pizza", "Lasagne", "Hamburger", "Salat"], 
+                           message="Was hiervon isst du gerne?")
+
+
+    summary ='''Also nochmal: 
+                Dein name ist %s und du bist %d Jahre alt. 
+                Du isst gerne %s''' %(name, alter, favfoods)
+    return Response(summary)
+
 if __name__ == '__main__':
   config = Configurator()
 
@@ -52,6 +78,9 @@ if __name__ == '__main__':
 
   config.add_route('more', '/more')
   config.add_view(startFlowView(MoreFlow), route_name='more')
+
+  config.add_route('small', '/small')
+  config.add_view(startFlowView(SmallTalkFlow), route_name='small')
 
   config.add_route('followFlow','/followFlow/{id}')
   config.add_view(followFlow, route_name='followFlow')
