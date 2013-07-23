@@ -1,0 +1,10 @@
+
+Things i could add:
+
+-extensible flow-elements, for selecting things, etc
+
+-controlling wether a flowid that has been used, can be used again, and what should then happen. 
+
+-random id-generation to prevent guessing
+
+-persisting of old flows, so memory does not get eaten over time.

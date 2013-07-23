@@ -30,22 +30,41 @@ class EchoFlow:
     while True:
       print "Iteration", i, "flowcount", flowcount
 
-
-
-      req = self.channel.receive()
-
-
-      openflows[flowcount] = self
-      self.channel.send(Response("iter: "+str(i)+" flow: "+str(flowcount)
-             +'<a href="/followFlow/'+str(flowcount)+'">continue</a>'))
-      flowcount += 1
+      self.withClient(lambda req, flowid:(Response("iter: "+str(i)+" flow: "+str(flowid)
+             +'You said: '+ req.params["in"]
+             +'<form action="/followFlow/'+str(flowid)+'">'
+                +'<input type="text" name="in" />'
+                +'<input type="submit" value="continue" />'
+             +'</form >'),None)) 
 
       i += 1
+
+  def withClient(self,foo):
+    '''uses the given function to process then next request from the client. 
+    Function must be like 
+    def foo(request):
+      return (response, result)'''
+    global flowcount, openflows
+
+    flowid = flowcount
+
+    openflows[flowid] = self
+    flowcount += 1
+
+    print "withclient", openflows
+    req = self.channel.receive()
+    print "withClient got request"
+
+    response, retval = foo(req,flowid)
+    self.channel.send(response)
+
+    print "withclient end", openflows
+    return retval
 
 
 def food(request):
    
-  foods = ['cheese', 'apples' ]
+  foods = ['cheese', 'apples']
 
   
   response = startFlow(request, EchoFlow())
@@ -54,6 +73,9 @@ def food(request):
   #Response("You picked " + selected )
 
   return response
+
+def startEcho(request):
+  return startFlow(request, EchoFlow())
 
 
 #Options is a list of things
@@ -69,6 +91,7 @@ def chooseOne(request, options):
   return (request, options[0])
 
 def startFlow(request, flow):
+  print "startFlow"
 
   #start new microthread containing the flow.
   stackless.tasklet(flow.run)()
@@ -76,10 +99,14 @@ def startFlow(request, flow):
   #process first page to display.
   flow.channel.send(request)
   response = flow.channel.receive()
+
+  print "startFlow END"
+
   return response
 
 
 def followFlow(request):
+  print "followFlow", openflows
   flowid = int(request.matchdict['id'])
   flow = openflows[flowid]
   flow.channel.send(request)
@@ -93,6 +120,9 @@ if __name__ == '__main__':
   config.add_route('food', '/food')
   config.add_view(food, route_name='food') 
 
+  config.add_route('echo', '/echo')
+  config.add_view(startEcho, route_name='echo') 
+
   config.add_route('followFlow','/followFlow/{id}')
   config.add_view(followFlow, route_name='followFlow')
 
@@ -103,5 +133,3 @@ if __name__ == '__main__':
   stackless.tasklet(server.serve_forever)()  
   stackless.run()
   
-
-  #server.serve_forever()
