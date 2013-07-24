@@ -3,9 +3,13 @@ from pyramid.config import Configurator
 from pyramid.response import Response
 
 import stackless
-from webcmd import Flow, startFlow, followFlow, flowcount
 
 from random import randint
+
+from webcmd import Flow, startFlow, followFlow, flowcount
+from FormElements import *
+
+
 
 def startFlowView(flow):
   return lambda req:startFlow(req, flow())
@@ -99,7 +103,24 @@ class ReverseGuessFlow(Flow):
       return self.guess(number+1, high)
     else:
       return self.guess(low,number-1)
+
+class FormFlow(Flow):
+  def run(self, request):
     
+    form = [Text("FirstName"), Input(),
+            Text("Last name"), Input(),
+            Text("Hobbys"), Select(["Basketball", "Badminton", "Cheesecakes"]),
+            Button("ok"), 
+            Button("cancel")]
+
+    result = self.doForm(form)
+    print "FormFlow", result
+    while result[7]:
+      self.showMessage("canceling is not an option")
+      result = self.doForm(form)
+
+    
+    return Response("You are %s %s. Your hobbys are %s."%(result[1], result[3], result[5]))
 
 if __name__ == '__main__':
   config = Configurator()
@@ -121,6 +142,9 @@ if __name__ == '__main__':
 
   config.add_route('reverseguess', '/reverseguess')
   config.add_view(startFlowView(ReverseGuessFlow), route_name='reverseguess')
+
+  config.add_route('form', '/form')
+  config.add_view(startFlowView(FormFlow), route_name='form')
 
   config.add_route('followFlow','/followFlow/{id}')
   config.add_view(followFlow, route_name='followFlow')

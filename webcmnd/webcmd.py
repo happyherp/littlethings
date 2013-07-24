@@ -84,6 +84,21 @@ class Flow:
        selected.append(options[int(index_s)])
     return selected
 
+  def doForm(self, elements):
+    inner = ""
+    i = 0
+    for element in elements:
+      element.name = "elementname"+str(i)
+      inner += element.render()
+      i += 1
+
+    request = self.sendRead(lambda flowid: Response(self.inForm(flowid,inner)))  
+
+    result = []
+    for element in elements:
+      result.append(element.extractValue(request))
+    return result
+
 def startFlow(request, flow):
   print "startFlow"
 
