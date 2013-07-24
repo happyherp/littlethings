@@ -16,7 +16,7 @@ class Flow:
     self.channel = stackless.channel()
 
   def sendRead(self, foo):
-    '''Sends the given response to the client, waits for the answer'''
+    '''Sends the response that is returned by foo to the client, waits for the answer'''
     global flowcount, openflows
 
     flowid = flowcount
@@ -33,7 +33,7 @@ class Flow:
     return '<form action="/followFlow/'+str(flowid)+'">'+content +'</form>'
 
   def confirm(self, message):
-    '''Lets the user anser a yes/no question'''
+    '''Lets the user answer a yes/no question'''
     def render(flowid):
       return Response(self.inForm(flowid, message
                                           + '<input type="submit" name="y" value="yes" />'
@@ -45,7 +45,7 @@ class Flow:
     elif request.GET.has_key("n"):
       return False
     else:
-      raise Exception("Unexpected parameter in resonse to confirm")
+      raise Exception("Unexpected parameter in response to confirm")
  
   def input(self, message="", label="enter"):
     return self.sendRead(
@@ -53,6 +53,16 @@ class Flow:
                                          +'<input type="text" name="textinput" />'
                                          +'<input type="submit" value="'+label+'" />')
                              )).GET["textinput"]  
+
+  def input_number(self, message):
+    result = self.input(message)
+    number = None
+    while number == None:
+      try:
+        number = int(result)
+      except:
+        result = self.input("Please try a number. "+ message)
+    return number
 
   def showMessage(self, message):
     self.sendRead(lambda flowid: Response(self.inForm(flowid, message 

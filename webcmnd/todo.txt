@@ -3,7 +3,11 @@ Things i could add:
 
 -extensible flow-elements, for selecting things, etc
 
--controlling wether a flowid that has been used, can be used again, and what should then happen. 
+-controlling wether a flowid that has been used, can be used again, and what should then happen.
+ -option: error page on every request that is out of sync
+ -option: somehow create a copy of the thread everytime a request claims be belong to that state. 
+ -option: if the flowid does not exactly match, resend the latest response, that flow has sent. 
+ -option: some functionality to find unfinished flows 
 
 -random id-generation to prevent guessing
 
