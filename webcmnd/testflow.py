@@ -10,7 +10,6 @@ from webcmd import Flow, startFlow, followFlow, flowcount
 from HTMLControls import *
 
 
-
 def startFlowView(flow):
   return lambda req:startFlow(req, flow())
 
@@ -21,11 +20,11 @@ class EchoFlow(Flow):
     i = 1
     while True:
       print "Iteration", i, "flowcount", flowcount
-      request = self.sendRead(lambda flowid:
-            Response( "iter: "+str(i)+" flow: "+str(flowid)
+      request = self.sendRead(Response( 
+                      "iter: %d flow:%d step:%d" %(i, self.flowid, self.step)
                       +'You said: '+ request.params["in"]
-                      + self.inForm(flowid, '<input type="text" name="in" />'
-                                           +'<input type="submit" value="continue" />'))) 
+                      + self.inForm('<input type="text" name="in" />'
+                                    +'<input type="submit" value="continue" />'))) 
       i += 1
 
 
@@ -142,7 +141,7 @@ if __name__ == '__main__':
   config.add_route('form', '/form')
   config.add_view(startFlowView(FormFlow), route_name='form')
 
-  config.add_route('followFlow','/followFlow/{id}')
+  config.add_route('followFlow','/followFlow/{id}/{step}')
   config.add_view(followFlow, route_name='followFlow')
 
   app = config.make_wsgi_app()

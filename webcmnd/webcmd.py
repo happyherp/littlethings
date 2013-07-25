@@ -4,7 +4,7 @@ import stackless
 
 
 #TODO: move those into some kind of container. global state is bad.
-flowcount = 0 #should maybe be renamed to stepcount. As one flow can contain any number of steps.
+flowcount = 0 
 openflows = {}
 
 class Flow:
@@ -14,31 +14,30 @@ class Flow:
 
   def __init__(self):
     self.channel = stackless.channel()
+    self.flowid = None
+    self.step = 1 #Counts how many steps we have gone in this flow.
+    self.prevResponse = None #The last response send to the client.
 
-  def sendRead(self, foo):
+  def sendRead(self, response):
     '''Sends the response that is returned by foo to the client, waits for the answer'''
-    global flowcount, openflows
 
-    flowid = flowcount
-    openflows[flowid] = self
-    flowcount += 1
-
-    self.channel.send(foo(flowid))
+    self.prevResponse = response
+    self.channel.send(response)
     request = self.channel.receive()
-    del openflows[flowid]
+    self.step += 1
+
     return request
 
-  def inForm(self, flowid, content):
+  def inForm(self, content):
     '''Wraps the passed html string into form tags with the action pointing to followFlow'''
-    return '<form action="/followFlow/'+str(flowid)+'">'+content +'</form>'
+    return '<form action="/followFlow/%d/%d">%s</form>' %(self.flowid, self.step, content)
 
   def confirm(self, message):
     '''Lets the user answer a yes/no question'''
-    def render(flowid):
-      return Response(self.inForm(flowid, message
+    response = Response(self.inForm(message
                                           + '<input type="submit" name="y" value="yes" />'
                                           + '<input type="submit" name="n" value="no" />'))
-    request = self.sendRead(render)
+    request = self.sendRead(response)
 
     if request.GET.has_key("y"):
       return True
@@ -48,11 +47,10 @@ class Flow:
       raise Exception("Unexpected parameter in response to confirm")
  
   def input(self, message="", label="enter"):
-    return self.sendRead(
-      lambda flowid: Response(self.inForm(flowid, message 
-                                         +'<input type="text" name="textinput" />'
-                                         +'<input type="submit" value="'+label+'" />')
-                             )).GET["textinput"]  
+    return self.sendRead(Response(self.inForm(message 
+                                              +'<input type="text" name="textinput" />'
+                                              +'<input type="submit" value="'+label+'" />')
+                        )).GET["textinput"]  
 
   def input_number(self, message):
     result = self.input(message)
@@ -65,9 +63,8 @@ class Flow:
     return number
 
   def showMessage(self, message):
-    self.sendRead(lambda flowid: Response(self.inForm(flowid, message 
-                                         +'<input type="submit" value="OK" />')
-                             ))
+    self.sendRead(Response(self.inForm(message 
+                                       +'<input type="submit" value="OK" />')))
     return None
 
   def select(self, options, message = "Waehle beliebig aus den folgenden"):
@@ -78,7 +75,7 @@ class Flow:
       i += 1
     html += '<input type="submit" value="OK" />'
 
-    response = self.sendRead(lambda flowid: Response(self.inForm(flowid,html)))  
+    response = self.sendRead(Response(self.inForm(html)))  
     selected = []
     for index_s in response.GET.getall("gencheckbox"):
        selected.append(options[int(index_s)])
@@ -92,7 +89,7 @@ class Flow:
       inner += element.render()
       i += 1
 
-    request = self.sendRead(lambda flowid: Response(self.inForm(flowid,inner)))  
+    request = self.sendRead(Response(self.inForm(inner)))  
 
     result = []
     for element in elements:
@@ -102,11 +99,20 @@ class Flow:
 def startFlow(request, flow):
   print "startFlow"
 
+  global flowcount
+  #register the new flow.
+  flowid = flowcount
+  flow.flowid = flowid
+  openflows[flowid] = flow
+  flowcount += 1
+
   #start new microthread containing the flow.
   def flowRunner():
     lastresponse = flow.run(request)
+    del openflows[flowid]    
     flow.channel.send(lastresponse)
   stackless.tasklet(flowRunner)()
+
   print "startflow tasklet online"
   stackless.run()
   firstresponse = flow.channel.receive()
@@ -117,10 +123,21 @@ def startFlow(request, flow):
 def followFlow(request):
   print "followFlow", openflows
   flowid = int(request.matchdict['id'])
-  flow = openflows[flowid]
-  flow.channel.send(request)
-  stackless.run()
-  response = flow.channel.receive()
+  step = int(request.matchdict['step'])
+
+  if openflows.has_key(flowid):
+    flow = openflows[flowid]
+    if step == flow.step:
+      #If it is the current step, get new response
+      flow.channel.send(request)
+      stackless.run()
+      response = flow.channel.receive()
+    else:
+      #Old step(user hit enter in url-bar). Return the last response we send, 
+      #so he can continue.
+      response = flow.prevResponse
+  else:
+    response = Response("Flow not found.") 
   return response
    
 
