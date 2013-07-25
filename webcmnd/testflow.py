@@ -7,7 +7,7 @@ import stackless
 from random import randint
 
 from webcmd import Flow, startFlow, followFlow, flowcount
-from FormElements import *
+from HTMLControls import *
 
 
 
@@ -17,13 +17,10 @@ def startFlowView(flow):
 
 class EchoFlow(Flow):
 
-  def run(self, request):
-    
+  def run(self, request):   
     i = 1
-
     while True:
       print "Iteration", i, "flowcount", flowcount
-
       request = self.sendRead(lambda flowid:
             Response( "iter: "+str(i)+" flow: "+str(flowid)
                       +'You said: '+ request.params["in"]
@@ -65,8 +62,7 @@ class SmallTalkFlow(Flow):
     favfoods = self.select(["Pizza", "Lasagne", "Hamburger", "Salad"], 
                            message="Which of these foods do you like?")
 
-    summary ='''So: 
-                Your name is %s and you are %d years old. 
+    summary ='''So: Your name is %s and you are %d years old. 
                 You like to eat %s''' %(name, age, favfoods)
     return Response(summary)
 
@@ -119,7 +115,7 @@ class FormFlow(Flow):
       self.showMessage("canceling is not an option")
       result = self.doForm(form)
 
-    
+    #grabbing results by index is not nice. Acces should happen over some kind of name.
     return Response("You are %s %s. Your hobbys are %s."%(result[1], result[3], result[5]))
 
 if __name__ == '__main__':

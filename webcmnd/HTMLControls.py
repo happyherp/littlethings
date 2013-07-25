@@ -1,7 +1,7 @@
 # Contains functionality for Creating forms on a website, that know how to get their value.
 
 
-class FormElement(object):
+class HTMLControl(object):
   '''self.name must be set before calling eiter render or extractValue'''
 
   def render(self):
@@ -14,7 +14,7 @@ class FormElement(object):
     return None
 
 
-class Text(FormElement):
+class Text(HTMLControl):
 
   def __init__(self, text):
     self.text = text;
@@ -23,7 +23,7 @@ class Text(FormElement):
     return self.text+"<br>"
 
 
-class Button(FormElement):
+class Button(HTMLControl):
 
   def __init__(self, label="Enter"):
     self.label = label
@@ -35,7 +35,7 @@ class Button(FormElement):
     return request.params.has_key(self.name)
 
 
-class Select(FormElement):
+class Select(HTMLControl):
 
   def __init__(self, options, labels=None):
     self.options = options
@@ -57,7 +57,7 @@ class Select(FormElement):
        selected.append(self.options[int(index_s)])
     return selected
 
-class Input(FormElement):
+class Input(HTMLControl):
 
   def __init__(self, prefill=""):
     self.prefill = prefill
