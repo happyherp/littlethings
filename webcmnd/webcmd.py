@@ -108,6 +108,7 @@ def startFlow(request, flow):
     flow.channel.send(lastresponse)
   stackless.tasklet(flowRunner)()
   print "startflow tasklet online"
+  stackless.run()
   firstresponse = flow.channel.receive()
   print "startFlow END"
   return firstresponse
@@ -118,6 +119,7 @@ def followFlow(request):
   flowid = int(request.matchdict['id'])
   flow = openflows[flowid]
   flow.channel.send(request)
+  stackless.run()
   response = flow.channel.receive()
   return response
    

@@ -148,6 +148,4 @@ if __name__ == '__main__':
   app = config.make_wsgi_app()
   server = make_server('0.0.0.0', 8080, app)
 
-  #run the server inside a tasklet
-  stackless.tasklet(server.serve_forever)()  
-  stackless.run()
+  server.serve_forever()
