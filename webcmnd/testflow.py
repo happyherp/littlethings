@@ -1,10 +1,12 @@
 from wsgiref.simple_server import make_server
 from pyramid.config import Configurator
 from pyramid.response import Response
+from pyramid.renderers import render_to_response, render
 
 import stackless
 
 from random import randint
+import os
 
 from webcmd import Flow, startFlow, followFlow, flowcount
 from HTMLControls import *
@@ -12,6 +14,13 @@ from HTMLControls import *
 
 def startFlowView(flow):
   return lambda req:startFlow(req, flow())
+
+class FormInTemplateFlow(Flow):
+  '''This flow wraps the form into a template'''
+
+  def inForm(self, content):
+    withform = Flow.inForm(self, content)
+    return render('design.mako', {'content':withform})
 
 
 class EchoFlow(Flow):
@@ -31,7 +40,7 @@ class EchoFlow(Flow):
 class HelloFlow(Flow):
   
   def run(self,request):
-    return Response("Hello there")
+    return showMainPage(request, "Hello there")
 
 class MoreFlow(Flow):
   
@@ -41,7 +50,7 @@ class MoreFlow(Flow):
     return Response("Done already")
 
 
-class SmallTalkFlow(Flow):
+class SmallTalkFlow(FormInTemplateFlow):
   
   def run(self, request):
 
@@ -117,8 +126,26 @@ class FormFlow(Flow):
     #grabbing results by index is not nice. Acces should happen over some kind of name.
     return Response("You are %s %s. Your hobbys are %s."%(result[1], result[3], result[5]))
 
+
+def showMainPage(request, message = ""):
+  response = render_to_response('main.mako', {'message':message}, request=request)
+  return response
+
+
 if __name__ == '__main__':
-  config = Configurator()
+
+  here = os.path.dirname(os.path.abspath(__file__))
+
+  settings = {}
+  settings['reload_all'] = True
+  settings['debug_all'] = True
+  settings['mako.directories'] = os.path.join(here, 'templates')
+  
+
+  config = Configurator(settings=settings)
+
+  config.add_route('start', '/')
+  config.add_view(showMainPage, route_name='start')
 
   config.add_route('hello', '/hello')
   config.add_view(startFlowView(HelloFlow), route_name='hello') 
