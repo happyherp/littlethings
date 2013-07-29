@@ -1,0 +1,17 @@
+MANIFEST.in
+setup.cfg
+setup.py
+conf/__init__.py
+conf/my_first_app.cfg
+data/__init__.py
+my_first_app/__init__.py
+my_first_app/app.py
+my_first_app/models.py
+my_first_app.egg-info/PKG-INFO
+my_first_app.egg-info/SOURCES.txt
+my_first_app.egg-info/dependency_links.txt
+my_first_app.egg-info/entry_points.txt
+my_first_app.egg-info/not-zip-safe
+my_first_app.egg-info/requires.txt
+my_first_app.egg-info/top_level.txt
+static/__init__.py

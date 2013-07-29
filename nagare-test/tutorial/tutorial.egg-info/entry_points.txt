@@ -1,0 +1,4 @@
+
+      [nagare.applications]
+      tutorial = tutorial.app:app
+      

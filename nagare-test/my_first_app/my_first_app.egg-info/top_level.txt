@@ -1,0 +1,4 @@
+static
+data
+conf
+my_first_app
