@@ -8,19 +8,29 @@ var observer = new MutationObserver(function(mutations, observer) {
     // fired when a mutation occurs
     console.log(mutations, observer);
 
+
+
+    var serializedNodes = []; //A List of all dom-nodes that have already been
+    //serialized on this event. 
+    //We need this, because sometimes a node(A) is added to the tree(mutation) and right
+    // after that another node(b) is added to A(mutation again). Both mutations are handled in 
+    //the same event. o we first see node A. But when we look at it, node b has already been added to it.
+    //Then we see node b again on the second mutation. So b will be added twice. This list ought
+    // To prevent that.  
+
     //For each mutation create a serializable action, that can be used to recreate
     // the new state from the previous one.
     for (var i=0;i<mutations.length;i++){
 
        var mutation = mutations[i];
-       var action = mutationToAction(mutation);
+       var action = mutationToAction(mutation, serializedNodes);
        console.log("action", action);
 
        pagehistory.actions.push(action);
     }
 });
 
-function mutationToAction(mutation){
+function mutationToAction(mutation, serializedNodes){
   var action = {time:new Date()};
   action.target = findPath(mutation.target);
   action.type = mutation.type;
@@ -34,9 +44,14 @@ function mutationToAction(mutation){
    action.at = sibling?findPosition(sibling)+1:0
 
    action.removed = mutation.removedNodes.length;
+
    action.inserted = []
    for (var j=0;j<mutation.addedNodes.length;j++){
-     action.inserted.push(convertElement(mutation.addedNodes[j]));
+     var newnode = mutation.addedNodes[j];
+     if (isRelevantNode(newnode) && !alreadySerialized(newnode, serializedNodes)){
+       action.inserted.push(convertElement(newnode));
+       serializedNodes.push(newnode)
+     }
    }
 
   }else if (mutation.type == "attributes"){
@@ -49,6 +64,22 @@ function mutationToAction(mutation){
    throw "Unexpected mutation type.";
   }
   return action;
+}
+
+/** Checks if the given node, or one of its ancestors in in serialized nodes
+*/
+function alreadySerialized(node, serializedNodes){
+  
+  if (node){
+    var found = false;
+    for (var i=0;i<serializedNodes.length;i++){
+      found = found || serializedNodes[i] === node
+    }
+    return found || alreadySerialized(node.parentNode, serializedNodes);
+  }else{
+    return false;
+  }
+  
 }
 
 /**
