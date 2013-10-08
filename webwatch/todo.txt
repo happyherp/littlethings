@@ -1,0 +1,5 @@
+test on bigger sites
+add mouse movement detection
+add scroll-bar detection. both mainwindow and divs and such
+add server component
+
