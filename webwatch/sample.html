@@ -1,0 +1,46 @@
+<html>
+<head>
+<script src="webwatch.js" >
+</script>
+<link rel="stylesheet" type="text/css" href="style.css">
+<style type="text/css" src="style.css" >
+  .letext{ font:bold .9em Times; }
+</style>
+</head>
+<body>
+
+<script>
+
+var c = 1;
+
+function addStuff(){
+  var insertnode = document.getElementById("adddiv");
+  var newdiv = document.createElement("div");
+  newdiv.onclick = function(){
+    insertnode.removeChild(newdiv);
+  }
+  insertnode.appendChild(newdiv);
+  newdiv.appendChild(document.createElement("br"));
+  newdiv.appendChild(document.createTextNode("yoyoyo"+c));
+  newdiv.className = "bluediv";
+  c++;
+  
+}
+record()
+</script>
+
+Hello. This is a text.
+
+<div onclick="addStuff()" style="background-color:yellow" class="letext">
+add stuff
+</div>
+
+<!-- THis is a comment!!!! -->
+
+<div id="adddiv">
+here things are added
+</div>
+
+</body>
+
+</html>
