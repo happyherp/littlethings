@@ -1,8 +1,7 @@
-
-
-ElementNode = 1
-TextNode = 3
-
+/**
+*Contains funtionality for recording the events on a website
+*
+*/
 MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
 var observer = new MutationObserver(function(mutations, observer) {
@@ -137,25 +136,3 @@ function isRelevantNode(elem){
          || (elem.nodeType == ElementNode && elem.nodeName != "SCRIPT")
 }
 
-/* Creates a HTML-Element/Node from it's serialized form */
-function restore(converted){
-  
-  var elem;
-  if (converted.nodeType == TextNode){
-    elem = document.createTextNode(converted.data);
-  }else{
-    elem = document.createElement(converted.nodeName);
-
-    for (var i=0;i<converted.children.length;i++){
-      elem.appendChild(restore(converted.children[i]));    
-    }
-
-    if (converted.attributes){
-      for (attr in converted.attributes){
-        elem.setAttribute(attr, converted.attributes[attr]);
-      } 
-    }
-  }
-
-  return elem;
-}

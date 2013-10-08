@@ -1,6 +1,8 @@
 <html>
 <head>
-<script src="webwatch.js"></script>
+<script type="text/javascript" src="common.js"></script>
+<script type="text/javascript" src="recorder.js"></script>
+<script type="text/javascript" src="player.js"></script>
 <link rel="stylesheet" type="text/css" href="style.css">
 <style type="text/css" src="style.css" >
   .letext{ font:bold .9em Times; }
@@ -25,7 +27,6 @@ function addStuff(){
   c++;
   
 }
-record()
 </script>
 
 Hello. This is a text.
@@ -41,19 +42,17 @@ here things are added
 </div>
 
 <script>
-function reinsert(){
-var snap = snapShot();
-restoredbody = restore(snap.body);
+record();
 
-restoredchild = restore(snap.body.children[5]);
-document.body.appendChild(restoredchild);
+function replayInNewWindow(){
+  newwin = open("watcher.html");
+  newwin.pagehistory = pagehistory;
 }
-
-
-
-
 </script>
 
+<div style="background-color:brown" onclick="replayInNewWindow()">
+replay in new window
+</div>
 </body>
 
 </html>
