@@ -14,16 +14,31 @@
 
 var c = 1;
 
-function addStuff(){
+function addStuff1(){
   var insertnode = document.getElementById("adddiv");
   var newdiv = document.createElement("div");
   newdiv.onclick = function(){
     insertnode.removeChild(newdiv);
   }
-  insertnode.appendChild(newdiv);
   newdiv.appendChild(document.createElement("br"));
   newdiv.appendChild(document.createTextNode("yoyoyo"+c));
   newdiv.className = "bluediv";
+  insertnode.appendChild(newdiv);
+  c++;
+  
+}
+
+function addStuff2(){
+  var insertnode = document.getElementById("adddiv");
+  var newdiv = document.createElement("div");
+  insertnode.appendChild(newdiv);
+  newdiv.onclick = function(){
+    insertnode.removeChild(newdiv);
+  }
+  newdiv.appendChild(document.createElement("br"));
+  newdiv.appendChild(document.createTextNode("yoyoyo"+c));
+  newdiv.className = "greendiv";
+
   c++;
   
 }
@@ -31,11 +46,12 @@ function addStuff(){
 
 Hello. This is a text.
 
-<div onclick="addStuff()" style="background-color:yellow" class="letext">
-add stuff
+<div onclick="addStuff1()" style="background-color:yellow" class="letext">
+add stuff1
 </div>
-
-<!-- THis is a comment!!!! -->
+<div onclick="addStuff2()" style="background-color:green" class="letext">
+add stuff2
+</div>
 
 <div id="adddiv">
 here things are added

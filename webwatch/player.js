@@ -11,12 +11,12 @@
 function replay(history){
   
   //Restore the snapshot.
-  document.firstChild.replaceChild(restore(history.start.head), document.head);
-  document.firstChild.replaceChild(restore(history.start.body), document.body);
+  document.replaceChild(restore(history.start.html), document.firstChild);
+
 
   if (history.actions.length){ 
     window.setTimeout(function(){replayActions(history.actions)},
-                      history.start.time.getTime()-history.actions[0].time.getTime()) ;
+                      history.actions[0].time.getTime()-history.start.time.getTime()) ;
   }
 }
 
@@ -31,7 +31,7 @@ function replayActions(actions){
   
   if (actions.length){ 
     window.setTimeout(function(){replayActions(actions)},
-                      action.time.getTime()-actions[0].time.getTime()) ;
+                      actions[0].time.getTime()-action.time.getTime()) ;
   }
 }
 
@@ -52,8 +52,9 @@ function replayAction(action){
     //Insert nodes
     for (var i = action.inserted.length-1;i>=0;i--){
       var newnode = restore(action.inserted[i]);
-      if (target.childNodes.length){
-        target.insertBefore(newnode, target.childNodes[action.at]);
+      console.log("inserting", newnode, newnode.outerHTML);
+      if (target.childNodes.length != (action.at+1)){
+          target.insertBefore(newnode, target.childNodes[action.at]);
       }else{
         target.appendChild(newnode);
       }

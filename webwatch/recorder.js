@@ -26,11 +26,13 @@ function mutationToAction(mutation){
   action.type = mutation.type;
 
   if (mutation.type == "childList"){
-   if (mutation.previousSibling){
-     action.at = findPosition(mutation.previousSibling);
-   }else{
-     action.at = 0;
+
+   var sibling = mutation.previousSibling;
+   while (sibling != null && !isRelevantNode(sibling)){
+     sibling = sibling.previousSibling;
    }
+   action.at = sibling?findPosition(sibling)+1:0
+
    action.removed = mutation.removedNodes.length;
    action.inserted = []
    for (var j=0;j<mutation.addedNodes.length;j++){
@@ -125,8 +127,7 @@ function convertElement(elem){
 
 /*Make a snapshot of the current state of the site */
 function snapShot(){
-  return { head:convertElement(document.head),
-           body:convertElement(document.body),
+  return { html:convertElement(document.firstChild),
            time:new Date()}
 }
 
