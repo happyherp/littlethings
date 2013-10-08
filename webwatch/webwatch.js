@@ -1,5 +1,7 @@
 
 
+ElementNode = 1
+TextNode = 3
 
 MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
@@ -25,13 +27,17 @@ function record(){
 
 function convertElement(elem){
   var converted = {}
-  converted.nodeName = elem.nodeName
-  converted.data = elem.data
-  converted.nodeValue = elem.nodeValue
+  converted.nodeName = elem.nodeName;
+  converted.nodeType = elem.nodeType;
+  converted.data = elem.data;
+  converted.nodeValue = elem.nodeValue;
 
   converted.children = [];
   for (var i = 0;i<elem.childNodes.length;i++){
-    converted.children.push(convertElement(elem.childNodes[i]));
+    var childelem = elem.childNodes[i];
+    if (isRelevantNode(childelem)){
+      converted.children.push(convertElement(childelem));
+    }
   }
 
   if (elem.attributes) {
@@ -47,7 +53,33 @@ function convertElement(elem){
 }
 
 function snapShot(){
+  return { head:convertElement(document.head),
+           body:convertElement(document.body)}
+}
 
-  var htmlElement = convertElement(document.firstChild);
-  return htmlElement;
+function isRelevantNode(elem){
+  return    elem.nodeType == TextNode
+         || (elem.nodeType == ElementNode && elem.nodeName != "SCRIPT")
+}
+
+function restore(converted){
+  
+  var elem;
+  if (converted.nodeType == TextNode){
+    elem = document.createTextNode(converted.data);
+  }else{
+    elem = document.createElement(converted.nodeName);
+
+    for (var i=0;i<converted.children.length;i++){
+      elem.appendChild(restore(converted.children[i]));    
+    }
+
+    if (converted.attributes){
+      for (attr in converted.attributes){
+        elem.setAttribute(attr, converted.attributes[attr]);
+      } 
+    }
+  }
+
+  return elem;
 }

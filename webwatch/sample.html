@@ -1,7 +1,6 @@
 <html>
 <head>
-<script src="webwatch.js" >
-</script>
+<script src="webwatch.js"></script>
 <link rel="stylesheet" type="text/css" href="style.css">
 <style type="text/css" src="style.css" >
   .letext{ font:bold .9em Times; }
@@ -40,6 +39,20 @@ add stuff
 <div id="adddiv">
 here things are added
 </div>
+
+<script>
+function reinsert(){
+var snap = snapShot();
+restoredbody = restore(snap.body);
+
+restoredchild = restore(snap.body.children[5]);
+document.body.appendChild(restoredchild);
+}
+
+
+
+
+</script>
 
 </body>
 
