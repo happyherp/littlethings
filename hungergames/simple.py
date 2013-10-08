@@ -48,6 +48,23 @@ class Threeshold(BasePlayer):
   def __repr__(self):
     return "Threeshold:%f"%(self.threeshold) 
 
+class RandomPlayer(BasePlayer):
+  
+  def __init__(self, chance=0.2):
+    self.chance = chance  
+
+  def hunt_choices(self, round_number, current_food, current_reputation, m,
+          player_reputations):
+      hunt_decisions = []
+
+      for rep in player_reputations:
+        if random() <= self.chance: 
+          c = "h" 
+        else:
+          c = "s" 
+        hunt_decisions.append(c)        
+      return hunt_decisions
+
 
 class Reputist(BasePlayer):
   '''Only shared with those that have a reputation close to his own'''
@@ -84,4 +101,20 @@ class Reputist(BasePlayer):
           hunt_decisions.append(c)
       return hunt_decisions
 
- 
+class GoodGoneBad(BasePlayer):
+
+  def hunt_choices(self, round_number, current_food, current_reputation, m,
+          player_reputations):
+      hunt_decisions = []
+
+      for rep in player_reputations:
+
+        if round_number == START_ROUND:
+          c = "h" 
+        else:
+          c = "s" 
+        hunt_decisions.append(c)        
+
+      return hunt_decisions
+
+

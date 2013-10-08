@@ -1,30 +1,8 @@
 from random import randint
 
+from utils import *
+
 START_ROUND = 1
-
-def printPlayers(players):
-  i = 0
-  for player in players:
-    print i, player
-    i += 1
-
-def printResults(players, results):
-
-  print " ",
-  for y in range(len(players)):
-    print y,
-  print
-
-  x = 0
-  for xplayer in players:
-    print x,
-    for yplayer in players:
-      if xplayer != yplayer:
-        print results[xplayer][yplayer],
-      else: print "X",
-    print
-    x += 1
-
 
 
 class Player(object):
@@ -135,10 +113,14 @@ def hunt(a,b):
 if __name__ == "__main__":
   from simple import *
   from Repval import *
+  from TitForTat import *
 
-  playeralgs = [Defector(), Defector(), Hunter(), Hunter(), Threeshold(), Threeshold(0.3), Threeshold(0.9), Threeshold(0.1), Threeshold(0.1), Repval(), Reputist()]
+  playeralgs = [Defector(), Defector(), Hunter(), RandomPlayer(), Threeshold(), Threeshold(0.3), Threeshold(0.9), Threeshold(0.1), Threeshold(0.1), Repval(), Reputist(), Reputist(), GoodGoneBad(),RepvalFull(), TitForTatPlayer(), TitForTatPlayer(start_ratio=0.4)]
   #playeralgs = [Defector(), Threeshold(0.4), Threeshold(0.4)]
   players =  playGame(playeralgs, 100)
-  print "Winner", getWinner(players)
+
+  players.sort(key=lambda p:p.food, reverse=True)
+  printPlayers(players)
+
 
   
