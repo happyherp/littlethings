@@ -1,0 +1,3 @@
+goto: http://docs.pylonsproject.org/projects/pyramid/en/master/whatsnew-1.5.html
+
+rereun setup-env and fix mako templates. see webwatch
