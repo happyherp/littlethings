@@ -66,6 +66,10 @@ function replayAction(action){
       target.removeChild(target.childNodes[action.at]);
       toRemove--;
     }  
+  }else if (action.type == "attributes"){
+    target.setAttribute(action.attributeName, action.attributeValue);
+  }else{
+    throw "unhandled type of action"
   }
 
 }

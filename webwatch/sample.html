@@ -64,11 +64,17 @@ function replayInNewWindow(){
   newwin = open("watcher.html");
   newwin.pagehistory = pagehistory;
 }
+
+function revive(){
+  document.getElementById("cats").setAttribute("src","realcat.jpg");
+} 
 </script>
 
 <div style="background-color:brown" onclick="replayInNewWindow()">
 replay in new window
 </div>
+<img id="cats" src="octocat_repo.png" />
+<div style="background-color:red" onclick="revive()"> revive! </div>
 </body>
 
 </html>

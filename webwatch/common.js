@@ -4,4 +4,3 @@
 
 ElementNode = 1
 TextNode = 3
-
