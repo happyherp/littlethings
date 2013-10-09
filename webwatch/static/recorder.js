@@ -170,7 +170,17 @@ function convertElement(elem){
 /*Make a snapshot of the current state of the site */
 function snapShot(){
   return { html:convertElement(document.firstChild),
-           time:new Date()}
+           time:new Date(),
+           url:window.location.href}
+}
+
+function sendToServer(){
+  var content = JSON.stringify(pagehistory)
+  var callback =  function(text){
+     console.log("gotresponse", text)
+  };
+  
+  post("/receiveReplay", content, callback);
 }
 
 

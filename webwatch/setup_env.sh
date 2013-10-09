@@ -1,6 +1,5 @@
 #delete old env
 rm env -R
-rm tmp -R
 
 mkdir tmp
 
@@ -19,6 +18,12 @@ python tmp/virtualenv-1.8.4/virtualenv.py --no-site-packages env
 #install pyramid
 cd env
 bin/easy_install pyramid
+
+#install mako templates
+bin/easy_install pyramid_mako
+
+#dateuil
+bin/easy_install python_dateutil
 
 #in project dir:  
 #virtualenv --no-site-packages env
