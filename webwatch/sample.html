@@ -63,6 +63,7 @@ record();
 function replayInNewWindow(){
   newwin = open("watcher.html");
   newwin.pagehistory = pagehistory;
+  newwin.parent = window;
 }
 
 function revive(){

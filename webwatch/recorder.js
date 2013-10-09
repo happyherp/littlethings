@@ -162,9 +162,4 @@ function snapShot(){
            time:new Date()}
 }
 
-/*Checks if a HTML-Node should be transfered to the watcher */
-function isRelevantNode(elem){
-  return    elem.nodeType == TextNode
-         || (elem.nodeType == ElementNode && elem.nodeName != "SCRIPT")
-}
 

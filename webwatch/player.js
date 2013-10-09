@@ -49,14 +49,18 @@ function replayAction(action){
   
   if (action.type == "childList"){
 
-    //Insert nodes
-    for (var i = action.inserted.length-1;i>=0;i--){
-      var newnode = restore(action.inserted[i]);
-      console.log("inserting", newnode, newnode.outerHTML);
-      if (target.childNodes.length != (action.at+1)){
-          target.insertBefore(newnode, target.childNodes[action.at]);
-      }else{
-        target.appendChild(newnode);
+    //Insert nodes at end
+    if (target.childNodes.length == (action.at+1)){    
+      for (var i = 0;i<action.inserted.length;i++){
+         var newnode = restore(action.inserted[i]);
+         console.log("inserting", newnode, newnode.outerHTML);
+         target.appendChild(newnode);
+      }
+    }else{
+      for (var i = action.inserted.length-1;i>=0;i--){
+        var newnode = restore(action.inserted[i]);
+        console.log("inserting", newnode, newnode.outerHTML);
+        target.insertBefore(newnode, target.childNodes[action.at]);
       }
     }
     

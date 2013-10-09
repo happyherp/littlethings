@@ -4,3 +4,84 @@
 
 ElementNode = 1
 TextNode = 3
+
+
+/*Checks if a HTML-Node should be transfered to the watcher */
+function isRelevantNode(elem){
+  return    elem.nodeType == TextNode
+         || (elem.nodeType == ElementNode && elem.nodeName != "SCRIPT")
+}
+
+function relevantChilds(node){
+  return toArray(node.childNodes).filter(isRelevantNode); 
+}
+
+
+/**
+* Debug-Tool for figuring out why two nodes dont have the same checksum.
+*/
+
+function compareNodes(nodeA,nodeB){
+
+  console.log("comparing", nodeA, nodeB);
+
+  if (checksumForNode(nodeA) == checksumForNode(nodeB)){
+    return true;
+  }else{
+    var childsA = relevantChilds(nodeA);
+    var childsB = relevantChilds(nodeB);
+    if (childsA.length != childsB.length){
+      console.log(nodeA,nodeB, "unequal number of children");
+    }else{
+      var allsame = true;
+      for (var i = 0; i<childsA.length;i++){
+        allsame = allsame && compareNodes(childsA[i], childsB[i]);
+      }
+      if (allsame){
+        console.log("childrens match up. problem must be in nodes", nodeA, nodeB);
+      }
+    }
+    return false;
+  }
+}
+
+
+/**
+* Calculates an integer that is the checksum for the given node.
+*/
+function checksumForNode(node){
+  var checksum = 0;
+  if (isRelevantNode(node)){
+    checksum = stringHash(node.nodeName);
+    checksum += node.nodeValue? stringHash(node.nodeValue):0;
+    var children = toArray(node.childNodes).filter(isRelevantNode);
+    for (var i=0;i<children.length;i++){
+      checksum += checksumForNode(children[i])*(i+2);
+    }
+    if (node.attributes){
+      for(var i=0; i<node.attributes.length; i++) {
+         var attr = node.attributes[i];
+         checksum += stringHash(attr.value)+stringHash(attr.name);
+      }
+    }
+  }
+  return checksum % (1000*1000);
+
+}
+
+/**
+* Calculate hash from string. from http://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript-jquery
+*/
+function stringHash(s){
+  return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
+}
+
+//http://stackoverflow.com/questions/2735067/how-to-convert-a-dom-node-list-to-an-array-in-javascript
+function toArray(obj) {
+  var array = [];
+  // iterate backwards ensuring that length is an UInt32
+  for (var i = obj.length >>> 0; i--;) { 
+    array[i] = obj[i];
+  }
+  return array;
+}
