@@ -6,9 +6,7 @@ MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
 var observer = new MutationObserver(function(mutations, observer) {
     // fired when a mutation occurs
-    console.log(mutations, observer);
-
-
+    //console.log(mutations, observer);
 
     var serializedNodes = []; //A List of all dom-nodes that have already been
     //serialized on this event. 
@@ -24,7 +22,7 @@ var observer = new MutationObserver(function(mutations, observer) {
 
        var mutation = mutations[i];
        var action = mutationToAction(mutation, serializedNodes);
-       console.log("action", action);
+       //console.log("action", action);
 
        pagehistory.actions.push(action);
     }
@@ -112,7 +110,9 @@ function findPosition(node){
 function record(){
 
   //Make initial snapshot, then record all actions.
-  pagehistory = {start:snapShot(), actions:[]}
+  pagehistory = {start:snapShot(), 
+                 actions:[],
+                 mousemoves:[] }
 
   // define what element should be observed by the observer
   // and what types of mutations trigger the callback
@@ -124,7 +124,21 @@ function record(){
     attributeOldValue: true,
     characterDataOldValue: true
   });
+
+  document.body.addEventListener("mousemove",recordMouseMove,false);
+
   console.log("observer online");
+}
+
+
+function recordMouseMove(event){
+  //console.log("mousemove", event);
+  pagehistory.mousemoves.push({
+    //x:event.clientX,
+    //y:event.clientY,
+    x:event.pageX,
+    y:event.pageY,
+    time:new Date()});
 }
 
 /*Convert a HTML-Element(or Node) to a serializable JSON-OBject, containing the information we require */

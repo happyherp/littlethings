@@ -15,24 +15,50 @@ function replay(history){
 
 
   if (history.actions.length){ 
-    window.setTimeout(function(){replayActions(history.actions)},
+    window.setTimeout(function(){replayArray(replayAction, history.actions)},
                       history.actions[0].time.getTime()-history.start.time.getTime()) ;
   }
+
+  if (history.mousemoves.length){ 
+    window.setTimeout(function(){replayArray(replayMouseMove, history.mousemoves)},
+                      history.mousemoves[0].time.getTime()-history.start.time.getTime()) ;
+  }
+
 }
 
 
 /**
-* Replays the given actions with correct relative time to each other.
-* */
-function replayActions(actions){
+* Calls the function f on every element of array. 
+* Assumes each element of the array has a time-attribute containing a date.
+* Each call to f is delayed by the diffrence between the time of the current and the next element.
+*
+*/
+function replayArray(f, array){
 
-  var action = actions.shift();
-  replayAction(action);
+  var currentelem = array.shift();
+  f(currentelem);
   
-  if (actions.length){ 
-    window.setTimeout(function(){replayActions(actions)},
-                      actions[0].time.getTime()-action.time.getTime()) ;
+  if (array.length){ 
+    window.setTimeout(function(){replayArray(f,array)},
+                      array[0].time.getTime()-currentelem.time.getTime()) ;
   }
+}
+
+
+//* Recreates a mouse move */
+function replayMouseMove(move){
+
+  var fakemouse = document.getElementById("fakemouse");
+  if (!fakemouse){
+    fakemouse = document.createElement("img");
+    fakemouse.id = "fakemouse";
+    fakemouse.setAttribute("src", "mouse.png");
+    fakemouse.style.position="absolute";
+    document.body.appendChild(fakemouse);
+  }
+  fakemouse.style.left=move.x+"px";
+  fakemouse.style.top=move.y+"px";
+  
 }
 
 /*

@@ -9,7 +9,9 @@ TextNode = 3
 /*Checks if a HTML-Node should be transfered to the watcher */
 function isRelevantNode(elem){
   return    elem.nodeType == TextNode
-         || (elem.nodeType == ElementNode && elem.nodeName != "SCRIPT")
+         || (elem.nodeType == ElementNode 
+             && elem.nodeName != "SCRIPT" 
+             && elem.id != "falsemouse")
 }
 
 function relevantChilds(node){
