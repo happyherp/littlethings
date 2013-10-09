@@ -164,11 +164,8 @@ function convertElement(elem){
        converted.attributes[attr.name] = attr.value;
     }
   }
-
   return converted;
-
 }
-
 
 /*Make a snapshot of the current state of the site */
 function snapShot(){

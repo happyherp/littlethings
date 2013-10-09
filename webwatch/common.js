@@ -11,7 +11,7 @@ function isRelevantNode(elem){
   return    elem.nodeType == TextNode
          || (elem.nodeType == ElementNode 
              && elem.nodeName != "SCRIPT" 
-             && elem.id != "falsemouse")
+             && elem.id != "fakemouse")
 }
 
 function relevantChilds(node){

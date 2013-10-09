@@ -1,5 +1,4 @@
-THe plan:
-
+Done:
 Observed
 1. Send a snapshot of the complete current state of the website
 2. detect changes, bundle after some timer interval, send as well
@@ -7,7 +6,12 @@ Observed
 changes include:
   current time
   modification of visible DOM-Elements. This excludes javascript
-  path the mouse makes. Clicks
+  path the mouse makes. 
+
+
+TODO:
+changes include:
+  Clicks
   scrollbar movements.
   window resizing.
   zoom of text, if possible
