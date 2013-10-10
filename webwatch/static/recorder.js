@@ -2,6 +2,33 @@
 *Contains funtionality for recording the events on a website
 *
 */
+
+
+function record(){
+
+  //Make initial snapshot, then record all actions.
+  pagehistory = {start:snapShot(), 
+                 actions:[],
+                 mousemoves:[] }
+
+  // define what element should be observed by the observer
+  // and what types of mutations trigger the callback
+  observer.observe(document, {
+    subtree: true,
+    attributes: true,
+    childList: true,
+    characterData: true,
+    attributeOldValue: true,
+    characterDataOldValue: true
+  });
+
+  document.body.addEventListener("mousemove",recordMouseMove,false);
+
+  console.log("observer online");
+}
+
+
+
 MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
 var observer = new MutationObserver(function(mutations, observer) {
@@ -105,29 +132,6 @@ function findPosition(node){
     }else if (isRelevantNode(node.parentNode.childNodes[i+s])) {i++} else {s++}
     
   }
-}
-
-function record(){
-
-  //Make initial snapshot, then record all actions.
-  pagehistory = {start:snapShot(), 
-                 actions:[],
-                 mousemoves:[] }
-
-  // define what element should be observed by the observer
-  // and what types of mutations trigger the callback
-  observer.observe(document, {
-    subtree: true,
-    attributes: true,
-    childList: true,
-    characterData: true,
-    attributeOldValue: true,
-    characterDataOldValue: true
-  });
-
-  document.body.addEventListener("mousemove",recordMouseMove,false);
-
-  console.log("observer online");
 }
 
 
