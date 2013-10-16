@@ -24,8 +24,3 @@ bin/easy_install pyramid_mako
 
 #dateuil
 bin/easy_install python_dateutil
-
-#in project dir:  
-#virtualenv --no-site-packages env
-
-
