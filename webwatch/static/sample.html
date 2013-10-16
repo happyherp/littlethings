@@ -40,11 +40,17 @@ function addStuff2(){
   newdiv.className = "greendiv";
 
   c++;
-  
+}
+
+function changeme(){
+  console.log("changing");
+  document.getElementById("changeme").firstChild.nodeValue="CHANGED";
 }
 </script>
 
 Hello. This is a text.
+
+<div id="changeme" onclick="changeme()">ChangeME!</div>
 
 <div onclick="addStuff1()" style="background-color:yellow" class="letext">
 add stuff1

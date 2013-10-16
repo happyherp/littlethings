@@ -98,6 +98,8 @@ function replayAction(action){
     }  
   }else if (action.type == "attributes"){
     target.setAttribute(action.attributeName, action.attributeValue);
+  }else if (action.type == "characterData"){
+    target.nodeValue = action.nodeValue;
   }else{
     throw "unhandled type of action"
   }
@@ -109,7 +111,7 @@ function restore(converted){
   
   var elem;
   if (converted.nodeType == TextNode){
-    elem = document.createTextNode(converted.data);
+    elem = document.createTextNode(converted.nodeValue);
   }else{
     elem = document.createElement(converted.nodeName);
 

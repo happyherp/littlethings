@@ -33,7 +33,7 @@ MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
 var observer = new MutationObserver(function(mutations, observer) {
     // fired when a mutation occurs
-    //console.log(mutations, observer);
+    console.log(mutations, observer);
 
     var serializedNodes = []; //A List of all dom-nodes that have already been
     //serialized on this event. 
@@ -84,7 +84,7 @@ function mutationToAction(mutation, serializedNodes){
    action.attributeValue = mutation.target.getAttribute(
                              mutation.attributeName);
   }else if (mutation.type == "characterData"){
-   action.nodeValue = target.data
+   action.nodeValue = mutation.target.nodeValue
   }else{
    throw "Unexpected mutation type.";
   }
@@ -150,7 +150,6 @@ function convertElement(elem){
   var converted = {}
   converted.nodeName = elem.nodeName;
   converted.nodeType = elem.nodeType;
-  converted.data = elem.data;
   converted.nodeValue = elem.nodeValue;
 
   converted.children = [];
