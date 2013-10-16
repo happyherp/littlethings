@@ -23,6 +23,8 @@ function record(){
   });
 
   document.body.addEventListener("mousemove",recordMouseMove,false);
+  
+  window.addEventListener("focus", function(){console.log("got focus on", new Date());});
 
   console.log("observer online");
 }
