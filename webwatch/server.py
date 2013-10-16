@@ -42,6 +42,23 @@ def showReplay(request):
             (request.matchdict["id"],))
   replay = dict( zip(["id", "time", "url", "htmlcontent" ],c.fetchone()))
   replay["time"] = dateutil.parser.parse(replay["time"])
+  
+  #add actions
+  replay["actions"] = []
+  rows = c.execute('''SELECT 
+                 time, type, target, at, removed, 
+                 attributeName, attributeValue, inserted, nodeValue
+               FROM action where fkrecordid = ? order by position asc''',(replay["id"],))
+  for row in rows:
+    action = dict( zip(["time", "type", "target", "at", "removed", 
+                        "attributeName", "attriuteValue", "inserted", "nodeValue" 
+                       ],row))
+    action["time"] = dateutil.parser.parse(action["time"]).isoformat()
+    action["target"] = json.loads(action["target"])
+    action["inserted"] = json.loads(action["inserted"])
+    replay["actions"].append(action)
+  
+  
   conn.close() 
   return render_to_response('showreplay.mako', {"replay":replay}, request=request)  
   
@@ -60,13 +77,24 @@ def receiveReplay(request):
   c = conn.cursor()
   c.execute("INSERT INTO userrecording (htmlcontent, time, url) VALUES (?,?,?)",
             (json.dumps(html), time, url))
-
+  recordingid = c.lastrowid            
+  
+  position = 0
+  for action in request.json_body["actions"]:
+    actiontime = dateutil.parser.parse(action["time"])
+    target_json = json.dumps(action["target"])
+    inserted_json = json.dumps(action["inserted"])
+    c.execute('''INSERT INTO action (fkrecordid, position, time, type, target, at, removed,
+                                     attributename, attributevalue, inserted, nodeValue)
+                        VALUES(?,?,?,?,?,?,?,?,?,?,?)''', 
+               (recordingid, position, actiontime, action["type"], target_json, action["at"],
+                action["removed"], action["attributeName"], action["attributeValue"],
+                inserted_json, action["nodeValue"]))              
+    position += 1
+    
   conn.commit()
 
   conn.close()
-
-
-  #TODO: also process following mutations
 
   return Response("OK")
 

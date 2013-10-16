@@ -9,10 +9,12 @@
 * The snapshot is restored instantly. Further changes are done relatively to the original time.
 */
 function replay(history){
+
+  console.log("replaying history", history);
   
   //Restore the snapshot.
   document.replaceChild(restore(history.start.html), document.firstChild);
-
+  
 
   if (history.actions.length){ 
     window.setTimeout(function(){replayArray(replayAction, history.actions)},
@@ -24,6 +26,15 @@ function replay(history){
                       history.mousemoves[0].time.getTime()-history.start.time.getTime()) ;
   }
 
+}
+
+/**
+* Needed because a the dates are made to strings when we convert the object to JSON.
+*/
+function fixTimes(array){
+  for (var i=0;i<array.length;i++){
+    array[i].time = new Date(array[i].time);
+  }
 }
 
 

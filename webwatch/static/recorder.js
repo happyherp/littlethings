@@ -59,6 +59,14 @@ function mutationToAction(mutation, serializedNodes){
   var action = {time:new Date()};
   action.target = findPath(mutation.target);
   action.type = mutation.type;
+  
+  //Add null as default for unneeded values. makes easier sql later
+  action.at = null;
+  action.removed = null;
+  action.inserted = []
+  action.attributeName = null;
+  action.attributeValue = null;
+  action.nodeValue = null;  
 
   if (mutation.type == "childList"){
 
@@ -75,7 +83,7 @@ function mutationToAction(mutation, serializedNodes){
      var newnode = mutation.addedNodes[j];
      if (isRelevantNode(newnode) && !alreadySerialized(newnode, serializedNodes)){
        action.inserted.push(convertElement(newnode));
-       serializedNodes.push(newnode)
+       serializedNodes.push(newnode);
      }
    }
 
@@ -88,6 +96,7 @@ function mutationToAction(mutation, serializedNodes){
   }else{
    throw "Unexpected mutation type.";
   }
+ 
   return action;
 }
 
@@ -178,6 +187,7 @@ function snapShot(){
 }
 
 function sendToServer(){
+  console.log("sending to server", pagehistory);
   var content = JSON.stringify(pagehistory)
   var callback =  function(text){
      console.log("gotresponse", text)
