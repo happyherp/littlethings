@@ -2,8 +2,8 @@
 * Code shared among recorder and player
 */
 
-ElementNode = 1
-TextNode = 3
+ElementNode = 1;
+TextNode = 3;
 
 
 /*Checks if a HTML-Node should be transfered to the watcher */
@@ -11,7 +11,7 @@ function isRelevantNode(elem){
   return    elem.nodeType == TextNode
          || (elem.nodeType == ElementNode 
              && elem.nodeName != "SCRIPT" 
-             && elem.id != "fakemouse")
+             && elem.id != "fakemouse");
 }
 
 function relevantChilds(node){
@@ -75,7 +75,7 @@ function checksumForNode(node){
 * Calculate hash from string. from http://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript-jquery
 */
 function stringHash(s){
-  return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
+  return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a;},0);              
 }
 
 //http://stackoverflow.com/questions/2735067/how-to-convert-a-dom-node-list-to-an-array-in-javascript
@@ -105,7 +105,7 @@ function post(url, value, callback){
     if (xmlhttp.readyState==4 && xmlhttp.status==200){
       callback(xmlhttp.responseText);
     }
-  }
+  };
   xmlhttp.open("POST",url,true);
   xmlhttp.send(value);
 }
