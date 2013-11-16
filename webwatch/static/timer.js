@@ -68,7 +68,7 @@ function Timer() {
 function testtimer(){
   var ins = new Timer();
   for (var i = 0; i < 5;i++){
-    
+     
     var makefoo = function(i){
       return function(){console.log(i);};
       };

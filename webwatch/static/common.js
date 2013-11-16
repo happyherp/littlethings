@@ -110,5 +110,23 @@ function post(url, value, callback){
   xmlhttp.send(value);
 }
 
+/**
+ * Usage saveState(foo, args..)
+ * 
+ * Creates a function bound that calls foo with the given args followed by the arguments of bound.
+ * 
+ */
+function saveState(){
+  
+  var foo = arguments[0];
+  var rest = toArray(arguments)
+  rest.splice(0,1);
+  
+  return function(){
+    var newargs = rest.concat(toArray(arguments));
+    foo.apply(null,newargs);
+  };  
+}
+
 
 

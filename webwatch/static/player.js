@@ -25,21 +25,13 @@ function replay(history){
   var timer = new Timer();
   
   for (var i=0; i < history.actions.length; i++){
-    
-    var callback = function (action){
-      return  function(){replayAction( action);};
-    }(history.actions[i]);
-    
+    var callback = saveState(replayAction, history.actions[i]);
     timer.addEvent(callback, offsetDate(history.actions[i].time));
   }
   
   
   for (var i=0; i < history.mousemoves.length; i++){
-    
-    var callback = function (mousemoves){
-      return  function(){replayMouseMove( mousemoves);};
-    }(history.mousemoves[i]);
-    
+    var callback = saveState(replayMouseMove, history.mousemoves[i]);
     timer.addEvent(callback, offsetDate(history.mousemoves[i].time));
   }  
  
