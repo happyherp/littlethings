@@ -50,8 +50,12 @@ function Timer() {
         queue.push(newEvent);
       } else {
         // Do a sorted insert.
-        var i = 0;
-        while (i < queue.length && queue[i].date < date) {
+        //It is important, that, for same date value, the order of events is the same 
+        //as the order in which addEvent was called fot those events.
+        //Otherwhise DOM-elements, that have not yet been created will cause errors
+        //while finding the right target.
+        var i = 1;        
+        while (i < queue.length  && !(queue[i].date > date)) {
           i++;
         }
         queue.splice(i,0,newEvent);
@@ -71,5 +75,16 @@ function testtimer(){
     ins.addEvent(makefoo(i), 
                  new Date(new Date().getTime()+(1000*i)));
   }
+  
+  
+  for (var i = 0; i < 5;i++){
+    
+    var makefoo = function(i){
+      return function(){console.log(i);};
+      };
+    ins.addEvent(makefoo(i), 
+                 new Date(new Date().getTime()));
+  }
+  
   ins.run();
 }

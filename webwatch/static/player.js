@@ -15,16 +15,35 @@ function replay(history){
   //Restore the snapshot.
   document.replaceChild(restore(history.start.html), document.firstChild);
   
-
-  if (history.actions.length){ 
-    window.setTimeout(function(){replayArray(replayAction, history.actions)},
-                      history.actions[0].time.getTime()-history.start.time.getTime()) ;
+  var offsetDate = function(date){
+    var offset =  new Date().getTime() - history.start.time.getTime();
+    return new Date(date.getTime()+offset);
+  };
+  
+  
+  //TODO: put this somewhere else, so it can be reused for additional events.
+  var timer = new Timer();
+  
+  for (var i=0; i < history.actions.length; i++){
+    
+    var callback = function (action){
+      return  function(){replayAction( action);};
+    }(history.actions[i]);
+    
+    timer.addEvent(callback, offsetDate(history.actions[i].time));
   }
-
-  if (history.mousemoves.length){ 
-    window.setTimeout(function(){replayArray(replayMouseMove, history.mousemoves)},
-                      history.mousemoves[0].time.getTime()-history.start.time.getTime()) ;
-  }
+  
+  
+  for (var i=0; i < history.mousemoves.length; i++){
+    
+    var callback = function (mousemoves){
+      return  function(){replayMouseMove( mousemoves);};
+    }(history.mousemoves[i]);
+    
+    timer.addEvent(callback, offsetDate(history.mousemoves[i].time));
+  }  
+ 
+  timer.run();
 
 }
 
@@ -34,24 +53,6 @@ function replay(history){
 function fixTimes(array){
   for (var i=0;i<array.length;i++){
     array[i].time = new Date(array[i].time);
-  }
-}
-
-
-/**
-* Calls the function f on every element of array. 
-* Assumes each element of the array has a time-attribute containing a date.
-* Each call to f is delayed by the diffrence between the time of the current and the next element.
-*
-*/
-function replayArray(f, array){
-
-  var currentelem = array.shift();
-  f(currentelem);
-  
-  if (array.length){ 
-    window.setTimeout(function(){replayArray(f,array)},
-                      array[0].time.getTime()-currentelem.time.getTime()) ;
   }
 }
 
