@@ -22,13 +22,14 @@ function record(){
     // of the state of all childlists before every step, since
     // we only have the state after all of them have occurred.
     var states = [];
-    for (var i = mutations.length -1; i>= 0; i--){
+    for (var i = mutations.length -1; i>= 0; i--){      
+      var afterState;
       if (states.length == 0){
-        var afterState = {};
+        afterState = new State();
       }else{
-        var afterState = states[0];
+        afterState = states[0];
       }
-      var prevstate = rewind(mutations[i], afterState);
+      var prevstate = afterState.rewind(mutations[i]);
       states.splice(0, 0, prevstate);
     }
     console.log("states", states);
@@ -49,7 +50,7 @@ function record(){
        var mutation = mutations[i];
        
        //Pick the state that the dom had after this mutation.
-       var afterState = i < mutations.length -1 ? states[i+1] : {};
+       var afterState = i < mutations.length -1 ? states[i+1] : new State();
        
        var action = mutationToAction(mutation, serializedNodes, afterState);
        //console.log("action", action);
@@ -164,7 +165,7 @@ function findPath(node, state){
 function findPosition(node, state){
   var s = 0;//Nodes skipped, because of irrelevant type.
   var i = 0; //Count relevant nodes
-  var parentChildNodes = childsAtState(node.parentNode, state); 
+  var parentChildNodes = state.getChildren(node.parentNode); 
   while (i+s<parentChildNodes.length){
     if (parentChildNodes[i+s] == node){
       return i;

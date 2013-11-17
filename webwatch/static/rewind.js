@@ -8,75 +8,89 @@
 */
 
 
-/**
- * Returns the state the document had before the mutation occurred, based on the next State.
- * 
- */
-function rewind(mutation, afterState){
+function State(){
   
-  var beforeState = cloneState(afterState);
+  this.parentToChildren = {};
   
-  if (mutation.type == "childList"){
-    if (mutation.removedNodes.length != 0 && mutation.addedNodes.length != 0){
-      console.log("mutation that does both, insert and remove nodes.");
+  this.getChildren = function(parent){
+    
+    var children;
+    if (this.parentToChildren[parent]){
+      children = this.parentToChildren[parent];
+    }else{
+      children = toArray(parent.childNodes);
     }
     
-    if (beforeState[mutation.target] === undefined){
-      beforeState[mutation.target] = toArray(mutation.target.childNodes);
-    }    
-    var nodes = beforeState[mutation.target];
     
-    //Delete all inserted Nodes from beforeState
-    for (var i = 0; i < mutation.addedNodes.length; i++){
-      var added = mutation.addedNodes[i];
-      if (nodes.indexOf(added) == -1){
-        console.error("node to remove was not found.");
+    for (var i = 0; i < children.length; i++){
+      if (children[i].parentNode != parent){
+        console.error("Returned child with diffrent parent");
       }
-      nodes.splice(nodes.indexOf(added),1);
+    }
+    return children;
+  };
+  
+  /**
+   * Copies a State. 
+   * 
+   * @param state
+   */  
+  this.clone = function(){
+    
+    var newState = new State();
+    for (var attr in this.parentToChildren) {
+        if (this.parentToChildren.hasOwnProperty(attr)) 
+          newState.parentToChildren[attr] = this.parentToChildren[attr].slice();
+    }
+    return newState; 
+  };    
+    
+
+  /**
+   * Returns the state the document had before the mutation occurred, based on this state.
+   * 
+   */
+  this.rewind = function (mutation){
+    
+    var beforeState = this.clone();
+    
+    if (mutation.type == "childList"){
+      if (mutation.removedNodes.length != 0 && mutation.addedNodes.length != 0){
+        console.log("mutation that does both, insert and remove nodes.");
+      }
+      
+      if (beforeState.parentToChildren[mutation.target] === undefined){
+        beforeState.parentToChildren[mutation.target] = toArray(mutation.target.childNodes);
+      }    
+      var nodes = beforeState.parentToChildren[mutation.target];
+      
+      //Delete all inserted Nodes from beforeState
+      for (var i = 0; i < mutation.addedNodes.length; i++){
+        var added = mutation.addedNodes[i];
+        if (nodes.indexOf(added) == -1){
+          console.error("node to remove was not found.");
+        }
+        nodes.splice(nodes.indexOf(added),1);
+      }
+      
+      //Reinsert deleted nodes
+      for (var i = 0; i < mutation.removedNodes.length; i++){
+        var deleted = mutation.removedNodes[i];
+        if (mutation.nextSibling){
+          if (nodes.indexOf(mutation.nextSibling) == -1){
+            console.error("Node to insert before was not found.");
+          } 
+          nodes.splice(nodes.indexOf(mutation.nextSibling),0, deleted);
+        }else{
+          nodes.push(deleted);
+        }     
+      }
     }
     
-    //Reinsert deleted nodes
-    for (var i = 0; i < mutation.removedNodes.length; i++){
-      var deleted = mutation.removedNodes[i];
-      if (mutation.nextSibling){
-        if (nodes.indexOf(mutation.nextSibling) == -1){
-          console.error("Node to insert before was not found.");
-        } 
-        nodes.splice(nodes.indexOf(mutation.nextSibling),0, deleted);
-      }else{
-        nodes.push(deleted);
-      }     
-    }
-  }
+    return beforeState;
+  }  
   
-  return beforeState;
-}
-
-/**
- * Gives the Children of the node at the given state.
- * 
- * @param node
- * @param state
- */
-function childsAtState(node, state){
-  if (state[node]){
-    return state[node];
-  }else{
-    return toArray(node.childNodes);
-  }
 }
 
 
-/**
- * Copies a State. Nodes are not copied, only the map and the arrays.
- * 
- * @param state
- */
-function cloneState(state){
-  
-  var newState = {};
-  for (var attr in state) {
-      if (state.hasOwnProperty(attr)) newState[attr] = state[attr].slice();
-  }
-  return newState; 
-}
+
