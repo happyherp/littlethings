@@ -25,6 +25,12 @@ change1
 <div onclick="change2()" style="background-color:green" class="letext">
 change2
 </div>
+<div onclick="replace()" style="background-color:green" class="letext">
+replace
+</div>
+<div onclick="move()" style="background-color:green" class="letext">
+move
+</div>
 
 <div id="changeblock">
 	<div id ="A">A</div>
@@ -100,8 +106,33 @@ function addStuff1(){
   newdiv.className = "bluediv";
   insertnode.insertBefore(newdiv, prevdiv);
   c++;  
+}
+
+
+function replace(){
+  var insertnode = document.getElementById("changeblock");
+  var newdiv = document.createElement("div");
+  newdiv.onclick = function(){
+    insertnode.removeChild(newdiv);
+  }
+  newdiv.appendChild(document.createTextNode("C"));
+  newdiv.className = "bluediv";
+  insertnode.replaceChild(newdiv, document.getElementById("B"));
   
 }
+
+function replace(){
+  var source = document.getElementById("B");
+  var newdiv = document.createElement("div");
+  newdiv.onclick = function(){
+    insertnode.removeChild(newdiv);
+  }
+  newdiv.appendChild(document.createTextNode("C"));
+  newdiv.className = "bluediv";
+  insertnode.replaceChild(newdiv, document.getElementById("B"));
+  
+}
+
 
 </script>
 

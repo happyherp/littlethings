@@ -47,7 +47,11 @@ function record(){
     for (var i=0;i<mutations.length;i++){
 
        var mutation = mutations[i];
-       var action = mutationToAction(mutation, serializedNodes);
+       
+       //Pick the state that the dom had after this mutation.
+       var afterState = i < mutations.length -1 ? states[i+1] : {};
+       
+       var action = mutationToAction(mutation, serializedNodes, afterState);
        //console.log("action", action);
 
        pagehistory.actions.push(action);
@@ -72,9 +76,9 @@ function record(){
   console.log("observer online");
 }
 
-function mutationToAction(mutation, serializedNodes){
+function mutationToAction(mutation, serializedNodes, afterState){
   var action = {time:new Date()};
-  action.target = findPath(mutation.target);
+  action.target = findPath(mutation.target, afterState);
   action.type = mutation.type;
   
   //Add null as default for unneeded values. makes easier sql later
@@ -91,7 +95,7 @@ function mutationToAction(mutation, serializedNodes){
    while (sibling != null && !isRelevantNode(sibling)){
      sibling = sibling.previousSibling;
    }
-   action.at = sibling?findPosition(sibling)+1:0;
+   action.at = sibling?findPosition(sibling, afterState)+1:0;
 
    action.removed = mutation.removedNodes.length;
    for (var i = 0; i< mutation.removedNodes.length; i++){
@@ -141,12 +145,13 @@ function alreadySerialized(node, serializedNodes){
 }
 
 /**
-* Finds a path from the root of the document to the given node, by giving all indexes that lead from the root to that node.
+* Finds a path from the root of the document to the given node, by giving all 
+* indexes that lead from the root to that node.
 */
-function findPath(node){
+function findPath(node, state){
   if (node.parentNode){
-    var path = findPath(node.parentNode);
-    path.push(findPosition(node));
+    var path = findPath(node.parentNode, state);
+    path.push(findPosition(node, state));
     return path;
   }else{
     return [];
@@ -156,13 +161,14 @@ function findPath(node){
 /**
 * Returns an index that represents the position of the given node, inside the Parent.
 */
-function findPosition(node){
+function findPosition(node, state){
   var s = 0;//Nodes skipped, because of irrelevant type.
   var i = 0; //Count relevant nodes
-  while (i+s<node.parentNode.childNodes.length){
-    if (node.parentNode.childNodes[i+s] == node){
+  var parentChildNodes = childsAtState(node.parentNode, state); 
+  while (i+s<parentChildNodes.length){
+    if (parentChildNodes[i+s] == node){
       return i;
-    }else if (isRelevantNode(node.parentNode.childNodes[i+s])) {i++;} else {s++;}
+    }else if (isRelevantNode(parentChildNodes[i+s])) {i++;} else {s++;}
     
   }
 }

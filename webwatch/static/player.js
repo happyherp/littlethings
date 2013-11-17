@@ -78,8 +78,16 @@ function replayAction(action){
   console.log("replaying", action, "On", target);
   
   if (action.type == "childList"){
-
-    //Insert nodes at end
+    
+    //Delete Nodes.
+    var toRemove = action.removed;
+    while (toRemove > 0){
+      console.log("removing", target.childNodes[action.at].outerHTML);
+      target.removeChild(target.childNodes[action.at]);
+      toRemove--;
+    }  
+        
+    //Inserting Nodes.
     if (target.childNodes.length == (action.at+1)){    
       for (var i = 0;i<action.inserted.length;i++){
          var newnode = restore(action.inserted[i]);
@@ -92,15 +100,8 @@ function replayAction(action){
         console.log("inserting", newnode, newnode.outerHTML);
         target.insertBefore(newnode, target.childNodes[action.at]);
       }
-    }
+    }    
     
-    //Delete Nodes.
-    var toRemove = action.removed;
-    while (toRemove > 0){
-      console.log("removing", target.childNodes[action.at].outerHTML);
-      target.removeChild(target.childNodes[action.at]);
-      toRemove--;
-    }  
   }else if (action.type == "attributes"){
     target.setAttribute(action.attributeName, action.attributeValue);
   }else if (action.type == "characterData"){

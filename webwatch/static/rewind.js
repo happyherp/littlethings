@@ -18,7 +18,7 @@ function rewind(mutation, afterState){
   
   if (mutation.type == "childList"){
     if (mutation.removedNodes.length != 0 && mutation.addedNodes.length != 0){
-      console.error("mutation that does both, insert and remove nodes.");
+      console.log("mutation that does both, insert and remove nodes.");
     }
     
     if (beforeState[mutation.target] === undefined){
@@ -50,6 +50,20 @@ function rewind(mutation, afterState){
   }
   
   return beforeState;
+}
+
+/**
+ * Gives the Children of the node at the given state.
+ * 
+ * @param node
+ * @param state
+ */
+function childsAtState(node, state){
+  if (state[node]){
+    return state[node];
+  }else{
+    return toArray(node.childNodes);
+  }
 }
 
 
