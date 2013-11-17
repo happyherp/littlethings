@@ -1,0 +1,54 @@
+<html>
+<head></head>
+<body>
+<script>
+MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+
+
+function record(){
+  
+  var mutationcount = 0;
+  window.setTimeout(function(){
+    document.getElementById("d").innerHTML = mutationcount;
+  },1000);
+  
+  
+  var observer = new MutationObserver(function(mutations, observer) {
+    // fired when a mutation occurs
+    console.log(mutations, observer);
+    
+    for (var i = 0 ; i < mutations.length; i++){
+      var mutation = mutations[i];
+      if (mutation.type == "childList"){
+        for (var k = 0; k < mutation.addedNodes.length;k++){
+          console.log("added:", mutation.addedNodes[k].outerHTML);
+        }
+        for (var k = 0; k < mutation.removedNodes.length;k++){
+          console.log("removed:", mutation.removedNodes[k].outerHTML);
+        }        
+      }
+    }
+    
+    mutationcount += 1;
+
+  });  
+
+  // define what element should be observed by the observer
+  // and what types of mutations trigger the callback
+  observer.observe(document, {
+    subtree: true,
+    attributes: true,
+    childList: true,
+    characterData: true,
+    attributeOldValue: true,
+    characterDataOldValue: true
+  });
+  console.log("observer online");
+}
+
+record();
+</script>
+
+<div id="d">HI!</div>
+</body>
+</html>

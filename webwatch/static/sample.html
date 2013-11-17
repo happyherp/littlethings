@@ -29,17 +29,23 @@ function addStuff1(){
 }
 
 function addStuff2(){
-  var insertnode = document.getElementById("adddiv");
-  var newdiv = document.createElement("div");
-  insertnode.appendChild(newdiv);
-  newdiv.onclick = function(){
-    insertnode.removeChild(newdiv);
+  for (var i = 0; i<5;i++){
+	  var insertnode = document.getElementById("adddiv");
+	  var newdiv = document.createElement("div");
+	  if (insertnode.childNodes.length > 5){
+	    insertnode.insertBefore(newdiv, insertnode.childNodes[3])
+	  }else{
+	  	insertnode.appendChild(newdiv);
+	  }
+	  newdiv.onclick = function(){
+	    insertnode.removeChild(newdiv);
+	  }
+	  newdiv.appendChild(document.createElement("br"));
+	  newdiv.appendChild(document.createTextNode("yoyoyo"+c));
+	  newdiv.className = "greendiv";
+	
+	  c++;
   }
-  newdiv.appendChild(document.createElement("br"));
-  newdiv.appendChild(document.createTextNode("yoyoyo"+c));
-  newdiv.className = "greendiv";
-
-  c++;
 }
 
 function changeme(){

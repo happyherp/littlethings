@@ -119,7 +119,7 @@ function post(url, value, callback){
 function saveState(){
   
   var foo = arguments[0];
-  var rest = toArray(arguments)
+  var rest = toArray(arguments);
   rest.splice(0,1);
   
   return function(){
@@ -127,6 +127,3 @@ function saveState(){
     foo.apply(null,newargs);
   };  
 }
-
-
-

@@ -18,9 +18,7 @@ function Timer() {
       var event = queue.shift();
       event.callback();
     }
-    
     window.setTimeout(processQueue, 100);
-    
   }
   
   /**
@@ -39,28 +37,24 @@ function Timer() {
    * 
    */
   this.addEvent = function(callback, date) {
-    if (date < new Date()) {
-      callback();
+    var newEvent = {
+      callback : callback,
+      date : date
+    };
+    if (queue.length == 0) {
+      queue.push(newEvent);
     } else {
-      var newEvent = {
-        callback : callback,
-        date : date
-      };
-      if (queue.length == 0) {
-        queue.push(newEvent);
-      } else {
-        // Do a sorted insert.
-        //It is important, that, for same date value, the order of events is the same 
-        //as the order in which addEvent was called fot those events.
-        //Otherwhise DOM-elements, that have not yet been created will cause errors
-        //while finding the right target.
-        var i = 1;        
-        while (i < queue.length  && !(queue[i].date > date)) {
-          i++;
-        }
-        queue.splice(i,0,newEvent);
+      // Do a sorted insert.
+      //It is important, that, for same date value, the order of events is the same 
+      //as the order in which addEvent was called fot those events.
+      //Otherwhise DOM-elements, that have not yet been created will cause errors
+      //while finding the right target.
+      var i = 1;        
+      while (i < queue.length  && !(queue[i].date > date)) {
+        i++;
       }
-    }
+      queue.splice(i,0,newEvent);
+    }   
   };
 }
 

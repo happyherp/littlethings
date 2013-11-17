@@ -3,39 +3,36 @@
 *
 */
 
+MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
 function record(){
 
   //Make initial snapshot, then record all actions.
   pagehistory = {start:snapShot(), 
                  actions:[],
-                 mousemoves:[] }
-
-  // define what element should be observed by the observer
-  // and what types of mutations trigger the callback
-  observer.observe(document, {
-    subtree: true,
-    attributes: true,
-    childList: true,
-    characterData: true,
-    attributeOldValue: true,
-    characterDataOldValue: true
-  });
-
-  document.body.addEventListener("mousemove",recordMouseMove,false);
+                 mousemoves:[] };
   
-  window.addEventListener("focus", function(){console.log("got focus on", new Date());});
-
-  console.log("observer online");
-}
-
-
-
-MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-
-var observer = new MutationObserver(function(mutations, observer) {
+  
+  observer = new MutationObserver(function(mutations, observer) {
     // fired when a mutation occurs
     console.log(mutations, observer);
+    
+    
+    // In case of multiple mutations we have to keep track 
+    // of the state of all childlists before every step, since
+    // we only have the state after all of them have occurred.
+    var states = [];
+    for (var i = mutations.length -1; i>= 0; i--){
+      if (states.length == 0){
+        var afterState = {};
+      }else{
+        var afterState = states[0];
+      }
+      var prevstate = rewind(mutations[i], afterState);
+      states.splice(0, 0, prevstate);
+    }
+    console.log("states", states);
+    
 
     var serializedNodes = []; //A List of all dom-nodes that have already been
     //serialized on this event. 
@@ -55,7 +52,25 @@ var observer = new MutationObserver(function(mutations, observer) {
 
        pagehistory.actions.push(action);
     }
-});
+  });  
+
+  // define what element should be observed by the observer
+  // and what types of mutations trigger the callback
+  observer.observe(document, {
+    subtree: true,
+    attributes: true,
+    childList: true,
+    characterData: true,
+    attributeOldValue: true,
+    characterDataOldValue: true
+  });
+
+  document.body.addEventListener("mousemove",recordMouseMove,false);
+  
+  window.addEventListener("focus", function(){console.log("got focus on", new Date());});
+
+  console.log("observer online");
+}
 
 function mutationToAction(mutation, serializedNodes){
   var action = {time:new Date()};
@@ -65,7 +80,7 @@ function mutationToAction(mutation, serializedNodes){
   //Add null as default for unneeded values. makes easier sql later
   action.at = null;
   action.removed = null;
-  action.inserted = []
+  action.inserted = [];
   action.attributeName = null;
   action.attributeValue = null;
   action.nodeValue = null;  
@@ -76,14 +91,21 @@ function mutationToAction(mutation, serializedNodes){
    while (sibling != null && !isRelevantNode(sibling)){
      sibling = sibling.previousSibling;
    }
-   action.at = sibling?findPosition(sibling)+1:0
+   action.at = sibling?findPosition(sibling)+1:0;
 
    action.removed = mutation.removedNodes.length;
+   for (var i = 0; i< mutation.removedNodes.length; i++){
+     console.log("removing", mutation.removedNodes[i]);
+     if (!isRelevantNode(mutation.removedNodes[i])){
+       console.log("BAD DELETION!", mutation.removedNodes[i]);
+     }
+   }
 
-   action.inserted = []
+   action.inserted = [];
    for (var j=0;j<mutation.addedNodes.length;j++){
      var newnode = mutation.addedNodes[j];
      if (isRelevantNode(newnode) && !alreadySerialized(newnode, serializedNodes)){
+       console.log("added", newnode);
        action.inserted.push(convertElement(newnode));
        serializedNodes.push(newnode);
      }
@@ -94,7 +116,7 @@ function mutationToAction(mutation, serializedNodes){
    action.attributeValue = mutation.target.getAttribute(
                              mutation.attributeName);
   }else if (mutation.type == "characterData"){
-   action.nodeValue = mutation.target.nodeValue
+   action.nodeValue = mutation.target.nodeValue;
   }else{
    throw "Unexpected mutation type.";
   }
@@ -102,14 +124,14 @@ function mutationToAction(mutation, serializedNodes){
   return action;
 }
 
-/** Checks if the given node, or one of its ancestors in in serialized nodes
+/** Checks if the given node, or one of its ancestors is in serialized nodes
 */
 function alreadySerialized(node, serializedNodes){
   
   if (node){
     var found = false;
     for (var i=0;i<serializedNodes.length;i++){
-      found = found || serializedNodes[i] === node
+      found = found || serializedNodes[i] === node;
     }
     return found || alreadySerialized(node.parentNode, serializedNodes);
   }else{
@@ -123,7 +145,7 @@ function alreadySerialized(node, serializedNodes){
 */
 function findPath(node){
   if (node.parentNode){
-    var path = findPath(node.parentNode)
+    var path = findPath(node.parentNode);
     path.push(findPosition(node));
     return path;
   }else{
@@ -135,12 +157,12 @@ function findPath(node){
 * Returns an index that represents the position of the given node, inside the Parent.
 */
 function findPosition(node){
-  var s = 0;//Nodes skipped, because of wrong type.
+  var s = 0;//Nodes skipped, because of irrelevant type.
   var i = 0; //Count relevant nodes
   while (i+s<node.parentNode.childNodes.length){
     if (node.parentNode.childNodes[i+s] == node){
       return i;
-    }else if (isRelevantNode(node.parentNode.childNodes[i+s])) {i++} else {s++}
+    }else if (isRelevantNode(node.parentNode.childNodes[i+s])) {i++;} else {s++;}
     
   }
 }
@@ -158,13 +180,13 @@ function recordMouseMove(event){
 
 /*Convert a HTML-Element(or Node) to a serializable JSON-OBject, containing the information we require */
 function convertElement(elem){
-  var converted = {}
+  var converted = {};
   converted.nodeName = elem.nodeName;
   converted.nodeType = elem.nodeType;
   converted.nodeValue = elem.nodeValue;
 
   converted.children = [];
-  for (var i = 0;i<elem.childNodes.length;i++){
+  for (var i = 0;i < elem.childNodes.length;i++){
     var childelem = elem.childNodes[i];
     if (isRelevantNode(childelem)){
       converted.children.push(convertElement(childelem));
@@ -173,7 +195,7 @@ function convertElement(elem){
 
   if (elem.attributes) {
     converted.attributes = {};
-    for(var i=0; i<elem.attributes.length; i++) {
+    for(var i=0;i < elem.attributes.length; i++) {
        var attr = elem.attributes[i];
        converted.attributes[attr.name] = attr.value;
     }
@@ -185,14 +207,14 @@ function convertElement(elem){
 function snapShot(){
   return { html:convertElement(document.firstChild),
            time:new Date(),
-           url:window.location.href}
+           url:window.location.href};
 }
 
 function sendToServer(){
   console.log("sending to server", pagehistory);
-  var content = JSON.stringify(pagehistory)
+  var content = JSON.stringify(pagehistory);
   var callback =  function(text){
-     console.log("gotresponse", text)
+     console.log("gotresponse", text);
   };
   
   post("/receiveReplay", content, callback);

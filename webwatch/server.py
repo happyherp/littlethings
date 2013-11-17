@@ -48,7 +48,7 @@ def showReplay(request):
   rows = c.execute('''SELECT 
                  time, type, target, at, removed, 
                  attributeName, attributeValue, inserted, nodeValue
-               FROM action where fkrecordid = ? order by position asc''',(replay["id"],))
+               FROM action where fkrecordid = ? order by position ASC''',(replay["id"],))
   for row in rows:
     action = dict( zip(["time", "type", "target", "at", "removed", 
                         "attributeName", "attriuteValue", "inserted", "nodeValue" 
@@ -112,7 +112,7 @@ if __name__ == '__main__':
 
   config.include('pyramid_mako')
 
-  config.add_static_view("static", "static")
+  config.add_static_view("static", "static", cache_max_age = 0)
 
   config.add_route('start', '/')
   config.add_view(showMainPage, route_name='start')

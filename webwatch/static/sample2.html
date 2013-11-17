@@ -1,0 +1,113 @@
+<html>
+<head>
+<script type="text/javascript" src="common.js"></script>
+<script type="text/javascript" src="recorder.js"></script>
+<script type="text/javascript" src="player.js"></script>
+<script type="text/javascript" src="rewind.js"></script>
+<link rel="stylesheet" type="text/css" href="style.css">
+<style type="text/css" src="style.css" >
+  .letext{ font:bold .9em Times; }
+</style>
+</head>
+<body>
+
+<div id="adddiv">
+here things are added
+</div>
+
+<div onclick="addStuff1()" style="background-color:yellow" class="letext">
+add stuff1
+</div>
+
+<div onclick="change1()" style="background-color:green" class="letext">
+change1
+</div>
+<div onclick="change2()" style="background-color:green" class="letext">
+change2
+</div>
+
+<div id="changeblock">
+	<div id ="A">A</div>
+	<div id ="B">B</div>
+	<div id ="D">D</div>
+</div>
+
+
+<script>
+window.onload = record;
+
+function replayInNewWindow(){
+  newwin = open("watcher.html");
+  newwin.pagehistory = pagehistory;
+  newwin.parent = window;
+}
+
+function change1(){
+  
+  var insertnode = document.getElementById("changeblock");
+  var newdiv = document.createElement("div");
+  newdiv.onclick = function(){
+    insertnode.removeChild(newdiv);
+  }
+  newdiv.appendChild(document.createTextNode("C"));
+  newdiv.className = "bluediv";
+  insertnode.insertBefore(newdiv, document.getElementById("B"));
+  
+  
+  insertnode.removeChild(document.getElementById("B"))
+}
+
+
+function change2(){
+  
+  var insertnode = document.getElementById("changeblock");
+  
+  insertnode.removeChild(document.getElementById("B"))
+
+  var newdiv = document.createElement("div");
+  newdiv.onclick = function(){
+    insertnode.removeChild(newdiv);
+  }
+  newdiv.appendChild(document.createTextNode("C"));
+  newdiv.className = "bluediv";
+  insertnode.insertBefore(newdiv, document.getElementById("A"));
+  
+  
+}
+
+var c = 1;
+
+function addStuff1(){
+  var insertnode = document.getElementById("adddiv");
+  var newdiv = document.createElement("div");
+  newdiv.onclick = function(){
+    insertnode.removeChild(newdiv);
+  }
+  newdiv.appendChild(document.createElement("br"));
+  newdiv.appendChild(document.createTextNode("yoyoyo"+c));
+  newdiv.className = "bluediv";
+  insertnode.appendChild(newdiv);
+  c++;
+  
+  var prevdiv = newdiv;
+  var insertnode = document.getElementById("adddiv");
+  var newdiv = document.createElement("div");
+  newdiv.onclick = function(){
+    insertnode.removeChild(newdiv);
+  }
+  newdiv.appendChild(document.createElement("br"));
+  newdiv.appendChild(document.createTextNode("yoyoyo"+c));
+  newdiv.className = "bluediv";
+  insertnode.insertBefore(newdiv, prevdiv);
+  c++;  
+  
+}
+
+</script>
+
+<div style="background-color:brown" onclick="replayInNewWindow()">
+replay in new window
+</div>
+</body>
+
+</html>

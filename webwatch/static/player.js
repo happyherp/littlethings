@@ -97,6 +97,7 @@ function replayAction(action){
     //Delete Nodes.
     var toRemove = action.removed;
     while (toRemove > 0){
+      console.log("removing", target.childNodes[action.at].outerHTML);
       target.removeChild(target.childNodes[action.at]);
       toRemove--;
     }  
