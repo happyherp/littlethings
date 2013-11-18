@@ -9,8 +9,55 @@
     <script type="text/javascript" src="domtest.js"></script>    
     
     <script type="text/javascript"> 
+    
+    
+      function reinsert(){
+        var nodes = []
+        while (document.body.childNodes.length){
+          var node = document.body.childNodes[0];
+          document.body.removeChild(node);
+          nodes.push(node);
+        }
+        
+        while (nodes.length){
+	      document.body.appendChild(nodes.pop());
+        }        
+        
+      }
+      
+      function reverse(){
+        var nodes = []
+        while (document.body.childNodes.length){
+          var node = document.body.childNodes[0];
+          document.body.removeChild(node);
+          nodes.push(node);
+        }
+        
+        while (nodes.length){
+	      document.body.appendChild(nodes.splice(nodes.length-1,1)[0]);
+        }          
+      }
+    
+      function moveTree(){
+        var child1 = document.getElementById("child1");
+        child1.parentNode.removeChild(child1);
+        document.body.insertBefore(child1, document.getElementById("C"));
+      }
+      
+      function revMoveRev(){
+        reverse();
+        moveTree();
+        reverse();
+      }      
+      
+
 
       window.onload = function(){
+        
+        
+        domtest(revMoveRev);
+        
+        return;
         
         runtests([function(){},
                   function(){
@@ -22,10 +69,13 @@
                     
                     
                     document.body.appendChild(b);
-        		  }
-                  
+        		  },
+        		  reinsert,
+        		  reverse,
+                  moveTree,
+                  revMoveRev
                   ]);
-      }
+      };
     </script>
     
     
@@ -35,6 +85,13 @@
     <div id = "A">A</div>
     <div id = "B">B</div>
     <div id = "C">C</div>
+    <div id ="parent">
+      <div id ="child1" >
+        c1
+        <div id ="subchild11">s11</div>
+      </div>
+      <div id ="child2" >c2</div>      
+    </div>
 
   </body>
 
