@@ -127,3 +127,19 @@ function saveState(){
     foo.apply(null,newargs);
   };  
 }
+
+
+/**
+* Basic Observer Pattern
+*/
+function Event(){
+  
+  this.handlers = [];
+  
+  this.fire = function(){
+    for (var i = 0; i< this.handlers.length; i++){
+      this.handlers[i].apply(arguments);
+    }
+  };
+  
+}

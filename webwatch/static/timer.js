@@ -7,28 +7,37 @@ function Timer() {
   /**
    * Contains {date:.., callback..} objects sorted by date asc.
    */
-  var queue = [];
+  this.queue = [];
   
-  var running = false;
+  this.running = false;  
   
+  this.waitingForProcessing = false;
   
-  function processQueue(){
-    
-    while (queue.length > 0 && queue[0].date < new Date()){
-      var event = queue.shift();
+  //this.onQueueEmpty = new Event();
+  
+  this.__processQueue = function (){    
+    this.waitingForProcessing = false;
+    while (this.queue.length > 0 && this.queue[0].date < new Date()){
+      var event = this.queue.shift();
       event.callback();
     }
-    window.setTimeout(processQueue, 100);
-  }
+    this.__continueProcessing();
+    
+  };
   
+  this.__continueProcessing = function (){
+    if (this.running && !this.waitingForProcessing && this.queue.length != 0 ){
+      this.waitingForProcessing = true;
+      window.setTimeout(this.__processQueue.bind(this), 100);
+    };
+  };
+    
   /**
    * Starts the execution of the Queue.
    */
   this.run = function (){    
-    if (!running){
-      running = true;
-      processQueue();
-    }
+    this.running = true;
+    this.__continueProcessing();
   };
 
   /**
@@ -41,8 +50,8 @@ function Timer() {
       callback : callback,
       date : date
     };
-    if (queue.length == 0) {
-      queue.push(newEvent);
+    if (this.queue.length == 0) {
+      this.queue.push(newEvent);
     } else {
       // Do a sorted insert.
       //It is important, that, for same date value, the order of events is the same 
@@ -50,14 +59,14 @@ function Timer() {
       //Otherwhise DOM-elements, that have not yet been created will cause errors
       //while finding the right target.
       var i = 1;        
-      while (i < queue.length  && !(queue[i].date > date)) {
+      while (i < this.queue.length  && !(this.queue[i].date > date)) {
         i++;
       }
-      queue.splice(i,0,newEvent);
-    }   
+      this.queue.splice(i,0,newEvent);
+    }
+    this.__continueProcessing();
   };
 }
-
 
 function testtimer(){
   var ins = new Timer();
@@ -81,4 +90,5 @@ function testtimer(){
   }
   
   ins.run();
+  
 }

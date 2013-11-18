@@ -5,6 +5,12 @@
 
 MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
+
+/**
+ * Makes a Snapshot of the current State of the DOM and saves
+ * all further changes.
+ * 
+ */
 function record(){
 
   //Make initial snapshot, then record all actions.
