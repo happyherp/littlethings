@@ -14,7 +14,9 @@ MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
 function Recorder(){
   
-  this.observer = null;
+  this.mutation_observer = null;
+  
+  this.mousemove_handler = null;
 
   this.pagehistory = {start:null, 
       actions:[],
@@ -31,11 +33,11 @@ function Recorder(){
     this.pagehistory.start =  snapShot();
     
     
-    this.observer = new MutationObserver(recordMutation.bind(this));  
+    this.mutation_observer = new MutationObserver(recordMutation.bind(this));  
   
     // define what element should be observed by the observer
     // and what types of mutations trigger the callback
-    this.observer.observe(document, {
+    this.mutation_observer.observe(document, {
       subtree: true,
       attributes: true,
       childList: true,
@@ -44,11 +46,18 @@ function Recorder(){
       characterDataOldValue: true
     });
   
-    document.body.addEventListener("mousemove",recordMouseMove.bind(this),false);
+    this.mousemove_handler = recordMouseMove.bind(this);
+    document.body.addEventListener("mousemove",this.mousemove_handler,false);
+    
     
     window.addEventListener("focus", function(){console.log("got focus on", new Date());});
   
     console.log("observer online");
+  };
+  
+  this.stopRecording = function(){
+    this.mutation_observer.disconnect();
+    document.body.removeEventListener("mousemove", this.mousemove_handler);
   };
   
   function recordMutation(mutations, observer){

@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <script type="text/javascript" src="common.js"></script>
+    <script type="text/javascript" src="recorder.js"></script>
+    <script type="text/javascript" src="player.js"></script>
+    <script type="text/javascript" src="rewind.js"></script>
+    <script type="text/javascript" src="map.js"></script>
+    <script type="text/javascript" src="timer.js"></script>
+    <script type="text/javascript" src="domtest.js"></script>    
+    
+    <script type="text/javascript"> 
+
+      window.onload = function(){
+        
+        runtests([function(){},
+                  function(){
+                    var b = document.getElementById("B");
+                    document.body.removeChild(b);
+                    
+                    var newnode = document.createElement("div");
+                    document.body.appendChild(newnode);
+                    
+                    
+                    document.body.appendChild(b);
+        		  }
+                  
+                  ]);
+      }
+    </script>
+    
+    
+  </head>
+  <body>
+  
+    <div id = "A">A</div>
+    <div id = "B">B</div>
+    <div id = "C">C</div>
+
+  </body>
+
+</html>
