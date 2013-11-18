@@ -150,11 +150,15 @@ function alreadySerialized(node, serializedNodes){
 * indexes that lead from the root to that node.
 */
 function findPath(node, state){
-  if (node.parentNode){
-    var path = findPath(node.parentNode, state);
+  
+  if (node == document){
+    return [];
+  }else if (state.getParent(node)){
+    var path = findPath(state.getParent(node), state);
     path.push(findPosition(node, state));
     return path;
   }else{
+    console.error("Could not trace element to document.")
     return [];
   }
 }
@@ -165,7 +169,7 @@ function findPath(node, state){
 function findPosition(node, state){
   var s = 0;//Nodes skipped, because of irrelevant type.
   var i = 0; //Count relevant nodes
-  var parentChildNodes = state.getChildren(node.parentNode); 
+  var parentChildNodes = state.getChildren(state.getParent(node)); 
   while (i+s<parentChildNodes.length){
     if (parentChildNodes[i+s] == node){
       return i;
