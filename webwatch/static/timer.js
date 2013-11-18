@@ -13,7 +13,7 @@ function Timer() {
   
   this.waitingForProcessing = false;
   
-  //this.onQueueEmpty = new Event();
+  this.onStopProcessing = new Event();
   
   this.__processQueue = function (){    
     this.waitingForProcessing = false;
@@ -26,9 +26,15 @@ function Timer() {
   };
   
   this.__continueProcessing = function (){
-    if (this.running && !this.waitingForProcessing && this.queue.length != 0 ){
-      this.waitingForProcessing = true;
-      window.setTimeout(this.__processQueue.bind(this), 100);
+    if (this.running && !this.waitingForProcessing){
+      
+      if ( this.queue.length == 0 ){
+        this.onStopProcessing.fire();
+      }else{        
+        this.waitingForProcessing = true;
+        window.setTimeout(this.__processQueue.bind(this), 100);        
+      }
+
     };
   };
     
