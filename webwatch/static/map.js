@@ -7,25 +7,26 @@
 
 function Map(inkeys, invalues){
   
-  var keys = inkeys?inkeys.slice():[];
-  var values = invalues?invalues.slice():[];
+  this.keys = inkeys?inkeys.slice():[];
+  this.values = invalues?invalues.slice():[];
+  
   
   this.set = function(key, value){
-    var index = keys.indexOf(key);
+    var index = this.keys.indexOf(key);
     if (index == -1){
-      keys.push(key);
-      values.push(value);
+      this.keys.push(key);
+      this.values.push(value);
     }else{
-      values[index] = value;
+      this.values[index] = value;
     }
   };
   
   this.get = function(key){
-    var index = keys.indexOf(key);
+    var index = this.keys.indexOf(key);
     if (index == -1){
       return undefined;
     }else{
-      return values[index];
+      return this.values[index];
     }    
   };
   
@@ -34,7 +35,7 @@ function Map(inkeys, invalues){
    * 
    */
   this.copy = function(){
-    return new Map(keys,values);
+    return new Map(this.keys,this.values);
   };
 }
 
@@ -59,6 +60,16 @@ function testMap(){
 
   ok = ok && map.get(1) == "p";
   ok = ok && map.get(2) == "k";
+  
+  
+  map2 = map.copy();
+  map2.set(1,"r");
+  map2.set(3, '3');
+  
+  ok = ok && map2.get(2) == "k";
+  ok = ok && map.get(1) == "p";
+  ok = ok && map.get(3) == undefined;
+  
   
   if (ok){
     console.log("all fine");

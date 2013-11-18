@@ -56,7 +56,14 @@ function State(){
    */  
   this.clone = function(){    
     var newState = new State();    
-    newState.parentToChildren = this.parentToChildren.copy();
+    
+    newState.parentToChildren = this.parentToChildren.copy();    
+    //Make a copy of each array, so modifications of the array dont get through to the
+    //copy
+    for (var i = 0;i<newState.parentToChildren.values.length;i++){
+      newState.parentToChildren.values[i] = newState.parentToChildren.values[i].slice();
+    }
+    
     newState.childrenToParent = this.childrenToParent.copy();    
     return newState; 
   };    

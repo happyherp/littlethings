@@ -88,7 +88,7 @@ function replayAction(action){
     }  
         
     //Inserting Nodes.
-    if (target.childNodes.length == (action.at+1)){    
+    if (target.childNodes.length == action.at){    
       for (var i = 0;i<action.inserted.length;i++){
          var newnode = restore(action.inserted[i]);
          console.log("inserting", newnode, newnode.outerHTML);
@@ -107,7 +107,7 @@ function replayAction(action){
   }else if (action.type == "characterData"){
     target.nodeValue = action.nodeValue;
   }else{
-    throw "unhandled type of action"
+    throw "unhandled type of action";
   }
 
 }

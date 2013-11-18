@@ -53,9 +53,6 @@ function change1(){
   
   var insertnode = document.getElementById("changeblock");
   var newdiv = document.createElement("div");
-  newdiv.onclick = function(){
-    insertnode.removeChild(newdiv);
-  }
   newdiv.appendChild(document.createTextNode("C"));
   newdiv.className = "bluediv";
   insertnode.insertBefore(newdiv, document.getElementById("B"));
@@ -72,9 +69,6 @@ function change2(){
   insertnode.removeChild(document.getElementById("B"))
 
   var newdiv = document.createElement("div");
-  newdiv.onclick = function(){
-    insertnode.removeChild(newdiv);
-  }
   newdiv.appendChild(document.createTextNode("C"));
   newdiv.className = "bluediv";
   insertnode.insertBefore(newdiv, document.getElementById("A"));
@@ -87,9 +81,6 @@ var c = 1;
 function addStuff1(){
   var insertnode = document.getElementById("adddiv");
   var newdiv = document.createElement("div");
-  newdiv.onclick = function(){
-    insertnode.removeChild(newdiv);
-  }
   newdiv.appendChild(document.createElement("br"));
   newdiv.appendChild(document.createTextNode("yoyoyo"+c));
   newdiv.className = "bluediv";
@@ -99,9 +90,6 @@ function addStuff1(){
   var prevdiv = newdiv;
   var insertnode = document.getElementById("adddiv");
   var newdiv = document.createElement("div");
-  newdiv.onclick = function(){
-    insertnode.removeChild(newdiv);
-  }
   newdiv.appendChild(document.createElement("br"));
   newdiv.appendChild(document.createTextNode("yoyoyo"+c));
   newdiv.className = "bluediv";
@@ -113,9 +101,6 @@ function addStuff1(){
 function replace(){
   var insertnode = document.getElementById("changeblock");
   var newdiv = document.createElement("div");
-  newdiv.onclick = function(){
-    insertnode.removeChild(newdiv);
-  }
   newdiv.appendChild(document.createTextNode("C"));
   newdiv.className = "bluediv";
   insertnode.replaceChild(newdiv, document.getElementById("B"));
@@ -124,14 +109,12 @@ function replace(){
 
 
 function move(){
-  var source = document.getElementById("B");
-  var newdiv = document.createElement("div");
-  newdiv.onclick = function(){
-    insertnode.removeChild(newdiv);
-  }
-  newdiv.appendChild(document.createTextNode("C"));
-  newdiv.className = "bluediv";
-  insertnode.replaceChild(newdiv, document.getElementById("B"));
+  var block = document.getElementById("changeblock");
+  var toMove = document.getElementById("B");
+  block.removeChild(toMove);
+  
+  block.parentNode.appendChild(toMove);
+  
   
 }
 
