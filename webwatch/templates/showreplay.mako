@@ -4,7 +4,6 @@
     <script type="text/javascript" src="/static/common.js"></script>
     <script type="text/javascript" src="/static/player.js"></script>
     <script type="text/javascript" src="/static/timer.js"></script>
-    <script type="text/javascript" src="/static/jquery-2.0.3.min.js"></script>
     
     <%!import json%>
   
@@ -14,15 +13,14 @@
                                  html:${replay["htmlcontent"]|n}
                                 },   
                           actions:${json.dumps(replay['actions'])|n},
-                          mousemoves:[]
+                          mouseactions:${json.dumps(replay['mouseactions'])|n}
                         } 
 
-
-       $().ready(function(){
+      window.onload = function(){
           fixTimes(pagehistory.actions);
-          fixTimes(pagehistory.mousemoves);
+          fixTimes(pagehistory.mouseactions);
           replay(pagehistory);
-        }); 
+        }; 
     </script>
   </head>
 

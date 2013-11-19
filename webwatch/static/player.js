@@ -34,71 +34,59 @@ function Player(history){
     }
     
     
-    for (var i=0; i < this.history.mousemoves.length; i++){
-      var callback = saveState(replayMouseMove, this.history.mousemoves[i]);
-      this.timer.addEvent(callback, offsetDate(this.history.mousemoves[i].time));
+    for (var i=0; i < this.history.mouseactions.length; i++){
+      var callback = saveState(replayMouseAction, this.history.mouseactions[i]);
+      this.timer.addEvent(callback, offsetDate(this.history.mouseactions[i].time));
     }  
     
-    for (var i=0; i < this.history.mouseclicks.length; i++){
-      var callback = saveState(replayMouseClick, this.history.mouseclicks[i]);
-      this.timer.addEvent(callback, offsetDate(this.history.mouseclicks[i].time));
-    }      
    
     this.timer.run();
 
   };
 
-  
-
-  /**
-  * Needed because a the dates are made to strings when we convert the object to JSON.
-  */
-  function fixTimes(array){
-    for (var i=0;i<array.length;i++){
-      array[i].time = new Date(array[i].time);
-    }
-  }
-
-
   //* Recreates a mouse move */
-  function replayMouseMove(move){
+  function replayMouseAction(mouseaction){
+    
+    if(mouseaction.type=="move"){
 
-    var fakemouse = document.getElementById("fakemouse");
-    if (!fakemouse){
-      fakemouse = document.createElement("img");
-      fakemouse.id = "fakemouse";
-      fakemouse.notrelevant = true;
-      fakemouse.setAttribute("src", "mouse.png");
-      fakemouse.style.position="absolute";
-      fakemouse.style.zIndex = 100;
-      fakemouse.zIndex = 100;
-      document.body.appendChild(fakemouse);
-    }
-    fakemouse.style.left=move.x+"px";
-    fakemouse.style.top=move.y+"px";
-    
-  }
-  
-  
-  function replayMouseClick(click){
-    
-    var clickmarker = document.createElement("div");
-    clickmarker.notrelevant = true;
-  
-    clickmarker.style.position="absolute";
-    clickmarker.style.left=click.x+"px";
-    clickmarker.style.top=click.y+"px";
-    clickmarker.zIndex = 50;
-    clickmarker.style.zIndex = 50;
-        
-    clickmarker.appendChild(document.createTextNode("*click*"));    
-    document.body.appendChild(clickmarker);
-    
-    window.setTimeout(function(){
-      document.body.removeChild(clickmarker);
-    },500);
+      var fakemouse = document.getElementById("fakemouse");
+      if (!fakemouse){
+        fakemouse = document.createElement("img");
+        fakemouse.id = "fakemouse";
+        fakemouse.notrelevant = true;
+        fakemouse.setAttribute("src", "/static/mouse.png");
+        fakemouse.style.position="absolute";
+        fakemouse.style.zIndex = 100;
+        fakemouse.zIndex = 100;
+        document.body.appendChild(fakemouse);
+      }
+      fakemouse.style.left=mouseaction.x+"px";
+      fakemouse.style.top=mouseaction.y+"px";
       
+    }else if (mouseaction.type == "click"){
+      
+      var clickmarker = document.createElement("div");
+      clickmarker.notrelevant = true;
+    
+      clickmarker.style.position="absolute";
+      clickmarker.style.left=mouseaction.x+"px";
+      clickmarker.style.top=mouseaction.y+"px";
+      clickmarker.zIndex = 50;
+      clickmarker.style.zIndex = 50;
+          
+      clickmarker.appendChild(document.createTextNode("*click*"));    
+      document.body.appendChild(clickmarker);
+      
+      window.setTimeout(function(){
+        document.body.removeChild(clickmarker);
+      },500);
+      
+    }else{
+      log.error("unknown mouseaction type.");
+    }
   }
+  
+  
 
   /*
   * Does a single action.
@@ -177,4 +165,15 @@ function Player(history){
 
 function replay(history){
   new Player(history).replay();
+}
+
+
+
+/**
+* Needed because a the dates are made to strings when we convert the object to JSON.
+*/
+function fixTimes(array){
+  for (var i=0;i<array.length;i++){
+    array[i].time = new Date(array[i].time);
+  }
 }

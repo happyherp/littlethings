@@ -20,9 +20,9 @@ function Recorder(){
   this.mouseclick_handler = null;
 
   this.pagehistory = {start:null, 
-      actions:[],
-      mousemoves:[],
-      mouseclicks:[]};
+                      actions:[],
+                      mouseactions:[]
+                      };
 
   /**
    * Makes a Snapshot of the current State of the DOM and saves
@@ -190,20 +190,16 @@ function Recorder(){
 
   
   function recordMouseMove(event){
-    //console.log("mousemove", event);
-    this.pagehistory.mousemoves.push({
-      //x:event.clientX,
-      //y:event.clientY,
+    this.pagehistory.mouseactions.push({
+      type:"move",
       x:event.pageX,
       y:event.pageY,
       time:new Date()});
   }
   
   function recordMouseClick(event){
-    //console.log("mousemove", event);
-    this.pagehistory.mouseclicks.push({
-      //x:event.clientX,
-      //y:event.clientY,
+    this.pagehistory.mouseactions.push({
+      type:"click",
       x:event.pageX,
       y:event.pageY,
       time:new Date()});
@@ -243,7 +239,7 @@ function Recorder(){
              url:window.location.href};
   }
   
-  function sendToServer(){
+  this.sendToServer = function(){
     console.log("sending to server", this.pagehistory);
     var content = JSON.stringify(this.pagehistory);
     var callback =  function(text){
@@ -251,7 +247,7 @@ function Recorder(){
     };
     
     post("/receiveReplay", content, callback);
-  }
+  };
   
 
 }

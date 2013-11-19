@@ -1,7 +1,7 @@
 from wsgiref.simple_server import make_server
 from pyramid.config import Configurator
 from pyramid.response import Response
-from pyramid.renderers import render_to_response, render
+from pyramid.renderers import render_to_response
 
 import dateutil.parser
 
@@ -57,7 +57,17 @@ def showReplay(request):
     action["target"] = json.loads(action["target"])
     action["inserted"] = json.loads(action["inserted"])
     replay["actions"].append(action)
-  
+    
+
+  #add mouseactions.
+  replay["mouseactions"] = []
+  rows = c.execute('''SELECT 
+                 time, type, x, y
+               FROM mouseaction where fkrecordid = ? order by position ASC''',(replay["id"],))
+  for row in rows:
+    mouseaction = dict( zip(["time", "type","x", "y" ],row))
+    mouseaction["time"] = dateutil.parser.parse(mouseaction["time"]).isoformat()
+    replay["mouseactions"].append(mouseaction)
   
   conn.close() 
   return render_to_response('showreplay.mako', {"replay":replay}, request=request)  
@@ -92,6 +102,16 @@ def receiveReplay(request):
                 inserted_json, action["nodeValue"]))              
     position += 1
     
+
+  position = 0
+  for mouseaction in request.json_body["mouseactions"]:
+    actiontime = dateutil.parser.parse(mouseaction["time"])
+    c.execute('''INSERT INTO mouseaction (fkrecordid, position, time, type, x, y)
+                        VALUES(?,?,?,?,?,?)''', 
+               (recordingid, position, actiontime, mouseaction["type"], 
+                mouseaction["x"],mouseaction["y"]))              
+    position += 1    
+        
   conn.commit()
 
   conn.close()
