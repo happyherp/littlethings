@@ -81,15 +81,6 @@ function Recorder(){
       states.splice(0, 0, prevstate);
     }
     console.log("states", states);
-    
-
-    var serializedNodes = []; //A List of all dom-nodes that have already been
-    //serialized on this event. 
-    //We need this, because sometimes a node(A) is added to the tree(mutation) and right
-    // after that another node(b) is added to A(mutation again). Both mutations are handled in 
-    //the same event. o we first see node A. But when we look at it, node b has already been added to it.
-    //Then we see node b again on the second mutation. So b will be added twice. This list ought
-    // To prevent that.  
 
     //For each mutation create a serializable action, that can be used to recreate
     // the new state from the previous one.
@@ -100,7 +91,7 @@ function Recorder(){
        //Pick the state that the dom had after this mutation.
        var afterState = i < mutations.length -1 ? states[i+1] : new State();
        
-       var action = mutationToAction(mutation, serializedNodes, afterState);
+       var action = mutationToAction(mutation, afterState);
        //console.log("action", action);
 
        this.pagehistory.actions.push(action);
@@ -108,7 +99,7 @@ function Recorder(){
   }    
   
   
-  function mutationToAction(mutation, serializedNodes, afterState){
+  function mutationToAction(mutation, afterState){
     var action = {time:new Date()};
     action.target = findPath(mutation.target, afterState);
     action.type = mutation.type;
@@ -140,10 +131,9 @@ function Recorder(){
      action.inserted = [];
      for (var j=0;j<mutation.addedNodes.length;j++){
        var newnode = mutation.addedNodes[j];
-       if (isRelevantNode(newnode) && !alreadySerialized(newnode, serializedNodes)){
+       if (isRelevantNode(newnode)){
          console.log("added", newnode);
-         action.inserted.push(convertElement(newnode));
-         serializedNodes.push(newnode);
+         action.inserted.push(convertElement(newnode, afterState));
        }
      }
   
@@ -158,22 +148,6 @@ function Recorder(){
     }
    
     return action;
-  }
-
-  /** Checks if the given node, or one of its ancestors is in serialized nodes
-  */
-  function alreadySerialized(node, serializedNodes){
-    
-    if (node){
-      var found = false;
-      for (var i=0;i<serializedNodes.length;i++){
-        found = found || serializedNodes[i] === node;
-      }
-      return found || alreadySerialized(node.parentNode, serializedNodes);
-    }else{
-      return false;
-    }
-    
   }
 
   /**
@@ -221,17 +195,18 @@ function Recorder(){
   }
   
   /*Convert a HTML-Element(or Node) to a serializable JSON-OBject, containing the information we require */
-  function convertElement(elem){
+  function convertElement(elem, state){
     var converted = {};
     converted.nodeName = elem.nodeName;
     converted.nodeType = elem.nodeType;
     converted.nodeValue = elem.nodeValue;
   
     converted.children = [];
-    for (var i = 0;i < elem.childNodes.length;i++){
-      var childelem = elem.childNodes[i];
+    var childNodesAtState = state.getChildren(elem);
+    for (var i = 0;i < childNodesAtState.length;i++){
+      var childelem = childNodesAtState[i];
       if (isRelevantNode(childelem)){
-        converted.children.push(convertElement(childelem));
+        converted.children.push(convertElement(childelem, state));
       }
     }
   
@@ -247,7 +222,7 @@ function Recorder(){
 
   /*Make a snapshot of the current state of the site */
   function snapShot(){
-    return { html:convertElement(document.firstChild),
+    return { html:convertElement(document.firstChild, new State()),
              time:new Date(),
              url:window.location.href};
   }

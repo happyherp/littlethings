@@ -43,9 +43,9 @@ function domtest(modification, continuation){
         continuation();
       }else{
         console.error("Changes could not be replayed.");
-        console.log(afterChanges);
+        console.log("expected:", afterChanges);
         console.log("!=");
-        console.log(document.body.innerHTML);
+        console.log("actual:", document.body.innerHTML);
       }
                 
     });

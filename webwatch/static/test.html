@@ -48,17 +48,28 @@
         reverse();
         moveTree();
         reverse();
-      }      
+      }
+      
+      function doubleReverse(){
+        reverse();
+        reverse();
+      }
+      
+      function test1(){
+        document.body.insertBefore(document.getElementById("C"),document.getElementById("A"));
+        moveTree();        
+      }
       
 
 
       window.onload = function(){
         
         
-        domtest(revMoveRev);
+        domtest(doubleReverse);
         
+        console.log("not all tests running!");
         return;
-        
+                
         runtests([function(){},
                   function(){
                     var b = document.getElementById("B");
@@ -73,7 +84,9 @@
         		  reinsert,
         		  reverse,
                   moveTree,
-                  revMoveRev
+                  revMoveRev,
+                  doubleReverse,
+                  test1
                   ]);
       };
     </script>

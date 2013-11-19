@@ -88,17 +88,21 @@ function Player(history){
       //Delete Nodes.
       var toRemove = action.removed;
       while (toRemove > 0){
-        console.log("removing", target.childNodes[action.at].outerHTML);
-        target.removeChild(target.childNodes[action.at]);
+        var nodeToRemove = target.childNodes[action.at];
+        if (!nodeToRemove){
+          console.error("Could not find Node to remove.");
+        }
+        console.log("removing", nodeToRemove.outerHTML || nodeToRemove.data);
+        target.removeChild(nodeToRemove);
         toRemove--;
       }  
           
       //Inserting Nodes.
       if (target.childNodes.length == action.at){    
         for (var i = 0;i<action.inserted.length;i++){
-           var newnode = restore(action.inserted[i]);
-           console.log("inserting", newnode, newnode.outerHTML);
-           target.appendChild(newnode);
+          var newnode = restore(action.inserted[i]);
+          console.log("inserting", newnode, newnode.outerHTML);
+          target.appendChild(newnode);
         }
       }else{
         for (var i = action.inserted.length-1;i>=0;i--){
