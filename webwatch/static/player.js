@@ -38,6 +38,11 @@ function Player(history){
       var callback = saveState(replayMouseMove, this.history.mousemoves[i]);
       this.timer.addEvent(callback, offsetDate(this.history.mousemoves[i].time));
     }  
+    
+    for (var i=0; i < this.history.mouseclicks.length; i++){
+      var callback = saveState(replayMouseClick, this.history.mouseclicks[i]);
+      this.timer.addEvent(callback, offsetDate(this.history.mouseclicks[i].time));
+    }      
    
     this.timer.run();
 
@@ -62,13 +67,37 @@ function Player(history){
     if (!fakemouse){
       fakemouse = document.createElement("img");
       fakemouse.id = "fakemouse";
+      fakemouse.notrelevant = true;
       fakemouse.setAttribute("src", "mouse.png");
       fakemouse.style.position="absolute";
+      fakemouse.style.zIndex = 100;
+      fakemouse.zIndex = 100;
       document.body.appendChild(fakemouse);
     }
     fakemouse.style.left=move.x+"px";
     fakemouse.style.top=move.y+"px";
     
+  }
+  
+  
+  function replayMouseClick(click){
+    
+    var clickmarker = document.createElement("div");
+    clickmarker.notrelevant = true;
+  
+    clickmarker.style.position="absolute";
+    clickmarker.style.left=click.x+"px";
+    clickmarker.style.top=click.y+"px";
+    clickmarker.zIndex = 50;
+    clickmarker.style.zIndex = 50;
+        
+    clickmarker.appendChild(document.createTextNode("*click*"));    
+    document.body.appendChild(clickmarker);
+    
+    window.setTimeout(function(){
+      document.body.removeChild(clickmarker);
+    },500);
+      
   }
 
   /*

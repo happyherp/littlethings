@@ -17,10 +17,12 @@ function Recorder(){
   this.mutation_observer = null;
   
   this.mousemove_handler = null;
+  this.mouseclick_handler = null;
 
   this.pagehistory = {start:null, 
       actions:[],
-      mousemoves:[] };
+      mousemoves:[],
+      mouseclicks:[]};
 
   /**
    * Makes a Snapshot of the current State of the DOM and saves
@@ -48,6 +50,9 @@ function Recorder(){
   
     this.mousemove_handler = recordMouseMove.bind(this);
     document.body.addEventListener("mousemove",this.mousemove_handler,false);
+    
+    this.mouseclick_handler = recordMouseClick.bind(this);
+    document.body.addEventListener("mouseup", this.mouseclick_handler, false);
     
     
     window.addEventListener("focus", function(){console.log("got focus on", new Date());});
@@ -193,6 +198,17 @@ function Recorder(){
       y:event.pageY,
       time:new Date()});
   }
+  
+  function recordMouseClick(event){
+    //console.log("mousemove", event);
+    this.pagehistory.mouseclicks.push({
+      //x:event.clientX,
+      //y:event.clientY,
+      x:event.pageX,
+      y:event.pageY,
+      time:new Date()});
+  }
+  
   
   /*Convert a HTML-Element(or Node) to a serializable JSON-OBject, containing the information we require */
   function convertElement(elem, state){

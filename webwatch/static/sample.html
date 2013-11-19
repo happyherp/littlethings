@@ -39,9 +39,9 @@ function addStuff2(){
 	  }else{
 	  	insertnode.appendChild(newdiv);
 	  }
-	  newdiv.onclick = function(){
+	  newdiv.onclick = saveState(function(newdiv){
 	    insertnode.removeChild(newdiv);
-	  }
+	  },newdiv );
 	  newdiv.appendChild(document.createElement("br"));
 	  newdiv.appendChild(document.createTextNode("yoyoyo"+c));
 	  newdiv.className = "greendiv";
