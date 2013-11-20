@@ -10,6 +10,8 @@ import json
 from db import Session as DBSession
 from models import *
 
+from sqlalchemy.sql import func
+
 import os
 
 def getCon():
@@ -22,28 +24,31 @@ def rowsToDicts(rows, names):
 
   return map (lambda r: dict(zip(names, r)), rows)  
 
+def jsonToObj(jsonobj, obj, fields):
+  for field in fields:
+    if isinstance(jsonobj[field], dict) or isinstance(jsonobj[field], list):
+      obj.__setattr__(field, json.dumps(jsonobj[field]))
+    else:
+      obj.__setattr__(field, jsonobj[field])
+
+
 def showMainPage(request, message=""):
   response = render_to_response('main.mako', {'message':message}, request=request)
-  return response;
+  return response
 
 def listReplays(request):
   
-   
-  session = DBSession()
   
-  replays = session.query(Pagerecording)
-
+  replays = request.session.query(Pagerecording)
+  
   return render_to_response('replaylist.mako', {'replays':replays}, request=request)
 
 def listSessions(request):
-  conn = getCon()
-  c = conn.cursor()
-  c.execute('''SELECT s.id, min(ur.time) FROM session s 
-                          JOIN userrecording ur ON (ur.fksessionId = s.id) 
-                          GROUP BY (s.id)''')
-  sessions = rowsToDicts(c.fetchall(),["id", "time"])
-  conn.close()
-  return render_to_response('sessionlist.mako', {'sessions':sessions}, request=request)  
+  
+  sessionNTime = request.session.query(Session,func.min(Pagerecording.time))\
+                      .join(Pagerecording).all()
+
+  return render_to_response('sessionlist.mako', {'sessionNTime':sessionNTime}, request=request)  
 
 def showReplay(request):
  
@@ -90,64 +95,55 @@ def showSession(request):
 
 def receiveReplay(request):
   
-  conn = getCon()
-  c = conn.cursor()
-  
-  sessionId = request.json_body["sessionId"]
-  
-  #create the session this recording belongs to, if not present.
-  c.execute("SELECT id FROM session where id = ?", (sessionId,))
-  if c.fetchone() == None:
-    c.execute("INSERT INTO session (id) VALUES (?)", (sessionId,))
+  session = request.session.query(Session)\
+                .filter(Session.id == request.json_body["sessionId"]).first()
+                  
+  if (not session):
+    session = Session()
+    session.id = request.json_body["sessionId"]
+    request.session.add(session)
 
   #process the initial snapshot
   start = request.json_body["start"]
 
-  html = start["html"]
-  time = dateutil.parser.parse(start["time"])
-  url = start["url"]
-
-  #put replay into db
-  c.execute("INSERT INTO userrecording (htmlcontent, time, url, fksessionId) VALUES (?,?,?,?)",
-            (json.dumps(html), time, url, sessionId))
-  recordingid = c.lastrowid            
+  record = Pagerecording(html = json.dumps(start["html"]), 
+                         time = dateutil.parser.parse(start["time"]),
+                         url = start["url"],
+                         session = session )        
   
   position = 0
   for action in request.json_body["actions"]:
-    actiontime = dateutil.parser.parse(action["time"])
-    target_json = json.dumps(action["target"])
-    inserted_json = json.dumps(action["inserted"])
-    c.execute('''INSERT INTO action (fkrecordid, position, time, type, target, at, removed,
-                                     attributename, attributevalue, inserted, nodeValue)
-                        VALUES(?,?,?,?,?,?,?,?,?,?,?)''', 
-               (recordingid, position, actiontime, action["type"], target_json, action["at"],
-                action["removed"], action["attributeName"], action["attributeValue"],
-                inserted_json, action["nodeValue"]))              
+    domaction = DOMAction(time=dateutil.parser.parse(action["time"]),
+                          position=position, recording=record)
+    jsonToObj(action, domaction, ("type", "target", "at", "inserted", 
+                                  "attributeName", "attributeValue", "nodeValue"))      
     position += 1
     
 
   position = 0
   for mouseaction in request.json_body["mouseactions"]:
     actiontime = dateutil.parser.parse(mouseaction["time"])
-    c.execute('''INSERT INTO mouseaction (fkrecordid, position, time, type, x, y)
-                        VALUES(?,?,?,?,?,?)''', 
-               (recordingid, position, actiontime, mouseaction["type"], 
-                mouseaction["x"],mouseaction["y"]))              
+    mouseaction_obj = MouseAction(recording = record, position=position,time = actiontime)
+    jsonToObj(mouseaction, mouseaction_obj, ("type", "x", "y"))    
     position += 1
     
   #add focus 
   position = 0
   for focus in request.json_body["focus"]:
-    focustime = dateutil.parser.parse(focus["time"])
-    c.execute('''INSERT INTO focus (fkrecordid, position, time) VALUES(?,?,?)''', 
-               (recordingid, position, focustime))              
+    FocusAction(recording = record, position = position,
+                time = dateutil.parser.parse(focus["time"]))
     position += 1         
-        
-  conn.commit()
 
-  conn.close()
+  request.session.commit()
 
   return Response("OK")
+
+def manageSession(request):
+  session = DBSession()  
+  def closeSession(request):
+    session.close()
+  request.add_finished_callback(closeSession)
+  return session
 
 if __name__ == '__main__':
 
@@ -160,6 +156,8 @@ if __name__ == '__main__':
   
 
   config = Configurator(settings=settings)
+  
+  config.add_request_method(manageSession, "session", reify=True)
 
   config.include('pyramid_mako')
 
