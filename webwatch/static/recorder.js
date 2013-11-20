@@ -19,10 +19,7 @@ function Recorder(){
   this.mousemove_handler = null;
   this.mouseclick_handler = null;
 
-  this.pagehistory = {start:null, 
-                      actions:[],
-                      mouseactions:[]
-                      };
+  this.pagehistory = null;
 
   /**
    * Makes a Snapshot of the current State of the DOM and saves
@@ -30,10 +27,15 @@ function Recorder(){
    * 
    */
   this.record = function (){
-  
-    //Make initial snapshot, then record all actions.
-    this.pagehistory.start =  snapShot();
     
+    
+    this.pagehistory =  {
+        start:snapShot(), 
+        actions:[],
+        mouseactions:[],
+        sessionId: this.getSessionId()
+                          };    
+
     
     this.mutation_observer = new MutationObserver(recordMutation.bind(this));  
   
@@ -247,6 +249,18 @@ function Recorder(){
     };
     
     post("/receiveReplay", content, callback);
+  };
+  
+  
+  this.getSessionId = function(){
+    
+    var sessionId = getCookie("webwatchsession");
+    if (!sessionId){
+      sessionId = Math.floor(Math.random() * 10000000000) + "";
+      setCookie("webwatchsession", sessionId, 1);
+    }
+    console.log("sessionId is", sessionId);
+    return sessionId;    
   };
   
 

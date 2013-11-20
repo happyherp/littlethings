@@ -74,6 +74,16 @@ def showReplay(request):
   
 
 def receiveReplay(request):
+  
+  conn = getCon()
+  c = conn.cursor()
+  
+  sessionId = request.json_body["sessionId"]
+  
+  #create the session this recording belongs to, if not present.
+  c.execute("SELECT id FROM session where id = ?", (sessionId,))
+  if c.fetchone() == None:
+    c.execute("INSERT INTO session (id) VALUES (?)", (sessionId,))
 
   #process the initial snapshot
   start = request.json_body["start"]
@@ -83,10 +93,8 @@ def receiveReplay(request):
   url = start["url"]
 
   #put replay into db
-  conn = getCon()
-  c = conn.cursor()
-  c.execute("INSERT INTO userrecording (htmlcontent, time, url) VALUES (?,?,?)",
-            (json.dumps(html), time, url))
+  c.execute("INSERT INTO userrecording (htmlcontent, time, url, fksessionId) VALUES (?,?,?,?)",
+            (json.dumps(html), time, url, sessionId))
   recordingid = c.lastrowid            
   
   position = 0

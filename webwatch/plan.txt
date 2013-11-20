@@ -7,11 +7,11 @@ changes include:
   current time
   modification of visible DOM-Elements. This excludes javascript
   path the mouse makes. 
+Clicks
 
 
 TODO:
 changes include:
-  Clicks
   scrollbar movements.
   window resizing.
   zoom of text, if possible
@@ -29,10 +29,6 @@ Observer
 Whatever the case, a new window is opened.
 here the inital snapshot put into the document.
 then the changes are displayed with the appropiate time delay
--a speed-display variant would be nice and easily implemented...
+-a speed-run variant would be nice and easily implemented...
 
 
-todo: 
-how to detect dom changes?
-what would be a good format for the initial snaphot and the changes?
--brute method is scanning the complete DOM in regular invals and comparing to previous one...
