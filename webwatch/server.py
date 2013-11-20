@@ -24,13 +24,47 @@ def rowsToDicts(rows, names):
 
   return map (lambda r: dict(zip(names, r)), rows)  
 
-def jsonToObj(jsonobj, obj, fields):
+
+def recordingToDict(recording):
+  recording_dict = {"start": {"time": recording.time.isoformat(), 
+                              "html": json.loads(recording.html),
+                              "url" : recording.url}}
+  
+  recording_dict["actions"] = []
+  for action in recording.dom_actions:
+    action_dict = {"time"     :action.time.isoformat(),
+                   "inserted" :json.loads(action.inserted),
+                   "target"   :json.loads(action.target),
+                   }
+    objToDict(action, action_dict, ("position", "at", "attributeName", 
+                                   "attributeValue", "nodeValue", "removed", "type"))
+    recording_dict["actions"].append(action_dict)
+    
+  recording_dict["mouseactions"] = []
+  for mouseaction in recording.mouse_actions:
+    mouseaction_dict = {"time"     :action.time.isoformat()}
+    objToDict(mouseaction, mouseaction_dict, ("position", "type", "x", "y"))
+    recording_dict["mouseactions"].append(mouseaction_dict)
+    
+  recording_dict["focus_actions"] = []
+  for focus_action in recording.focus_actions:
+    focus_action_dict = {"time": focus_action.time.isoformat(),
+                         "position": focus_action.position}
+    recording_dict["focus_actions"].append(focus_action_dict)
+    
+  return recording_dict
+            
+
+def dictToObj(jsonobj, obj, fields):
   for field in fields:
     if isinstance(jsonobj[field], dict) or isinstance(jsonobj[field], list):
       obj.__setattr__(field, json.dumps(jsonobj[field]))
     else:
       obj.__setattr__(field, jsonobj[field])
 
+def objToDict(obj, dictobj, fields):
+  for field in fields:
+    dictobj[field] = obj.__getattribute__(field)
 
 def showMainPage(request, message=""):
   response = render_to_response('main.mako', {'message':message}, request=request)
@@ -51,42 +85,16 @@ def listSessions(request):
   return render_to_response('sessionlist.mako', {'sessionNTime':sessionNTime}, request=request)  
 
 def showReplay(request):
- 
-  conn = getCon()
-  c = conn.cursor()
-  c.execute("SELECT id, time, url, htmlcontent FROM userrecording where id=? ", 
-            (request.matchdict["id"],))
-  replay = dict( zip(["id", "time", "url", "htmlcontent" ],c.fetchone()))
-  replay["time"] = dateutil.parser.parse(replay["time"])
   
-  #add actions
-  replay["actions"] = []
-  rows = c.execute('''SELECT 
-                 time, type, target, at, removed, 
-                 attributeName, attributeValue, inserted, nodeValue
-               FROM action where fkrecordid = ? order by position ASC''',(replay["id"],))
-  for row in rows:
-    action = dict( zip(["time", "type", "target", "at", "removed", 
-                        "attributeName", "attriuteValue", "inserted", "nodeValue" 
-                       ],row))
-    action["time"] = dateutil.parser.parse(action["time"]).isoformat()
-    action["target"] = json.loads(action["target"])
-    action["inserted"] = json.loads(action["inserted"])
-    replay["actions"].append(action)
+  
+  recording = request.session.query(Pagerecording)\
+      .filter(Pagerecording.id == request.matchdict["id"]).one()
+      
+  recording_json = json.dumps(recordingToDict(recording))
     
-
-  #add mouseactions.
-  replay["mouseactions"] = []
-  rows = c.execute('''SELECT 
-                 time, type, x, y
-               FROM mouseaction where fkrecordid = ? order by position ASC''',(replay["id"],))
-  for row in rows:
-    mouseaction = dict( zip(["time", "type","x", "y" ],row))
-    mouseaction["time"] = dateutil.parser.parse(mouseaction["time"]).isoformat()
-    replay["mouseactions"].append(mouseaction)
-  
-  conn.close() 
-  return render_to_response('showreplay.mako', {"replay":replay}, request=request)  
+  return render_to_response('showreplay.mako', 
+                            {"recording_json":recording_json}, 
+                            request=request)  
   
 def showSession(request):
   session = None
@@ -115,7 +123,7 @@ def receiveReplay(request):
   for action in request.json_body["actions"]:
     domaction = DOMAction(time=dateutil.parser.parse(action["time"]),
                           position=position, recording=record)
-    jsonToObj(action, domaction, ("type", "target", "at", "inserted", 
+    dictToObj(action, domaction, ("type", "target", "at", "inserted", 
                                   "attributeName", "attributeValue", "nodeValue"))      
     position += 1
     
@@ -124,7 +132,7 @@ def receiveReplay(request):
   for mouseaction in request.json_body["mouseactions"]:
     actiontime = dateutil.parser.parse(mouseaction["time"])
     mouseaction_obj = MouseAction(recording = record, position=position,time = actiontime)
-    jsonToObj(mouseaction, mouseaction_obj, ("type", "x", "y"))    
+    dictToObj(mouseaction, mouseaction_obj, ("type", "x", "y"))    
     position += 1
     
   #add focus 
