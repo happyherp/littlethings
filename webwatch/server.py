@@ -134,6 +134,10 @@ if __name__ == '__main__':
 
   config.add_static_view("static", "static", cache_max_age = 0)
 
+  #also show sample page. this is for testing and not part of the project itself. 
+  config.add_static_view("samplepage", "samplepage", cache_max_age = 0)
+
+
   config.add_route('start', '/')
   config.add_view(showMainPage, route_name='start')
 
