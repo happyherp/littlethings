@@ -24,3 +24,7 @@ bin/easy_install pyramid_mako
 
 #dateuil
 bin/easy_install python_dateutil
+
+#SQLAlchemy
+bin/easy_install https://bitbucket.org/zzzeek/sqlalchemy/downloads/SQLAlchemy-0.9.0b1.tar.gz
+

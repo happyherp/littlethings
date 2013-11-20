@@ -7,10 +7,10 @@ List of all replays recorder
 
   % for replay in replays:
       <tr>
-        <td>${replay["id"]}</td>
-        <td>${replay["time"]}</td>
-        <td>${replay["url"]}</td>
-        <td><a href="/showReplay/${replay['id']}/">Show Replay</a></td>
+        <td>${replay.id}</td>
+        <td>${replay.time}</td>
+        <td>${replay.url}</td>
+        <td><a href="/showReplay/${replay.id}/">Show Replay</a></td>
       </tr>
   % endfor
 

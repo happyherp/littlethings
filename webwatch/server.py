@@ -7,6 +7,8 @@ import dateutil.parser
 
 import sqlite3
 import json
+from db import Session as DBSession
+from models import *
 
 import os
 
@@ -18,19 +20,19 @@ def rowsToDicts(rows, names):
   into dictionaries, using names as keys. Such that the first element of every row
   is matched with the first name and so on.'''
 
-  return map (lambda r: dict(zip(names, r)), rows)
+  return map (lambda r: dict(zip(names, r)), rows)  
 
 def showMainPage(request, message=""):
   response = render_to_response('main.mako', {'message':message}, request=request)
   return response;
 
 def listReplays(request):
+  
+   
+  session = DBSession()
+  
+  replays = session.query(Pagerecording)
 
-  conn = getCon()
-  c = conn.cursor()
-  c.execute("SELECT id, time, url FROM userrecording ")
-  replays = rowsToDicts(c.fetchall(),["id", "time", "url"])
-  conn.close()
   return render_to_response('replaylist.mako', {'replays':replays}, request=request)
 
 def listSessions(request):
@@ -83,7 +85,7 @@ def showReplay(request):
   
 def showSession(request):
   session = None
-  return render_to_response('showreplay.mako', {"session":session}, request=request)  
+  return render_to_response('showsession.mako', {"session":session}, request=request)  
 
 
 def receiveReplay(request):
