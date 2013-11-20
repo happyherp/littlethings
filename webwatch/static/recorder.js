@@ -18,6 +18,7 @@ function Recorder(){
   
   this.mousemove_handler = null;
   this.mouseclick_handler = null;
+  this.focus_handler = null;
 
   this.pagehistory = null;
 
@@ -33,6 +34,7 @@ function Recorder(){
         start:snapShot(), 
         actions:[],
         mouseactions:[],
+        focus:[],
         sessionId: this.getSessionId()
                           };    
 
@@ -56,8 +58,8 @@ function Recorder(){
     this.mouseclick_handler = recordMouseClick.bind(this);
     document.body.addEventListener("mouseup", this.mouseclick_handler, false);
     
-    
-    window.addEventListener("focus", function(){console.log("got focus on", new Date());});
+    this.focus_handler = recordFocus.bind(this);
+    window.addEventListener("focus",this.focus_handler);
   
     console.log("observer online");
   };
@@ -205,6 +207,12 @@ function Recorder(){
       x:event.pageX,
       y:event.pageY,
       time:new Date()});
+  }
+  
+  function recordFocus(){
+    this.pagehistory.focus.push({
+      time:new Date()
+    });
   }
   
   

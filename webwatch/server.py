@@ -33,6 +33,15 @@ def listReplays(request):
   conn.close()
   return render_to_response('replaylist.mako', {'replays':replays}, request=request)
 
+def listSessions(request):
+  conn = getCon()
+  c = conn.cursor()
+  c.execute('''SELECT s.id, min(ur.time) FROM session s 
+                          JOIN userrecording ur ON (ur.fksessionId = s.id) 
+                          GROUP BY (s.id)''')
+  sessions = rowsToDicts(c.fetchall(),["id", "time"])
+  conn.close()
+  return render_to_response('sessionlist.mako', {'sessions':sessions}, request=request)  
 
 def showReplay(request):
  
@@ -72,6 +81,10 @@ def showReplay(request):
   conn.close() 
   return render_to_response('showreplay.mako', {"replay":replay}, request=request)  
   
+def showSession(request):
+  session = None
+  return render_to_response('showreplay.mako', {"session":session}, request=request)  
+
 
 def receiveReplay(request):
   
@@ -118,7 +131,15 @@ def receiveReplay(request):
                         VALUES(?,?,?,?,?,?)''', 
                (recordingid, position, actiontime, mouseaction["type"], 
                 mouseaction["x"],mouseaction["y"]))              
-    position += 1    
+    position += 1
+    
+  #add focus 
+  position = 0
+  for focus in request.json_body["focus"]:
+    focustime = dateutil.parser.parse(focus["time"])
+    c.execute('''INSERT INTO focus (fkrecordid, position, time) VALUES(?,?,?)''', 
+               (recordingid, position, focustime))              
+    position += 1         
         
   conn.commit()
 
@@ -157,6 +178,12 @@ if __name__ == '__main__':
 
   config.add_route('showReplay', '/showReplay/{id}/')
   config.add_view(showReplay, route_name="showReplay")
+  
+  config.add_route('listSessions', '/listSessions')
+  config.add_view(listSessions, route_name="listSessions")
+  
+  config.add_route('showSession', '/showSession/{id}/')
+  config.add_view(showSession, route_name="showSession")    
 
   app = config.make_wsgi_app()
   server = make_server('0.0.0.0', 8080, app)
