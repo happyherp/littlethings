@@ -12,7 +12,8 @@
 
       window.onload = function(){
           fixTimesInPagehistory(pagehistory);
-          replay(pagehistory);
+          player = new Player(pagehistory);
+          player.replay();
         }; 
     </script>
   </head>

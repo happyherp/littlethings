@@ -92,14 +92,14 @@ def showSession(request):
                   "recordings" : map(recordingToDict, session.recordings)}
   
   focuschanges = request.session.query(FocusAction).join(Pagerecording)\
-                   .filter(Pagerecording.id == session.id)\
+                   .filter(Pagerecording.session_id == session.id)\
                    .order_by(FocusAction.time)
                    
   def focusToDict(focus):
-    return {"time":focus.time,
+    return {"time":focus.time.isoformat(),
             "record_id":focus.record_id}
                    
-  focuschangesArr = map(focusToDict,focuschanges)
+  focuschangesArr = list( map(focusToDict,focuschanges))
   
   return render_to_response('showsession.mako', 
                             {"session":session_dict, "focus":focuschangesArr}, 

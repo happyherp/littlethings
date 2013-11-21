@@ -11,7 +11,12 @@
     <script type="text/javascript">
       var session = ${json.dumps(session)|n};
       fixTimesInSession(session);
-      var sessionplayer = new Sessionplayer(session);
+      
+      var focus = ${json.dumps(focus)|n};
+      fixTimes(focus);
+      
+      
+      var sessionplayer = new Sessionplayer(session, focus);
       sessionplayer.replay();
     </script>
     

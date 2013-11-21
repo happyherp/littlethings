@@ -8,6 +8,8 @@ function Player(history){
   
   this.history = history;
   
+  this.offset = null;
+  
   this.timer = new Timer();
   
   /**
@@ -19,12 +21,16 @@ function Player(history){
     console.log("replaying history", this.history);
     
     //Restore the snapshot.
-    document.replaceChild(restore(this.history.start.html), document.firstChild);
+    document.replaceChild(restore(this.history.start.html), document.childNodes[0]);
+    
+    if (!this.offset){
+      //Set default so that actions begins immediatly. 
+      this.offset = new Date().getTime() - this.history.start.time.getTime();
+    }
     
     var _this = this;
     var offsetDate = function(date){
-      var offset =  new Date().getTime() - _this.history.start.time.getTime();
-      return new Date(date.getTime()+offset);
+      return new Date(date.getTime()+_this.offset);
     };
     
         
@@ -42,6 +48,10 @@ function Player(history){
    
     this.timer.run();
 
+  };
+  
+  this.stop = function(){
+    this.timer.stop();
   };
 
   //* Recreates a mouse move */

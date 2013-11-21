@@ -17,7 +17,7 @@ function Timer() {
   
   this.__processQueue = function (){    
     this.waitingForProcessing = false;
-    while (this.queue.length > 0 && this.queue[0].date < new Date()){
+    while (this.running && this.queue.length > 0 && this.queue[0].date < new Date()){
       var event = this.queue.shift();
       event.callback();
     }
@@ -45,6 +45,10 @@ function Timer() {
     this.running = true;
     this.__continueProcessing();
   };
+  
+  this.stop = function(){
+    this.runnung = false;
+  }
 
   /**
    * Call the given function on the given time. Calls instantly if date is in
@@ -60,10 +64,9 @@ function Timer() {
       this.queue.push(newEvent);
     } else {
       // Do a sorted insert.
-      //It is important, that, for same date value, the order of events is the same 
-      //as the order in which addEvent was called fot those events.
-      //Otherwhise DOM-elements, that have not yet been created will cause errors
-      //while finding the right target.
+      //It is important, that for same date value, the order of events is the same 
+      //as the order in which addEvent was called for those events.
+      //Otherwhise DOM-elements might be inserted or deleted at the wrong position.
       var i = 1;        
       while (i < this.queue.length  && !(this.queue[i].date > date)) {
         i++;
