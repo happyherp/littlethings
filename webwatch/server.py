@@ -5,24 +5,13 @@ from pyramid.renderers import render_to_response
 
 import dateutil.parser
 
-import sqlite3
 import json
 from db import Session as DBSession
-from models import *
+from models import Session, Pagerecording, DOMAction, MouseAction, FocusAction
 
 from sqlalchemy.sql import func
 
 import os
-
-def getCon():
-  return sqlite3.connect('env/db')
-
-def rowsToDicts(rows, names):
-  '''Takes a list of rows(as returned by an sql-statement) and converts them 
-  into dictionaries, using names as keys. Such that the first element of every row
-  is matched with the first name and so on.'''
-
-  return map (lambda r: dict(zip(names, r)), rows)  
 
 
 def recordingToDict(recording):
@@ -79,10 +68,14 @@ def listReplays(request):
 
 def listSessions(request):
   
-  sessionNTime = request.session.query(Session,func.min(Pagerecording.time))\
-                      .join(Pagerecording).all()
+  ssnTmCnt = request.session.query(Session)\
+                   .add_column(func.min(Pagerecording.time))\
+                   .add_column(func.count(Pagerecording.id))\
+                   .join(Pagerecording).group_by(Session)\
+                   .order_by(func.min(Pagerecording.time).desc()).all()
 
-  return render_to_response('sessionlist.mako', {'sessionNTime':sessionNTime}, request=request)  
+
+  return render_to_response('sessionlist.mako', {'ssnTmCnt':ssnTmCnt}, request=request)  
 
 def showReplay(request):
   
