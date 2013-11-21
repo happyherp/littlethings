@@ -20,7 +20,7 @@ def recordingToDict(recording):
     
   recording_dict["mouseactions"] = []
   for mouseaction in recording.mouse_actions:
-    mouseaction_dict = {"time"     :action.time.isoformat()}
+    mouseaction_dict = {"time"     :mouseaction.time.isoformat()}
     objToDict(mouseaction, mouseaction_dict, ("position", "type", "x", "y"))
     recording_dict["mouseactions"].append(mouseaction_dict)
     
@@ -46,7 +46,6 @@ def addChildrenToRecording(record, json_obj):
                                   "attributeName", "attributeValue", "nodeValue"))      
     position += 1
     
-
   position = count["mouse"]
   for mouseaction in actions["mouseactions"]:
     actiontime = dateutil.parser.parse(mouseaction["time"])

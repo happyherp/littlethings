@@ -5,7 +5,7 @@
 <script type="text/javascript" src="/static/rewind.js"></script>
 <script type="text/javascript" src="/static/map.js"></script>
 <script type="text/javascript" src="/static/serversender.js"></script>  
-<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="style.css" />
 <style type="text/css" src="style.css" >
   .letext{ font:bold .9em Times; }
 </style>
@@ -70,10 +70,11 @@ add stuff2
 <div id="adddiv">
 here things are added
 </div>
+<input type="text" />
 
 <script>
-var recorder = new Recorder();
-recorder.record();
+
+setupRecorder();
 
 function replayInNewWindow(){
   newwin = open("watcher.html");

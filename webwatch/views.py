@@ -16,7 +16,6 @@ def showMainPage(request, message=""):
 
 def listReplays(request):
   
-  
   replays = request.session.query(Pagerecording)
   
   return render_to_response('replaylist.mako', {'replays':replays}, request=request)

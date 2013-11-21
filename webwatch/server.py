@@ -43,4 +43,7 @@ if __name__ == '__main__':
   app = config.make_wsgi_app()
   server = make_server('0.0.0.0', 8080, app)
 
+  import cProfile
+  #cProfile.run("server.serve_forever()", "profile.rs")
+  
   server.serve_forever()

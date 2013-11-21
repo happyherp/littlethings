@@ -8,7 +8,8 @@
 
   <script>
   console.log("pagehistory", window.pagehistory);
-  replay(window.pagehistory);
+  player = new Player(window.pagehistory);
+  player.replay();
   </script>
   </body>
 </html>
