@@ -123,7 +123,7 @@ def receiveReplay(request):
   for action in request.json_body["actions"]:
     domaction = DOMAction(time=dateutil.parser.parse(action["time"]),
                           position=position, recording=record)
-    dictToObj(action, domaction, ("type", "target", "at", "inserted", 
+    dictToObj(action, domaction, ("type", "target", "at", "inserted", "removed",
                                   "attributeName", "attributeValue", "nodeValue"))      
     position += 1
     
