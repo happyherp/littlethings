@@ -14,13 +14,21 @@ MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
 function Recorder(){
   
-  this.mutation_observer = null;
   
+  this.mutation_observer = null;  
   this.mousemove_handler = null;
   this.mouseclick_handler = null;
   this.focus_handler = null;
 
+  /**
+   * Information about DOM-Changes is collected here. 
+   */
   this.pagehistory = null;
+  
+  /**
+   * Keeps track of how much information have already been sent to the server. 
+   */
+  this.sendCount = {first:true,dom:0,mouse:0, focus:0};
 
   /**
    * Makes a Snapshot of the current State of the DOM and saves
@@ -35,7 +43,8 @@ function Recorder(){
         actions:[],
         mouseactions:[],
         focus:[],
-        sessionId: this.getSessionId()
+        sessionId: this.getSessionId(),
+        id: null
                           };    
 
     
@@ -250,14 +259,51 @@ function Recorder(){
   }
   
   this.sendToServer = function(){
-    console.log("sending to server", this.pagehistory);
-    var content = JSON.stringify(this.pagehistory);
-    var callback =  function(text){
-       console.log("gotresponse", text);
-    };
     
-    post("/receiveReplay", content, callback);
+    
+    if (this.sendCount.first){      
+      console.log("sending initial state to server", this.pagehistory);
+      var content = JSON.stringify(this.pagehistory);      
+      
+      var _this = this;
+      var callback =  function(text){
+        console.log("gotresponse", text);
+        var response = JSON.parse(text);
+        _this.pagehistory.id = response.newid;
+        console.log("new id:", _this.pagehistory.id);
+        
+      };      
+      post("/receiveReplay", content, callback);      
+      this.__updateSendCount();
+    }else if (this.pagehistory.id){
+      
+      console.log("sending update to server. ");
+      
+      var newdata = {actions: this.pagehistory.actions.slice(this.sendCount.dom),
+                     mouseactions: this.pagehistory.mouseactions.slice(this.sendCount.mouse),
+                     focus: this.pagehistory.focus.slice(this.sendCount.focus),
+                     id : this.pagehistory.id};
+      
+      var callback =  function(text){
+        console.log("gotresponse", text);
+      };
+      post("/receiveReplayUpdate", JSON.stringify(newdata), callback);
+      this.__updateSendCount();
+      
+    }else{
+      console.log("Not sending anything because we still have no id.");
+    }
+    
+
+    
   };
+  
+  this.__updateSendCount = function(){
+    this.sendCount = {first: false,
+        dom:   this.pagehistory.actions.length,
+        mouse: this.pagehistory.mouseactions.length, 
+        focus: this.pagehistory.focus.length};    
+  }
   
   
   this.getSessionId = function(){
