@@ -173,4 +173,14 @@ function setCookie(c_name, value, exdays) {
 }
 
 
+/**
+* Needed because a the dates are made to strings when we convert the object to JSON.
+*/
+function fixTimes(array){
+  for (var i=0;i<array.length;i++){
+    array[i].time = new Date(array[i].time);
+  }
+}
+
+
 

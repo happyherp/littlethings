@@ -11,7 +11,8 @@ from sqlalchemy.sql import func
 def recordingToDict(recording):
   recording_dict = {"start": {"time": recording.time.isoformat(), 
                               "html": json.loads(recording.html),
-                              "url" : recording.url}}
+                              "url" : recording.url},
+                    "id": recording.id}
   
   recording_dict["actions"] = []
   for action in recording.dom_actions:
@@ -84,8 +85,25 @@ def showReplay(request):
                             request=request)  
   
 def showSession(request):
-  session = None
-  return render_to_response('showsession.mako', {"session":session}, request=request)  
+  session = request.session.query(Session)\
+     .filter(Session.id == request.matchdict["id"]).one()
+  
+  session_dict = {"id":session.id, 
+                  "recordings" : map(recordingToDict, session.recordings)}
+  
+  focuschanges = request.session.query(FocusAction).join(Pagerecording)\
+                   .filter(Pagerecording.id == session.id)\
+                   .order_by(FocusAction.time)
+                   
+  def focusToDict(focus):
+    return {"time":focus.time,
+            "record_id":focus.record_id}
+                   
+  focuschangesArr = map(focusToDict,focuschanges)
+  
+  return render_to_response('showsession.mako', 
+                            {"session":session_dict, "focus":focuschangesArr}, 
+                            request=request)  
 
 
 def receiveReplay(request):

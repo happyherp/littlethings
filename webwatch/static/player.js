@@ -163,17 +163,9 @@ function Player(history){
   } 
 }
 
-function replay(history){
-  new Player(history).replay();
+function fixTimesInPagehistory(pagehistory){
+  pagehistory.start.time = new Date(pagehistory.start.time);
+  fixTimes(pagehistory.actions);
+  fixTimes(pagehistory.mouseactions);
 }
-
-
-
-/**
-* Needed because a the dates are made to strings when we convert the object to JSON.
-*/
-function fixTimes(array){
-  for (var i=0;i<array.length;i++){
-    array[i].time = new Date(array[i].time);
-  }
-}
+  

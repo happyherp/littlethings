@@ -22,7 +22,7 @@ class Pagerecording(Base):
   url = Column(String, nullable = False)
   
   session = relationship("Session", 
-                         backref=backref("recordings",  order_by=time))
+                         backref=backref("recordings", cascade="all,delete",  order_by=time))
                          
   def __repr__(self):
     return "<Pagerecording at=%s>"%(self.time.__repr__())
@@ -42,7 +42,7 @@ class DOMAction(Base):
   nodeValue = Column(String)
   
   recording = relationship("Pagerecording", 
-                           backref=backref("dom_actions",  order_by=position))  
+                           backref=backref("dom_actions", cascade="all,delete",  order_by=position))  
   
   def __repr__(self):
     return "<DOMAction type=%s>" %(self.type)
@@ -57,7 +57,7 @@ class MouseAction(Base):
   y = Column(Integer, nullable = False)
   
   recording = relationship("Pagerecording", 
-                           backref=backref("mouse_actions", order_by=position))  
+                           backref=backref("mouse_actions", cascade="all,delete", order_by=position))  
   
 class FocusAction(Base):
   __tablename__="Focus"
@@ -66,4 +66,4 @@ class FocusAction(Base):
   time = Column(DateTime, nullable = False)   
   
   recording = relationship("Pagerecording", 
-                         backref=backref("focus_actions", order_by=position))  
+                         backref=backref("focus_actions", cascade="all,delete", order_by=position))  
