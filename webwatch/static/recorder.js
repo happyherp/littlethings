@@ -21,14 +21,10 @@ function Recorder(){
   this.focus_handler = null;
 
   /**
-   * Information about DOM-Changes is collected here. 
+   * Information about DOM-Changes is collected here.
    */
   this.pagehistory = null;
   
-  /**
-   * Keeps track of how much information have already been sent to the server. 
-   */
-  this.sendCount = {first:true,dom:0,mouse:0, focus:0};
 
   /**
    * Makes a Snapshot of the current State of the DOM and saves
@@ -167,40 +163,6 @@ function Recorder(){
    
     return action;
   }
-
-  /**
-  * Finds a path from the root of the document to the given node, by giving all 
-  * indexes that lead from the root to that node.
-  */
-  function findPath(node, state){
-    
-    if (node == document){
-      return [];
-    }else if (state.getParent(node)){
-      var path = findPath(state.getParent(node), state);
-      path.push(findPosition(node, state));
-      return path;
-    }else{
-      console.error("Could not trace element to document.")
-      return [];
-    }
-  }
-
-  /**
-  * Returns an index that represents the position of the given node, inside the Parent.
-  */
-  function findPosition(node, state){
-    var s = 0;//Nodes skipped, because of irrelevant type.
-    var i = 0; //Count relevant nodes
-    var parentChildNodes = state.getChildren(state.getParent(node)); 
-    while (i+s<parentChildNodes.length){
-      if (parentChildNodes[i+s] == node){
-        return i;
-      }else if (isRelevantNode(parentChildNodes[i+s])) {i++;} else {s++;}
-      
-    }
-  }
-
   
   function recordMouseMove(event){
     this.pagehistory.mouseactions.push({
@@ -258,53 +220,6 @@ function Recorder(){
              url:window.location.href};
   }
   
-  this.sendToServer = function(){
-    
-    
-    if (this.sendCount.first){      
-      console.log("sending initial state to server", this.pagehistory);
-      var content = JSON.stringify(this.pagehistory);      
-      
-      var _this = this;
-      var callback =  function(text){
-        console.log("gotresponse", text);
-        var response = JSON.parse(text);
-        _this.pagehistory.id = response.newid;
-        console.log("new id:", _this.pagehistory.id);
-        
-      };      
-      post("/receiveReplay", content, callback);      
-      this.__updateSendCount();
-    }else if (this.pagehistory.id){
-      
-      console.log("sending update to server. ");
-      
-      var newdata = {actions: this.pagehistory.actions.slice(this.sendCount.dom),
-                     mouseactions: this.pagehistory.mouseactions.slice(this.sendCount.mouse),
-                     focus: this.pagehistory.focus.slice(this.sendCount.focus),
-                     id : this.pagehistory.id};
-      
-      var callback =  function(text){
-        console.log("gotresponse", text);
-      };
-      post("/receiveReplayUpdate", JSON.stringify(newdata), callback);
-      this.__updateSendCount();
-      
-    }else{
-      console.log("Not sending anything because we still have no id.");
-    }
-    
-
-    
-  };
-  
-  this.__updateSendCount = function(){
-    this.sendCount = {first: false,
-        dom:   this.pagehistory.actions.length,
-        mouse: this.pagehistory.mouseactions.length, 
-        focus: this.pagehistory.focus.length};    
-  }
-  
   
   this.getSessionId = function(){
     
@@ -318,6 +233,14 @@ function Recorder(){
   };
   
 
+}
+
+function setupRecorder(){
+  recorder = new Recorder();
+  recorder.record();
+  
+  sender = new Serversender(recorder);
+  sender.startSendLoop();
 }
 
 
