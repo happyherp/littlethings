@@ -34,8 +34,12 @@ def recordingToDict(recording):
    
    
 def addChildrenToRecording(record, json_obj):
-  position = len(record.dom_actions)
-  for action in json_obj["actions"]:
+  
+  actions = json_obj["actions"]
+  count = json_obj["count"]
+  
+  position = count["dom"]
+  for action in actions["actions"]:
     domaction = DOMAction(time=dateutil.parser.parse(action["time"]),
                           position=position, recording=record)
     dictToObj(action, domaction, ("type", "target", "at", "inserted", "removed",
@@ -43,16 +47,16 @@ def addChildrenToRecording(record, json_obj):
     position += 1
     
 
-  position = len(record.mouse_actions)
-  for mouseaction in json_obj["mouseactions"]:
+  position = count["mouse"]
+  for mouseaction in actions["mouseactions"]:
     actiontime = dateutil.parser.parse(mouseaction["time"])
     mouseaction_obj = MouseAction(recording = record, position=position,time = actiontime)
     dictToObj(mouseaction, mouseaction_obj, ("type", "x", "y"))    
     position += 1
     
   #add focus 
-  position = len(record.focus_actions)
-  for focus in json_obj["focus"]:
+  position = count["focus"]
+  for focus in actions["focus"]:
     FocusAction(recording = record, position = position,
                 time = dateutil.parser.parse(focus["time"]))
     position += 1                     

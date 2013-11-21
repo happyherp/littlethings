@@ -46,26 +46,26 @@ function Serversender(recorder){
     
     if (this.sendCount.first){      
       console.log("sending initial state to server", this.recorder.pagehistory);
-      var content = JSON.stringify(this.recorder.pagehistory);      
       
       var _recorder = this.recorder;
       var callback =  function(text){
         console.log("gotresponse", text);
         var response = JSON.parse(text);
         _recorder.pagehistory.id = response.newid;
-        console.log("new id:", _recorder.pagehistory.id);
-        
+        console.log("new id:", _recorder.pagehistory.id);        
       };      
-      post("/receiveReplay", content, callback);      
+      
+      var data ={actions:this.recorder.pagehistory, count:this.sendCount};      
+      post("/receiveReplay", JSON.stringify(data), callback);      
       this.__updateSendCount();
-    }else if (this.recorder.pagehistory.id){
       
-      console.log("sending update to server. ");
-      
-      var newdata = {actions     : this.recorder.pagehistory.actions.slice(this.sendCount.dom),
-                     mouseactions: this.recorder.pagehistory.mouseactions.slice(this.sendCount.mouse),
-                     focus       : this.recorder.pagehistory.focus.slice(this.sendCount.focus),
-                     id          : this.recorder.pagehistory.id};
+    }else if (this.recorder.pagehistory.id){     
+      console.log("sending update to server. ");      
+      var newdata = {actions: {actions     : this.recorder.pagehistory.actions.slice(this.sendCount.dom),
+                               mouseactions: this.recorder.pagehistory.mouseactions.slice(this.sendCount.mouse),
+                               focus       : this.recorder.pagehistory.focus.slice(this.sendCount.focus),
+                               id          : this.recorder.pagehistory.id},
+                     count:this.sendCount};
       
       var callback =  function(text){
         console.log("gotresponse", text);

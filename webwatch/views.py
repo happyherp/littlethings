@@ -68,16 +68,17 @@ def showSession(request):
 
 def receiveReplay(request):
   
+  sessionId = request.json_body["actions"]["sessionId"]
   session = request.session.query(Session)\
-                .filter(Session.id == request.json_body["sessionId"]).first()
+                .filter(Session.id == sessionId).first()
                   
   if (not session):
     session = Session()
-    session.id = request.json_body["sessionId"]
+    session.id = sessionId
     request.session.add(session)
 
   #process the initial snapshot
-  start = request.json_body["start"]
+  start = request.json_body["actions"]["start"]
 
   record = Pagerecording(html = json.dumps(start["html"]), 
                          time = dateutil.parser.parse(start["time"]),
@@ -94,7 +95,7 @@ def receiveReplay(request):
 def receiveReplayUpdate(request):
   
   record = request.session.query(Pagerecording)\
-             .filter(Pagerecording.id == request.json_body["id"]).one()
+             .filter(Pagerecording.id == request.json_body["actions"]["id"]).one()
   
   addChildrenToRecording(record, request.json_body)
   
