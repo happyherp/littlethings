@@ -1,4 +1,0 @@
-test on bigger sites
-add scroll-bar detection. both mainwindow and divs and such
-prevent javascript-injection in JSON
-

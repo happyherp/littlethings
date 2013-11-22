@@ -9,9 +9,9 @@ TextNode = 3;
 /*Checks if a HTML-Node should be transfered to the watcher */
 function isRelevantNode(elem){
   return    (elem.nodeType == TextNode
-         || elem.nodeType == ElementNode 
-             && elem.nodeName != "SCRIPT" 
-             && !elem.notrelevant);
+                 || elem.nodeType == ElementNode 
+                     && elem.nodeName != "SCRIPT" 
+                     && !elem.notrelevant);
 }
 
 function relevantChilds(node){
@@ -21,6 +21,7 @@ function relevantChilds(node){
 
 /**
 * Debug-Tool for figuring out why two nodes dont have the same checksum.
+* Ignores all the stuff that is not relevant.(not transfered to replay)
 */
 
 function compareNodes(nodeA,nodeB){
@@ -34,6 +35,7 @@ function compareNodes(nodeA,nodeB){
     var childsB = relevantChilds(nodeB);
     if (childsA.length != childsB.length){
       console.log(nodeA,nodeB, "unequal number of children");
+      console.log("A:", childsA, "B:", childsB);
     }else{
       var allsame = true;
       for (var i = 0; i<childsA.length;i++){
@@ -142,6 +144,20 @@ function Event(){
     }
   };
   
+  /**
+   * Calls foo the next time the event is triggered, but not again.
+   * 
+   */
+  this.once = function(foo){
+    var callAndRemove;
+    var _this = this;
+    callAndRemove = function(){
+      foo.apply(arguments);
+      _this.handlers.splice(_this.handlers.indexOf(callAndRemove),1);
+    };
+    this.handlers.push(callAndRemove);
+  };
+  
 }
 
 
@@ -181,6 +197,4 @@ function fixTimes(array){
     array[i].time = new Date(array[i].time);
   }
 }
-
-
 

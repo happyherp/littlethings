@@ -32,7 +32,7 @@ function Timer() {
         this.onStopProcessing.fire();
       }else{        
         this.waitingForProcessing = true;
-        window.setTimeout(this.__processQueue.bind(this), 100);        
+        window.setTimeout(this.__processQueue.bind(this), 50);        
       }
 
     };

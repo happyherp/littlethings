@@ -1,9 +1,7 @@
 from pyramid.response import Response
 from pyramid.renderers import render_to_response
 
-import dateutil.parser
-
-from models import Session, Pagerecording, DOMAction, MouseAction, FocusAction
+from models import *
 
 from jsonconversion import *
 
@@ -53,17 +51,55 @@ def showSession(request):
   focuschanges = request.session.query(FocusAction).join(Pagerecording)\
                    .filter(Pagerecording.session_id == session.id)\
                    .order_by(FocusAction.time)
-                   
-  def focusToDict(focus):
-    return {"time":focus.time.isoformat(),
-            "record_id":focus.record_id}
-                   
+                    
   focuschangesArr = list( map(focusToDict,focuschanges))
   
   return render_to_response('showsession.mako', 
                             {"session":session_dict, "focus":focuschangesArr}, 
                             request=request)  
 
+
+def getSessionUpdate(request):
+  
+  recordingupdates = []
+  
+  allfocus = []
+  
+  for recording_request in request.json_body:
+    
+    recording_id = recording_request["id"]
+    count = recording_request["count"]
+  
+    actions = request.session.query(DOMAction)\
+                .filter(DOMAction.record_id == recording_id)\
+                .filter(DOMAction.position >= count["dom"]).all()
+                
+    mouseactions = request.session.query(MouseAction)\
+                .filter(MouseAction.record_id == recording_id)\
+                .filter(MouseAction.position >= count["mouse"]).all()        
+                
+    focusactions = request.session.query(FocusAction)\
+                .filter(FocusAction.record_id == recording_id)\
+                .filter(FocusAction.position >= count["focus"]).all()
+    allfocus = allfocus + focusactions
+              
+    recordingupdates.append({          
+        "actions"      : list(map(domActionToDict, actions)),
+        "mouseactions" : list(map(mouseActionToDict, mouseactions)),
+        "focus": list(map(focusToDict, focusactions)),
+        "id":recording_id})
+  
+  
+  allfocus.sort(key=lambda f :f.time)
+  
+  #TODO: add data of new recordings to reponse.
+  
+  response = {"recording_updates":recordingupdates,
+              "focus": list(map(focusToDict, allfocus))}
+  
+    
+  return Response(json.dumps(response))
+                                      
 
 def receiveReplay(request):
   
@@ -124,4 +160,7 @@ def addToConfig(config):
   config.add_view(listSessions, route_name="listSessions")
   
   config.add_route('showSession', '/showSession/{id}/')
-  config.add_view(showSession, route_name="showSession")    
+  config.add_view(showSession, route_name="showSession")   
+  
+  config.add_route('getSessionUpdate', '/getSessionUpdate')
+  config.add_view(getSessionUpdate, route_name="getSessionUpdate")      

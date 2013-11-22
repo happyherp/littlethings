@@ -6,33 +6,34 @@ def recordingToDict(recording):
   recording_dict = {"start": {"time": recording.time.isoformat(), 
                               "html": json.loads(recording.html),
                               "url" : recording.url},
-                    "id": recording.id}
+                    "id": recording.id,
+                    "actions"      : list(map(domActionToDict, recording.dom_actions)),
+                    "mouseactions" : list(map(mouseActionToDict, recording.mouse_actions)),
+                    "focus": list(map(focusToDict, recording.focus_actions))
+                    } 
+    
+  return recording_dict
+   
+                   
+def focusToDict(focus):
+  return {"time":focus.time.isoformat(),
+          "record_id":focus.record_id,
+          "position": focus.position}   
   
-  recording_dict["actions"] = []
-  for action in recording.dom_actions:
+def domActionToDict(action):
     action_dict = {"time"     :action.time.isoformat(),
                    "inserted" :json.loads(action.inserted),
                    "target"   :json.loads(action.target),
                    }
     objToDict(action, action_dict, ("position", "at", "attributeName", 
                                    "attributeValue", "nodeValue", "removed", "type"))
-    recording_dict["actions"].append(action_dict)
-    
-  recording_dict["mouseactions"] = []
-  for mouseaction in recording.mouse_actions:
-    mouseaction_dict = {"time"     :mouseaction.time.isoformat()}
-    objToDict(mouseaction, mouseaction_dict, ("position", "type", "x", "y"))
-    recording_dict["mouseactions"].append(mouseaction_dict)
-    
-  recording_dict["focus_actions"] = []
-  for focus_action in recording.focus_actions:
-    focus_action_dict = {"time": focus_action.time.isoformat(),
-                         "position": focus_action.position}
-    recording_dict["focus_actions"].append(focus_action_dict)
-    
-  return recording_dict
-   
-   
+    return action_dict   
+  
+def mouseActionToDict(mouseaction):   
+  mouseaction_dict = {"time"     :mouseaction.time.isoformat()}
+  objToDict(mouseaction, mouseaction_dict, ("position", "type", "x", "y"))
+  return mouseaction_dict
+       
 def addChildrenToRecording(record, json_obj):
   
   actions = json_obj["actions"]

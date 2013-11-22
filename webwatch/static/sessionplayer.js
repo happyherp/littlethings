@@ -1,5 +1,7 @@
 /**
 * Plays an entire session of a user that contains multiple replays of single pages.
+* 
+* 
 *
 */
 
@@ -36,6 +38,27 @@ function Sessionplayer(session, focus){
     
   };
   
+  this.loadNewData = function(session_update){
+    //TODO: process focus once its available.
+    
+    for (var i = 0; i<session_update.recording_updates.length;i++){
+      var recording_update = session_update.recording_updates[i];
+      
+      //Let current player react to update.
+      if (this.pageplayer && this.pageplayer.history.id == recording_update.id){
+        this.pageplayer.addActionsToTimer(recording_update); 
+      }
+
+      //Add to Session-data
+      var record = getRecordById(recording_update.id);
+      record.actions = record.actions.concat(recording_update.actions);
+      record.mouseactions = record.mouseactions.concat(recording_update.mouseactions);
+      record.focus = record.focus.concat(recording_update.focus);
+      
+    }
+    
+  };
+  
   /**
    * insert starttimes of recordings into focus so we switch
    * to the new page, when it was opened.
@@ -55,7 +78,7 @@ function Sessionplayer(session, focus){
       
       this.focus.splice(j,0,newfocus);
     }    
-  }
+  };
   
   function switchFocus(focus){
     
@@ -85,10 +108,13 @@ function Sessionplayer(session, focus){
   
 }
 
-
+/**
+ * replace strings with dates for all session-objects.
+ * 
+ * @param session
+ */
 function fixTimesInSession(session){
   for (var i = 0; i<session.recordings.length;i++){
     fixTimesInPagehistory(session.recordings[i]);
-  }
-  
+  }  
 }

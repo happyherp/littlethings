@@ -8,16 +8,29 @@ changes include:
   modification of visible DOM-Elements. This excludes javascript
   path the mouse makes. 
 Clicks
+Server:
+  receive incoming requests. use cookies to identify users, use current domain to identify website.
 
 
-TODO:
+Observer
+Whatever the case, a new window is opened.
+here the inital snapshot put into the document.
+then the changes are displayed with the appropiate time delay
+
+
+coderefactorings:
+  use same names in json-objects
+  make pagehistory an object.
+
+
 changes include:
   scrollbar movements.
   window resizing.
   zoom of text, if possible
+  test on bigger sites
+  add scroll-bar detection. both mainwindow and divs and such
+  prevent javascript-injection in JSON
 
-Server:
-receive incoming requests. use cookies to identify users, use current domain to identify website.
 
 save those changes.
 deliver on demand by watcher
@@ -25,10 +38,10 @@ deliver on demand by watcher
 have a website where owners of website can see a list of users and
 some summary of their activity. Users can be watched live, or a recorded user-experience can be viewed. 
 
-Observer
-Whatever the case, a new window is opened.
-here the inital snapshot put into the document.
-then the changes are displayed with the appropiate time delay
--a speed-run variant would be nice and easily implemented...
+control speed of replay.
+
+rewind replay to any point
+
+swtich between open windows of current session.
 
 

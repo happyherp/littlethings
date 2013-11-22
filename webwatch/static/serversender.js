@@ -17,6 +17,12 @@ function Serversender(recorder){
    */
   this.sendCount = {first:true,dom:0,mouse:0, focus:0};
   
+  /**
+   * Fires when we get a response from the server after we sent new data.
+   * 
+   */
+  this.onReceive = new Event();
+  
   
   this.startSendLoop = function(){
     this.send_loop_on = true;
@@ -43,7 +49,7 @@ function Serversender(recorder){
 
   this.sendToServer = function(){
     
-    
+    var _this = this;
     if (this.sendCount.first){      
       console.log("sending initial state to server", this.recorder.pagehistory);
       
@@ -52,7 +58,8 @@ function Serversender(recorder){
         console.log("gotresponse", text);
         var response = JSON.parse(text);
         _recorder.pagehistory.id = response.newid;
-        console.log("new id:", _recorder.pagehistory.id);        
+        console.log("new id:", _recorder.pagehistory.id); 
+        _this.onReceive.fire();
       };      
       
       var data ={actions:this.recorder.pagehistory, count:this.sendCount};      
@@ -69,6 +76,7 @@ function Serversender(recorder){
       
       var callback =  function(text){
         console.log("gotresponse", text);
+        _this.onReceive.fire();        
       };
       post("/receiveReplayUpdate", JSON.stringify(newdata), callback);
       this.__updateSendCount();

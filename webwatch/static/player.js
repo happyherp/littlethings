@@ -22,10 +22,18 @@ function Player(history){
     
     //Restore the snapshot.
     document.replaceChild(restore(this.history.start.html), document.childNodes[0]);
+
+    this.addActionsToTimer(this.history);
+   
+    this.timer.run();
+
+  };
+  
+  this.addActionsToTimer = function(history){
     
     if (!this.offset){
       //Set default so that actions begins immediatly. 
-      this.offset = new Date().getTime() - this.history.start.time.getTime();
+      this.offset = new Date().getTime() - history.start.time.getTime();
     }
     
     var _this = this;
@@ -34,20 +42,16 @@ function Player(history){
     };
     
         
-    for (var i=0; i < this.history.actions.length; i++){
-      var callback = saveState(replayAction, this.history.actions[i]);
-      this.timer.addEvent(callback, offsetDate(this.history.actions[i].time));
+    for (var i=0; i < history.actions.length; i++){
+      var callback = saveState(replayAction, history.actions[i]);
+      this.timer.addEvent(callback, offsetDate(history.actions[i].time));
     }
     
     
-    for (var i=0; i < this.history.mouseactions.length; i++){
-      var callback = saveState(replayMouseAction, this.history.mouseactions[i]);
-      this.timer.addEvent(callback, offsetDate(this.history.mouseactions[i].time));
-    }  
-    
-   
-    this.timer.run();
-
+    for (var i=0; i < history.mouseactions.length; i++){
+      var callback = saveState(replayMouseAction, history.mouseactions[i]);
+      this.timer.addEvent(callback, offsetDate(history.mouseactions[i].time));
+    }      
   };
   
   this.stop = function(){
@@ -108,7 +112,7 @@ function Player(history){
       target = target.childNodes[action.target[i]];
     }
 
-    console.log("replaying", action, "On", target);
+    //console.log("replaying", action, "On", target);
     
     if (action.type == "childList"){
       
@@ -119,7 +123,7 @@ function Player(history){
         if (!nodeToRemove){
           console.error("Could not find Node to remove.");
         }
-        console.log("removing", nodeToRemove.outerHTML || nodeToRemove.data);
+        //console.log("removing", nodeToRemove.outerHTML || nodeToRemove.data);
         target.removeChild(nodeToRemove);
         toRemove--;
       }  
@@ -128,13 +132,13 @@ function Player(history){
       if (target.childNodes.length == action.at){    
         for (var i = 0;i<action.inserted.length;i++){
           var newnode = restore(action.inserted[i]);
-          console.log("inserting", newnode, newnode.outerHTML);
+          //console.log("inserting", newnode, newnode.outerHTML);
           target.appendChild(newnode);
         }
       }else{
         for (var i = action.inserted.length-1;i>=0;i--){
           var newnode = restore(action.inserted[i]);
-          console.log("inserting", newnode, newnode.outerHTML);
+          //console.log("inserting", newnode, newnode.outerHTML);
           target.insertBefore(newnode, target.childNodes[action.at]);
         }
       }    
@@ -155,18 +159,20 @@ function Player(history){
     var elem;
     if (converted.nodeType == TextNode){
       elem = document.createTextNode(converted.nodeValue);
-    }else{
+    }else if(converted.nodeType == ElementNode){  
       elem = document.createElement(converted.nodeName);
-
+      
       for (var i=0;i<converted.children.length;i++){
         elem.appendChild(restore(converted.children[i]));    
       }
-
+      
       if (converted.attributes){
         for (attr in converted.attributes){
           elem.setAttribute(attr, converted.attributes[attr]);
         } 
-      }
+      }    
+    }else{
+      console.error("Unknown node type", converted.nodeType);
     }
 
     return elem;
@@ -177,5 +183,7 @@ function fixTimesInPagehistory(pagehistory){
   pagehistory.start.time = new Date(pagehistory.start.time);
   fixTimes(pagehistory.actions);
   fixTimes(pagehistory.mouseactions);
+  fixTimes(pagehistory.focus);
 }
+
   

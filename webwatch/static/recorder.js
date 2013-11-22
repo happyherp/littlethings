@@ -94,7 +94,7 @@ function Recorder(){
       var prevstate = afterState.rewind(mutations[i]);
       states.splice(0, 0, prevstate);
     }
-    console.log("states", states);
+    //console.log("states", states);
 
     //For each mutation create a serializable action, that can be used to recreate
     // the new state from the previous one.
@@ -136,7 +136,7 @@ function Recorder(){
   
      action.removed = mutation.removedNodes.length;
      for (var i = 0; i< mutation.removedNodes.length; i++){
-       console.log("removing", mutation.removedNodes[i]);
+       //console.log("removing", mutation.removedNodes[i]);
        if (!isRelevantNode(mutation.removedNodes[i])){
          console.log("BAD DELETION!", mutation.removedNodes[i]);
        }
@@ -146,7 +146,7 @@ function Recorder(){
      for (var j=0;j<mutation.addedNodes.length;j++){
        var newnode = mutation.addedNodes[j];
        if (isRelevantNode(newnode)){
-         console.log("added", newnode);
+         //console.log("added", newnode);
          action.inserted.push(convertElement(newnode, afterState));
        }
      }
@@ -215,7 +215,7 @@ function Recorder(){
 
   /*Make a snapshot of the current state of the site */
   function snapShot(){
-    return { html:convertElement(document.firstChild, new State()),
+    return { html:convertElement(document.documentElement, new State()),
              time:new Date(),
              url:window.location.href};
   }
@@ -233,16 +233,68 @@ function Recorder(){
   };
   
 
+  /**
+   * Finds a path from the root of the document to the given node, by giving all 
+   * indexes that lead from the root to that node.
+   */
+   function findPath(node, state){
+     
+     if (node == document){
+       return [];
+     }else if (state.getParent(node)){
+       var path = findPath(state.getParent(node), state);
+       path.push(findPosition(node, state));
+       return path;
+     }else{
+       console.error("Could not trace element to document.");
+       return [];
+     }
+   }
+
+   /**
+   * Returns an index that represents the position of the given node, inside the Parent.
+   */
+   function findPosition(node, state){
+     var s = 0;//Nodes skipped, because of irrelevant type.
+     var i = 0; //Count relevant nodes
+     var parentChildNodes = state.getChildren(state.getParent(node)); 
+     while (i+s<parentChildNodes.length){
+       if (parentChildNodes[i+s] == node){
+         return i;
+       }else if (isRelevantNode(parentChildNodes[i+s])) {i++;} else {s++;}
+       
+     }
+   }  
+  
+  
+
 }
 
 function setupRecorder(){
   recorder = new Recorder();
   recorder.record();
   
-  sender = new Serversender(recorder);
-  sender.startSendLoop();
+  serversender = new Serversender(recorder);
+  serversender.startSendLoop();
 }
 
 
+function playrecordLive(){
 
+  //reset cookie   
+  setCookie("webwatchsession", "", 1);
 
+  setupRecorder();
+  
+  //State of cookie is saved in recorder.. reset so nothing more is added
+  // to the session.
+  setCookie("webwatchsession", "", 1);
+
+  
+  //Wait for initial request to be send to server.
+  serversender.onReceive.once(function(){
+    console.log("initial push to server came back.");
+    replaywindow = open("/showSession/"+recorder.pagehistory.sessionId+"/");
+  });
+      
+}
