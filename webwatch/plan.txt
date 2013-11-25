@@ -1,26 +1,9 @@
-Done:
-Observed
-1. Send a snapshot of the complete current state of the website
-2. detect changes, bundle after some timer interval, send as well
-
-changes include:
-  current time
-  modification of visible DOM-Elements. This excludes javascript
-  path the mouse makes. 
-Clicks
-Server:
-  receive incoming requests. use cookies to identify users, use current domain to identify website.
-
-
-Observer
-Whatever the case, a new window is opened.
-here the inital snapshot put into the document.
-then the changes are displayed with the appropiate time delay
-
 
 coderefactorings:
   use same names in json-objects
   make pagehistory an object.
+  use COMET for loading data from server.
+  trigger sentToServer onEvent. No polling.
 
 
 changes include:
@@ -29,11 +12,11 @@ changes include:
   zoom of text, if possible
   test on bigger sites
   add scroll-bar detection. both mainwindow and divs and such
-  prevent javascript-injection in JSON
-
-
-save those changes.
-deliver on demand by watcher
+  input elements. by user and by JS
+  textarea
+  more???
+  
+fix relative src-links.
 
 have a website where owners of website can see a list of users and
 some summary of their activity. Users can be watched live, or a recorded user-experience can be viewed. 

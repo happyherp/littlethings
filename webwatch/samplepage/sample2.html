@@ -39,9 +39,15 @@ move
 	<div id ="D">D</div>
 </div>
 
+<input id="input" type="text" value="hi" />
+
 
 <script>
-window.onload = record;
+window.onload = function(){
+  recorder = new Recorder();
+  recorder.record();
+  
+};
 
 function replayInNewWindow(){
   newwin = open("watcher.html");

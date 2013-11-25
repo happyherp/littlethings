@@ -62,6 +62,11 @@
         moveTree();        
       }
       
+      function changeInputValue(){
+        //this test does not work right because value changes are not reflected in .outerHTML
+        document.getElementById("input").value = "changed";
+      }
+      
 
 
       window.onload = function(){       
@@ -82,7 +87,8 @@
                   moveTree,
                   revMoveRev,
                   doubleReverse,
-                  test1
+                  test1,
+                  changeInputValue
                   ]);
       };
     </script>
@@ -91,7 +97,9 @@
   </head>
   <body>
   
-    <div id = "A">A</div>
+    <div id = "A">A
+      <input type="text" value="hi" id="input" />
+    </div>
     <div id = "B">B</div>
     <div id = "C">C</div>
     <div id ="parent">
