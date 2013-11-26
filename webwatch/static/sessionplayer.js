@@ -6,11 +6,15 @@
 */
 
 
-function Sessionplayer(session, focus){
+function Sessionplayer(session){
   
   this.session = session || null;
   
-  this.focus = focus || [];
+  /**
+   * This array keeps track of all the focus changes in all of the pages 
+   * of this session.
+   */
+  this.focus = [];
   
   this.focustimer = new Timer();
   
@@ -22,7 +26,7 @@ function Sessionplayer(session, focus){
   this.replay = function(){
     console.log("replaying session:", session);
     
-    insertPageFocus();    
+    this.__insertPageFocus();    
     
     //Set offset into the future such that first action happens immediatly.
     this.offset = new Date().getTime() - this.focus[0].time.getTime();
@@ -38,22 +42,28 @@ function Sessionplayer(session, focus){
     
   };
   
-  this.loadNewData = function(session_update){
+  /**
+   * 
+   * loads an Update into the player.
+   * 
+   * @param {array of Pagemodifications}modifications_array
+   * 
+   */
+  this.loadNewData = function(modifications_array){
     //TODO: process focus once its available.
     
-    for (var i = 0; i<session_update.recording_updates.length;i++){
-      var recording_update = session_update.recording_updates[i];
+    for (var i = 0; i<modifications_array.length;i++){
+      var modifications = modifications_array[i];
       
       //Let current player react to update.
-      if (this.pageplayer && this.pageplayer.history.id == recording_update.id){
-        this.pageplayer.addActionsToTimer(recording_update); 
+      if (this.pageplayer && this.pageplayer.history.id == modifications.id){
+        this.pageplayer.addActionsToTimer(modifications); 
       }
 
       //Add to Session-data
-      var record = getRecordById(recording_update.id);
-      record.actions = record.actions.concat(recording_update.actions);
-      record.mouseactions = record.mouseactions.concat(recording_update.mouseactions);
-      record.focus = record.focus.concat(recording_update.focus);
+      var page = getPageById(modifications.id);
+      page.modifications.add(modifications);
+
       
     }
     
@@ -63,13 +73,13 @@ function Sessionplayer(session, focus){
    * insert starttimes of recordings into focus so we switch
    * to the new page, when it was opened.
    */
-  function insertPageFocus(){
+  this.__insertPageFocus = function(){
         
-    for (var i = 0; i<this.session.recordings.length; i++){
+    for (var i = 0; i<this.session.pages.length; i++){
       
       var newfocus = {
-          time:this.session.recordings[i].start.time,
-          record_id : this.session.recordings[i].id
+          time:this.session.pages[i].time,
+          record_id : this.session.pages[i].id
       };
       
       var j = 0;
@@ -83,12 +93,12 @@ function Sessionplayer(session, focus){
   function switchFocus(focus){
     
     if (!this.pageplayer){
-      this.pageplayer = new Player(getRecordById(focus.record_id));
+      this.pageplayer = new Player(getPageById(focus.record_id));
       this.pageplayer.offset = this.offset;
       this.pageplayer.replay();
     }else if (focus.record_id != this.pageplayer.history.id) {
       this.pageplayer.stop();
-      this.pageplayer = new Player(getRecordById(focus.record_id));
+      this.pageplayer = new Player(getPageById(focus.record_id));
       this.pageplayer.offset = this.offset;      
       this.pageplayer.replay();
     }else{
@@ -96,25 +106,14 @@ function Sessionplayer(session, focus){
     }
   }
   
-  function getRecordById(id){
-    for (var i = 0; i<this.session.recordings.length; i++){
-      if (this.session.recordings[i].id == id ){
-        return this.session.recordings[i];
+  function getPageById(id){
+    for (var i = 0; i<this.session.pages.length; i++){
+      if (this.session.pages[i].id == id ){
+        return this.session.pages[i];
       }
     }
     console.error("Could not find recording with id ", id);
     
   }
   
-}
-
-/**
- * replace strings with dates for all session-objects.
- * 
- * @param session
- */
-function fixTimesInSession(session){
-  for (var i = 0; i<session.recordings.length;i++){
-    fixTimesInPagehistory(session.recordings[i]);
-  }  
 }

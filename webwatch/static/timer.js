@@ -14,7 +14,7 @@ function Timer() {
   this.waitingForProcessing = false;
   
   this.onStopProcessing = new Event();
-  
+    
   this.__processQueue = function (){    
     this.waitingForProcessing = false;
     while (this.running && this.queue.length > 0 && this.queue[0].date < new Date()){
@@ -48,7 +48,7 @@ function Timer() {
   
   this.stop = function(){
     this.runnung = false;
-  }
+  };
 
   /**
    * Call the given function on the given time. Calls instantly if date is in

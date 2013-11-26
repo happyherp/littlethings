@@ -4,7 +4,7 @@ coderefactorings:
   make pagehistory an object.
   use COMET for loading data from server.
   trigger sentToServer onEvent. No polling.
-
+  dont use global js-namespace for anything.
 
 changes include:
   scrollbar movements.
@@ -26,5 +26,7 @@ control speed of replay.
 rewind replay to any point
 
 swtich between open windows of current session.
+
+check for possibility of js injection from watched and cross site scripting.
 
 

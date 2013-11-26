@@ -198,3 +198,25 @@ function fixTimes(array){
   }
 }
 
+/**
+ * 
+ * Copies the given attributes from one object to another.
+ * 
+ * Usage copyAttributes(source, dest, attr...)
+ * 
+ */
+function copyAttributes(){
+  var source = arguments[0];
+  var dest = arguments[1];
+  for (var i = 2; i<arguments.length;i++){
+    var attrname = arguments[i];
+    dest[attrname] = source[attrname];
+  }  
+}
+
+function copyAllAttributes(source, dest){
+  for (var key in source){
+    dest[key] = source[key];
+  }
+}
+

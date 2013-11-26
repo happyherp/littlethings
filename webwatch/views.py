@@ -34,11 +34,9 @@ def showReplay(request):
   
   recording = request.session.query(Pagerecording)\
       .filter(Pagerecording.id == request.matchdict["id"]).one()
-      
-  recording_json = json.dumps(recordingToDict(recording))
-    
+          
   return render_to_response('showreplay.mako', 
-                            {"recording_json":recording_json}, 
+                            {"recording":recordingToDict(recording)}, 
                             request=request)  
   
 def showSession(request):
@@ -46,16 +44,11 @@ def showSession(request):
      .filter(Session.id == request.matchdict["id"]).one()
   
   session_dict = {"id":session.id, 
-                  "recordings" : map(recordingToDict, session.recordings)}
+                  "pages" : map(recordingToDict, session.recordings)}
   
-  focuschanges = request.session.query(FocusAction).join(Pagerecording)\
-                   .filter(Pagerecording.session_id == session.id)\
-                   .order_by(FocusAction.time)
-                    
-  focuschangesArr = list( map(focusToDict,focuschanges))
   
   return render_to_response('showsession.mako', 
-                            {"session":session_dict, "focus":focuschangesArr}, 
+                            {"session":session_dict}, 
                             request=request)  
 
 
@@ -72,21 +65,21 @@ def getSessionUpdate(request):
   
     actions = request.session.query(DOMAction)\
                 .filter(DOMAction.record_id == recording_id)\
-                .filter(DOMAction.position >= count["dom"]).all()
+                .filter(DOMAction.position >= count["domactions"]).all()
                 
     mouseactions = request.session.query(MouseAction)\
                 .filter(MouseAction.record_id == recording_id)\
-                .filter(MouseAction.position >= count["mouse"]).all()        
+                .filter(MouseAction.position >= count["mouseactions"]).all()        
                 
     focusactions = request.session.query(FocusAction)\
                 .filter(FocusAction.record_id == recording_id)\
-                .filter(FocusAction.position >= count["focus"]).all()
+                .filter(FocusAction.position >= count["focusactions"]).all()
     allfocus = allfocus + focusactions
               
     recordingupdates.append({          
-        "actions"      : list(map(domActionToDict, actions)),
+        "domactions"      : list(map(domActionToDict, actions)),
         "mouseactions" : list(map(mouseActionToDict, mouseactions)),
-        "focus": list(map(focusToDict, focusactions)),
+        "focusactions": list(map(focusToDict, focusactions)),
         "id":recording_id})
   
   
@@ -94,8 +87,7 @@ def getSessionUpdate(request):
   
   #TODO: add data of new recordings to reponse.
   
-  response = {"recording_updates":recordingupdates,
-              "focus": list(map(focusToDict, allfocus))}
+  response = {"page_updates":recordingupdates}
   
     
   return Response(json.dumps(response))
@@ -103,7 +95,8 @@ def getSessionUpdate(request):
 
 def receiveReplay(request):
   
-  sessionId = request.json_body["actions"]["sessionId"]
+  pagehistory_json = request.json_body["pagehistory"]
+  sessionId = pagehistory_json["sessionId"]
   session = request.session.query(Session)\
                 .filter(Session.id == sessionId).first()
                   
@@ -113,15 +106,15 @@ def receiveReplay(request):
     request.session.add(session)
 
   #process the initial snapshot
-  start = request.json_body["actions"]["start"]
-
-  record = Pagerecording(html = json.dumps(start["html"]), 
-                         time = dateutil.parser.parse(start["time"]),
-                         url = start["url"],
+  record = Pagerecording(starthtml = json.dumps(pagehistory_json["starthtml"]), 
+                         time = dateutil.parser.parse(pagehistory_json["time"]),
+                         url = pagehistory_json["url"],
                          session = session )        
   
   
-  addChildrenToRecording(record, request.json_body)
+  addChildrenToRecording(record, 
+                         request.json_body["pagehistory"]["modifications"],
+                         request.json_body["count"])
 
   request.session.commit()
 
@@ -130,9 +123,9 @@ def receiveReplay(request):
 def receiveReplayUpdate(request):
   
   record = request.session.query(Pagerecording)\
-             .filter(Pagerecording.id == request.json_body["actions"]["id"]).one()
+             .filter(Pagerecording.id == request.json_body["id"]).one()
   
-  addChildrenToRecording(record, request.json_body)
+  addChildrenToRecording(record, request.json_body["modifications"], request.json_body["count"])
   
   request.session.commit()
   

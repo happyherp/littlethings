@@ -17,24 +17,25 @@ function Player(history){
    * The snapshot is restored instantly. Further changes are done relatively to the original time.
    */  
   this.replay = function(){
+    
+    if (!this.offset){
+      //Set default so that actions begins immediatly. 
+      this.offset = new Date().getTime() - this.history.time.getTime();
+    }    
 
     console.log("replaying history", this.history);
     
     //Restore the snapshot.
-    document.replaceChild(restore(this.history.start.html), document.childNodes[0]);
+    document.replaceChild(restore(this.history.starthtml), document.childNodes[0]);
 
-    this.addActionsToTimer(this.history);
+    this.addActionsToTimer(this.history.modifications);
    
     this.timer.run();
 
   };
   
-  this.addActionsToTimer = function(history){
+  this.addActionsToTimer = function(modifications){
     
-    if (!this.offset){
-      //Set default so that actions begins immediatly. 
-      this.offset = new Date().getTime() - history.start.time.getTime();
-    }
     
     var _this = this;
     var offsetDate = function(date){
@@ -42,15 +43,15 @@ function Player(history){
     };
     
         
-    for (var i=0; i < history.actions.length; i++){
-      var callback = saveState(replayAction, history.actions[i]);
-      this.timer.addEvent(callback, offsetDate(history.actions[i].time));
+    for (var i=0; i < modifications.domactions.length; i++){
+      var callback = saveState(replayAction, modifications.domactions[i]);
+      this.timer.addEvent(callback, offsetDate(modifications.domactions[i].time));
     }
     
     
-    for (var i=0; i < history.mouseactions.length; i++){
-      var callback = saveState(replayMouseAction, history.mouseactions[i]);
-      this.timer.addEvent(callback, offsetDate(history.mouseactions[i].time));
+    for (var i=0; i < modifications.mouseactions.length; i++){
+      var callback = saveState(replayMouseAction, modifications.mouseactions[i]);
+      this.timer.addEvent(callback, offsetDate(modifications.mouseactions[i].time));
     }      
   };
   
@@ -179,11 +180,3 @@ function Player(history){
   } 
 }
 
-function fixTimesInPagehistory(pagehistory){
-  pagehistory.start.time = new Date(pagehistory.start.time);
-  fixTimes(pagehistory.actions);
-  fixTimes(pagehistory.mouseactions);
-  fixTimes(pagehistory.focus);
-}
-
-  

@@ -15,7 +15,9 @@ function Serversender(recorder){
   /**
    * Keeps track of how much information have already been sent to the server. 
    */
-  this.sendCount = {first:true,dom:0,mouse:0, focus:0};
+  this.sendCount = new PagemodificationCount(this.recorder.pagehistory.modifications);
+  
+  this.firstSend = true;
   
   /**
    * Fires when we get a response from the server after we sent new data.
@@ -42,15 +44,14 @@ function Serversender(recorder){
    * returns true if there is new data to be send to the server.
    */
   this.__newdata = function(){
-    return !(this.sendCount.dom ==  this.recorder.pagehistory.actions.length
-     && this.sendCount.mouse == this.recorder.pagehistory.mouseactions.length
-     && this.sendCount.focus == this.recorder.pagehistory.focus.length); 
+    return this.sendCount.isOlder(this.recorder.pagehistory.modifications); 
   };
 
   this.sendToServer = function(){
-    
     var _this = this;
-    if (this.sendCount.first){      
+    
+    //Send initial State
+    if (this.firstSend){      
       console.log("sending initial state to server", this.recorder.pagehistory);
       
       var _recorder = this.recorder;
@@ -62,17 +63,19 @@ function Serversender(recorder){
         _this.onReceive.fire();
       };      
       
-      var data ={actions:this.recorder.pagehistory, count:this.sendCount};      
-      post("/receiveReplay", JSON.stringify(data), callback);      
+      var data ={pagehistory:this.recorder.pagehistory, count:this.sendCount};      
+      post("/receiveReplay", JSON.stringify(data), callback); 
+      this.firstSend = false;
       this.__updateSendCount();
       
+    //Send Update  
     }else if (this.recorder.pagehistory.id){     
       console.log("sending update to server. ");      
-      var newdata = {actions: {actions     : this.recorder.pagehistory.actions.slice(this.sendCount.dom),
-                               mouseactions: this.recorder.pagehistory.mouseactions.slice(this.sendCount.mouse),
-                               focus       : this.recorder.pagehistory.focus.slice(this.sendCount.focus),
-                               id          : this.recorder.pagehistory.id},
-                     count:this.sendCount};
+      var newdata = {
+          modifications : this.recorder.pagehistory.modifications.getNewerModifications(this.sendCount),
+          id            : this.recorder.pagehistory.id,
+          count         : this.sendCount
+      };
       
       var callback =  function(text){
         console.log("gotresponse", text);
@@ -82,15 +85,12 @@ function Serversender(recorder){
       this.__updateSendCount();
       
     }else{
-      console.log("Not sending anything because we still have no id.");
+      console.log("Not sending update because we still have no id.");
     }
   };
   
   this.__updateSendCount = function(){
-    this.sendCount = {first: false,
-        dom:   this.recorder.pagehistory.actions.length,
-        mouse: this.recorder.pagehistory.mouseactions.length, 
-        focus: this.recorder.pagehistory.focus.length};    
+    this.sendCount = new PagemodificationCount(this.recorder.pagehistory.modifications);  
   };  
   
 }

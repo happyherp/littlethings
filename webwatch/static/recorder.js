@@ -34,16 +34,12 @@ function Recorder(){
   this.record = function (){
     
     
-    this.pagehistory =  {
-        start:snapShot(), 
-        actions:[],
-        mouseactions:[],
-        focus:[],
-        sessionId: this.getSessionId(),
-        id: null
-                          };    
+    this.pagehistory = new Pagehistory();
+    this.pagehistory.starthtml = convertElement(document.documentElement, new State());
+    this.pagehistory.time = new Date();
+    this.pagehistory.url = window.location.href;
+    this.pagehistory.sessionId = this.getSessionId();
 
-    
     this.mutation_observer = new MutationObserver(recordMutation.bind(this));  
   
     // define what element should be observed by the observer
@@ -108,7 +104,7 @@ function Recorder(){
        var action = mutationToAction(mutation, afterState);
        //console.log("action", action);
 
-       this.pagehistory.actions.push(action);
+       this.pagehistory.modifications.domactions.push(action);
     }
   }    
   
@@ -165,7 +161,7 @@ function Recorder(){
   }
   
   function recordMouseMove(event){
-    this.pagehistory.mouseactions.push({
+    this.pagehistory.modifications.mouseactions.push({
       type:"move",
       x:event.pageX,
       y:event.pageY,
@@ -173,7 +169,7 @@ function Recorder(){
   }
   
   function recordMouseClick(event){
-    this.pagehistory.mouseactions.push({
+    this.pagehistory.modifications.mouseactions.push({
       type:"click",
       x:event.pageX,
       y:event.pageY,
@@ -181,7 +177,7 @@ function Recorder(){
   }
   
   function recordFocus(){
-    this.pagehistory.focus.push({
+    this.pagehistory.modifications.focusactions.push({
       time:new Date()
     });
   }
@@ -212,14 +208,6 @@ function Recorder(){
     }
     return converted;
   }
-
-  /*Make a snapshot of the current state of the site */
-  function snapShot(){
-    return { html:convertElement(document.documentElement, new State()),
-             time:new Date(),
-             url:window.location.href};
-  }
-  
   
   this.getSessionId = function(){
     

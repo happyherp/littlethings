@@ -18,7 +18,7 @@ class Pagerecording(Base):
   id = Column(Integer, primary_key = True, nullable = False)
   session_id = Column(Integer, ForeignKey('Session.id'), nullable = False)
   time = Column(DateTime, nullable = False)
-  html = Column(String, nullable = False)
+  starthtml = Column(String, nullable = False)
   url = Column(String, nullable = False)
   
   session = relationship("Session", 
