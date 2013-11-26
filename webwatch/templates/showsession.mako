@@ -14,9 +14,13 @@
       var session = Session.fromJSON(${json.dumps(session)|n});
       
       var sessionplayer = new Sessionplayer(session);
-      sessionplayer.replay();
-      
       var serverloader = new Serverloader(sessionplayer);
+      
+      //Adjust offset(delay) so that it matches our polling interval and
+      //the replay stays smooth.
+      sessionplayer.minimumOffset = Math.floor(serverloader.pollingInterval * 1.5);
+      
+      sessionplayer.replay();      
       serverloader.start();
       
     </script>

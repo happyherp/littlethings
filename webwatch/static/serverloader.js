@@ -11,6 +11,8 @@ function Serverloader(sessionplayer){
   
   this.onNewData = new Event();
   
+  this.pollingIntervalMS = 1000;
+  
   this.start = function(){
     this.running = true;
     this.__load();
@@ -54,7 +56,7 @@ function Serverloader(sessionplayer){
       
       this.onNewData.fire(session_update);
       
-      window.setTimeout(this.__load.bind(this), 3000);
+      window.setTimeout(this.__load.bind(this), this.pollingIntervalMS);
     }
   };
   

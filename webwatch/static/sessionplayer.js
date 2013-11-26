@@ -1,11 +1,10 @@
+
 /**
 * Plays an entire session of a user that contains multiple replays of single pages.
 * 
 * 
 *
 */
-
-
 function Sessionplayer(session){
   
   this.session = session || null;
@@ -21,6 +20,9 @@ function Sessionplayer(session){
   //Offset in milliseconds from the original recording.
   this.offset = 0;
   
+  //Minimum offset. Important, so replay stays smooth, while we are loading live-data.
+  this.minumumOffset = 0;
+  
   this.pageplayer;
   
   this.replay = function(){
@@ -30,6 +32,9 @@ function Sessionplayer(session){
     
     //Set offset into the future such that first action happens immediatly.
     this.offset = new Date().getTime() - this.focus[0].time.getTime();
+    if (this.offset < this.minumumOffset){
+      this.offset = this.minumumOffset;
+    }
     
     //Set up the timer so the content gets switched to the one that got focus.
     for (var i = 0; i<this.focus.length; i++){
