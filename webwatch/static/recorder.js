@@ -15,8 +15,10 @@ MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 function Recorder(){
   
   
+  //All handler-functions must be known, so they can
+  //removed when recording stops.
   this.mutation_observer = null;  
-  this.mousemove_handler = null;
+  this.mousemove_observer = null;
   this.mouseclick_handler = null;
   this.focus_handler = null;
 
@@ -53,9 +55,11 @@ function Recorder(){
       characterDataOldValue: true
     });
   
-    this.mousemove_handler = recordMouseMove.bind(this);
-    document.body.addEventListener("mousemove",this.mousemove_handler,false);
     
+    this.mousemove_observer = new FastMouseMoveObserver();
+    this.mousemove_observer.event.handlers.push(recordMouseMove.bind(this));
+    this.mousemove_observer.observe();
+          
     this.mouseclick_handler = recordMouseClick.bind(this);
     document.body.addEventListener("mouseup", this.mouseclick_handler, false);
     
@@ -67,8 +71,12 @@ function Recorder(){
   
   this.stopRecording = function(){
     this.mutation_observer.disconnect();
-    document.body.removeEventListener("mousemove", this.mousemove_handler);
+    this.mousemove_observer.disconnect();
+    document.body.removeEventListener("mouseup", this.mouseclick_handler);
+    document.body.removeEventListener("focus", this.focus_handler);
+
   };
+  
   
   function recordMutation(mutations, observer){
 

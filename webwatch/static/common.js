@@ -140,7 +140,7 @@ function Event(){
   
   this.fire = function(){
     for (var i = 0; i< this.handlers.length; i++){
-      this.handlers[i].apply(arguments);
+      this.handlers[i].apply(null, arguments);
     }
   };
   
@@ -219,4 +219,81 @@ function copyAllAttributes(source, dest){
     dest[key] = source[key];
   }
 }
+
+
+/**
+ * An Observer for mouse moves, that only gets fired for a mouse-move
+ * after a certain time has passes. this is done to imporve
+ * performance, as otherwise onMouseMove eats up all the cpu.
+ */
+function FastMouseMoveObserver(){
+  
+  this.event = new Event();
+  
+  this.waittime = 50;
+  
+  var off = 0;
+  var listening = 1;
+  var waitingForTimeout = 2;
+  
+  this.state = off;
+    
+  this.__movelistener = null;
+    
+  this.observe = function(){
+    
+    if (this.state == off){  
+      this.state = listening;
+      this.__register();
+    }
+    
+  };
+  
+  this.disconnect = function(){
+    if (this.state == listening){
+      document.body.removeEventListener("mousemove", this.__movelistener);      
+    }
+    this.state = off;
+  };
+  
+  this.__register = function(){
+      
+    //Movelistener is bound to this. and gets called on the bodys 
+    //mousemove-event. It the removes itself as a listener and
+    //sets a timeout that will reconnect it to the bodys events
+    //after a certain time has passed.
+    this.__movelistener = this.__onMouseMove.bind(this);      
+    
+    document.body.addEventListener("mousemove",this.__movelistener ,false);    
+  
+  };
+  
+  this.__onMouseMove = function(event){
+    
+    if (this.state == listening){
+      document.body.removeEventListener("mousemove", this.__movelistener);
+      this.event.fire(event);   
+      this.state = waitingForTimeout;
+      window.setTimeout(this.__onTimeout.bind(this), this.waittime);
+    
+    }else{
+      throw "Unexpected state " + this.state;
+    }
+    
+  };
+  
+  this.__onTimeout = function(){
+    if (this.state == waitingForTimeout){
+      this.state = listening;
+      this.__register();
+    }else if (this.state == listening || this.state == off){
+      //Do nothing
+    }else{
+      throw "Unexpected state " + this.state;
+    }
+  };
+
+  
+}
+
 
