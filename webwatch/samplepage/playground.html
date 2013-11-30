@@ -5,25 +5,30 @@
 <body>
 
 <script>
+window.addEventListener("scroll", function(e){
+  console.log("scolled", e);
+}, true)
 
-var linkelem = document.createElement("link")
-linkelem.setAttribute("rel", "stylesheet");
-linkelem.setAttribute("type", "text/css");
-linkelem.setAttribute("href", "/samplepage/style.css");
-document.head.appendChild(linkelem);
+/*
+window.onscroll = function(e){
+  console.log("scolled", e);
+};*/
 
-var img = document.createElement("img");
-img.src = "/samplepage/realcat.jpg";
-document.body.appendChild(img);
 
 </script>
 
-<div class="bluediv">
-text
+<img src="realcat.jpg" />
+<img src="realcat.jpg" />
+<img src="realcat.jpg" />
+<img src="realcat.jpg" />
+<img src="realcat.jpg" />
+<img src="realcat.jpg" />
+<img src="realcat.jpg" />
+<img src="realcat.jpg" />
+<div style="height:300px; overflow:scroll" >
+<img src="realcat.jpg" />
+
 </div>
-
-
-
 
 </body>
 </html>

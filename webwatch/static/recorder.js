@@ -56,7 +56,7 @@ function Recorder(){
     });
   
     
-    this.mousemove_observer = new FastMouseMoveObserver();
+    this.mousemove_observer = new IntervalObserver("mousemove");
     this.mousemove_observer.event.handlers.push(recordMouseMove.bind(this));
     this.mousemove_observer.observe();
           

@@ -223,10 +223,12 @@ function copyAllAttributes(source, dest){
 
 /**
  * An Observer for mouse moves, that only gets fired for a mouse-move
- * after a certain time has passes. this is done to imporve
+ * after a certain time has passes. this is done to improve
  * performance, as otherwise onMouseMove eats up all the cpu.
  */
-function FastMouseMoveObserver(){
+function IntervalObserver(eventname){
+  
+  this.eventname = eventname;
   
   this.event = new Event();
   
@@ -251,7 +253,7 @@ function FastMouseMoveObserver(){
   
   this.disconnect = function(){
     if (this.state == listening){
-      document.body.removeEventListener("mousemove", this.__movelistener);      
+      document.body.removeEventListener(this.eventname, this.__movelistener);      
     }
     this.state = off;
   };
@@ -264,14 +266,14 @@ function FastMouseMoveObserver(){
     //after a certain time has passed.
     this.__movelistener = this.__onMouseMove.bind(this);      
     
-    document.body.addEventListener("mousemove",this.__movelistener ,false);    
+    document.body.addEventListener(this.eventname,this.__movelistener ,false);    
   
   };
   
   this.__onMouseMove = function(event){
     
     if (this.state == listening){
-      document.body.removeEventListener("mousemove", this.__movelistener);
+      document.body.removeEventListener(this.eventname, this.__movelistener);
       this.event.fire(event);   
       this.state = waitingForTimeout;
       window.setTimeout(this.__onTimeout.bind(this), this.waittime);
