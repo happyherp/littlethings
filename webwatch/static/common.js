@@ -291,9 +291,14 @@ function FastMouseMoveObserver(){
     }else{
       throw "Unexpected state " + this.state;
     }
-  };
-
-  
+  };  
 }
+
+
+js_event_names = ["onabort", "onblur", "onchange","onclick","ondblclick", "onerror",                  
+"onfocus", "onkeydown", "onkeypress", "onkeyup", "onload", "onmousedown", "onmousemove",
+"onmouseout", "onmouseover", "onmouseup", "onreset", "onselect", "onsubmit", "onunload"]; 
+                  
+                  
 
 

@@ -5,6 +5,8 @@
     <script type="text/javascript" src="/static/player.js"></script>
     <script type="text/javascript" src="/static/timer.js"></script>
     <script type="text/javascript" src="/static/models.js"></script>
+    <script type="text/javascript" src="/static/URI.js"></script>
+    
     
     <%!import json%>
   

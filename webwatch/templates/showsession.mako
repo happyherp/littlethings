@@ -6,6 +6,8 @@
     <script type="text/javascript" src="/static/models.js"></script>
     <script type="text/javascript" src="/static/sessionplayer.js"></script>
     <script type="text/javascript" src="/static/serverloader.js"></script>
+    <script type="text/javascript" src="/static/URI.js"></script>
+    
     
     <%!import json%>
     
