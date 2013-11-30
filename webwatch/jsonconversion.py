@@ -1,6 +1,19 @@
 import json
 import dateutil.parser
+import datetime
 from models import *
+import logging
+
+
+def readJSONDate(datestring):
+  '''parse Dates in the form of 
+  2013-11-30T02:28:25.148Z'''
+  
+  return datetime.datetime.strptime(datestring, "%Y-%m-%dT%H:%M:%S.%fZ")
+
+
+logger =  logging.getLogger("webwatch.jsonconversion")
+
 
 def recordingToDict(recording):
   recording_dict = {"time": recording.time.isoformat(), 
@@ -40,11 +53,11 @@ def mouseActionToDict(mouseaction):
        
 def addChildrenToRecording(record, json_modifications, json_count):
   
-
+  logger.log(logging.DEBUG, "addChildrenToRecording -> Start")
   
   position = json_count["domactions"]
   for action in json_modifications["domactions"]:
-    domaction = DOMAction(time=dateutil.parser.parse(action["time"]),
+    domaction = DOMAction(time=readJSONDate(action["time"], ) ,
                           position=position, recording=record)
     dictToObj(action, domaction, ("type", "target", "at", "inserted", "removed",
                                   "attributeName", "attributeValue", "nodeValue"))      
@@ -52,9 +65,10 @@ def addChildrenToRecording(record, json_modifications, json_count):
     
   position = json_count["mouseactions"]
   for mouseaction in json_modifications["mouseactions"]:
-    actiontime = dateutil.parser.parse(mouseaction["time"])
-    mouseaction_obj = MouseAction(recording = record, position=position,time = actiontime)
-    dictToObj(mouseaction, mouseaction_obj, ("type", "x", "y"))    
+    actiontime = readJSONDate(mouseaction["time"])
+    MouseAction(recording = record, position=position,
+                            time = actiontime, type = mouseaction["type"],
+                            x = mouseaction["x"], y = mouseaction["y"])
     position += 1
     
   #add focus 
@@ -63,6 +77,9 @@ def addChildrenToRecording(record, json_modifications, json_count):
     FocusAction(recording = record, position = position,
                 time = dateutil.parser.parse(focus["time"]))
     position += 1                     
+    
+  logger.log(logging.DEBUG, "addChildrenToRecording -> End")
+
 
 def dictToObj(jsonobj, obj, fields):
   for field in fields:

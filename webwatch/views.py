@@ -7,6 +7,8 @@ from jsonconversion import *
 
 from sqlalchemy.sql import func
 
+import logging
+
 
 def showMainPage(request, message=""):
   response = render_to_response('main.mako', {'message':message}, request=request)
@@ -122,12 +124,16 @@ def receiveReplay(request):
 
 def receiveReplayUpdate(request):
   
+  logging.getLogger("webwatch.views.receiveReplayUpdate").debug("Start")
+  
   record = request.session.query(Pagerecording)\
              .filter(Pagerecording.id == request.json_body["id"]).one()
   
   addChildrenToRecording(record, request.json_body["modifications"], request.json_body["count"])
   
   request.session.commit()
+  
+  logging.getLogger("webwatch.views.receiveReplayUpdate").debug("End")
   
   return Response("OK")
   

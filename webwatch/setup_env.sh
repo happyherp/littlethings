@@ -1,3 +1,8 @@
+
+#python, and easy_install must be installed.
+#for sql-alchemy speedup also python-dev must installied to compile c extensions.
+
+
 #delete old env
 rm env -R
 
@@ -27,4 +32,6 @@ bin/easy_install python_dateutil
 
 #SQLAlchemy
 bin/easy_install https://bitbucket.org/zzzeek/sqlalchemy/downloads/SQLAlchemy-0.9.0b1.tar.gz
+
+
 

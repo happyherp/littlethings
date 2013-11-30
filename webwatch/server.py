@@ -17,6 +17,9 @@ def manageSession(request):
   return session
 
 if __name__ == '__main__':
+  
+  import logconfig
+  logconfig.setup()
 
   here = os.path.dirname(os.path.abspath(__file__))
 
@@ -43,7 +46,8 @@ if __name__ == '__main__':
   app = config.make_wsgi_app()
   server = make_server('0.0.0.0', 8080, app)
 
-  import cProfile
+  server.serve_forever()
+  
+  #import cProfile
   #cProfile.run("server.serve_forever()", "profile.rs")
   
-  server.serve_forever()
