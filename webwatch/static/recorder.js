@@ -17,10 +17,12 @@ function Recorder(){
   
   //All handler-functions must be known, so they can
   //removed when recording stops.
+  this.observers = [];
   this.mutation_observer = null;  
   this.mousemove_observer = null;
   this.mouseclick_handler = null;
   this.focus_handler = null;
+  this.scroll_observer = null;
 
   /**
    * Information about DOM-Changes is collected here.
@@ -65,6 +67,11 @@ function Recorder(){
     
     this.focus_handler = recordFocus.bind(this);
     window.addEventListener("focus",this.focus_handler);
+    
+    this.scroll_observer = new IntervalObserver("scroll");
+    this.scroll_observer.event.handlers.push(this.__recordScroll.bind(this));
+    this.scroll_observer.observe();
+    
   
     console.log("observer online");
   };
@@ -74,6 +81,7 @@ function Recorder(){
     this.mousemove_observer.disconnect();
     document.body.removeEventListener("mouseup", this.mouseclick_handler);
     document.body.removeEventListener("focus", this.focus_handler);
+    this.scroll_observer.disconnect();
 
   };
   
@@ -190,6 +198,17 @@ function Recorder(){
     });
   }
   
+  this.__recordScroll = function(event){
+    
+    this.pagehistory.modifications.scrolls.push({
+      time:new Date(),
+      top:event.scrollTop,
+      left:event.scrollLeft,
+      target:findPath(mutation.target, new State())
+    });
+    
+  };
+  
   
   /*Convert a HTML-Element(or Node) to a serializable JSON-OBject, containing the information we require */
   function convertElement(elem, state){
@@ -261,10 +280,9 @@ function Recorder(){
        
      }
    }  
-  
-  
-
 }
+
+
 
 function setupRecorder(){
   recorder = new Recorder();

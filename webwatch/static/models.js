@@ -53,6 +53,9 @@ Pagehistory.fromJSON = function(json_pagehistory){
 };
 
 
+
+modificationtypes = ["dom", "mouse", "focus", "scroll"];
+
 /**
  * All modifications that happen while the user is on the same site.
  * 
@@ -61,11 +64,11 @@ function Pagemodifications(){
   /**
    * List of all DOM-Modification.
    */
-  this.domactions = [];
   
-  this.mouseactions = [];
+  modificationtypes.map(function(type){
+    this[type+"actions"] = [];
+  }, this);
   
-  this.focusactions = [];
   
   this.pageid = null;
   
@@ -79,10 +82,10 @@ function Pagemodifications(){
   this.getNewerModifications = function(count){
     
     var mod = new Pagemodifications();
-    mod.domactions   = this.domactions.slice(count.domactions);
-    mod.mouseactions = this.mouseactions.slice(count.mouseactions);
-    mod.focusactions = this.focusactions.slice(count.focusactions);
-    
+    modificationtypes.map(function(type){
+      mod[type+"actions"] = this[type+"actions"].slice(count[type+"actions"]);
+    }, this);    
+
     return mod;
   };
   
@@ -91,9 +94,11 @@ function Pagemodifications(){
    * 
    */
   this.add = function(modifications){
-    this.domactions   = this.domactions.concat(modifications.domactions);
-    this.mouseactions = this.mouseactions.concat(modifications.mouseactions);
-    this.focusactions = this.focusactions.concat(modifications.focusactions);    
+    
+    modificationtypes.map(function(type){
+      this[type+"actions"] = this[type+"actions"].concat(modifications[type+"actions"]);
+    }, this);    
+ 
   };
   
 }
@@ -101,9 +106,11 @@ function Pagemodifications(){
 Pagemodifications.fromJSON = function (json_modifications){
   var modifications = new Pagemodifications();
   copyAllAttributes(json_modifications, modifications);
-  fixTimes(modifications.domactions);
-  fixTimes(modifications.mouseactions);
-  fixTimes(modifications.focusactions);
+  
+  modificationtypes.map(function(type){
+    fixTimes(modifications[type+"actions"]);
+  }, this); 
+  
   return modifications;
 };
 
@@ -120,9 +127,9 @@ Pagemodifications.fromJSON = function (json_modifications){
  */
 function PagemodificationCount(pagemodifications){
   
-  this.domactions =   pagemodifications.domactions.length;
-  this.mouseactions = pagemodifications.mouseactions.length;
-  this.focusactions = pagemodifications.focusactions.length;
+  modificationtypes.map(function(type){
+    this[type+"actions"] = pagemodifications[type+"actions"].length;
+  }, this); 
   
   
   /**
@@ -132,9 +139,14 @@ function PagemodificationCount(pagemodifications){
    * @return {boolean}
    */
   this.isOlder = function(pagemodifications){
-    return !(this.domactions ==  pagemodifications.domactions.length
-        && this.mouseactions == pagemodifications.mouseactions.length
-        && this.focusactions == pagemodifications.focusactions.length);    
+     
+    var allSameLength = true;
+    
+    modificationtypes.map(function(type){
+      allSameLength = allSameLength 
+         && this[type+"actions"] == pagemodifications[type+"actions"].length;
+    }, this); 
+    return !allSameLength;   
   };
   
 }
