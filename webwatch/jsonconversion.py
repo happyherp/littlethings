@@ -29,6 +29,8 @@ def recordingToDict(recording):
                        "scrollactions": list(map(scrollToDict, recording.scroll_actions))
                       }
                     } 
+  
+  objToDict(recording, recording_dict, ("windowWidth", "windowHeight"))
     
   return recording_dict
    

@@ -77,11 +77,17 @@ def getSessionUpdate(request):
                 .filter(FocusAction.record_id == recording_id)\
                 .filter(FocusAction.position >= count["focusactions"]).all()
     allfocus = allfocus + focusactions
+    
+    scrollactions = request.session.query(ScrollAction)\
+                .filter(ScrollAction.record_id == recording_id)\
+                .filter(ScrollAction.position >= count["focusactions"]).all()
+    
               
     recordingupdates.append({          
         "domactions"      : list(map(domActionToDict, actions)),
         "mouseactions" : list(map(mouseActionToDict, mouseactions)),
         "focusactions": list(map(focusToDict, focusactions)),
+        "scrollactions": list(map(scrollToDict, scrollactions)),
         "id":recording_id})
   
   
@@ -111,7 +117,10 @@ def receiveReplay(request):
   record = Pagerecording(starthtml = json.dumps(pagehistory_json["starthtml"]), 
                          time = dateutil.parser.parse(pagehistory_json["time"]),
                          url = pagehistory_json["url"],
-                         session = session )        
+                         session = session ,
+                         windowWidth = pagehistory_json["windowWidth"],
+                         windowHeight = pagehistory_json["windowHeight"]
+                         )        
   
   
   addChildrenToRecording(record, 

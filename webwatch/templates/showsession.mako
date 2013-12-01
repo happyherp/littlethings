@@ -22,12 +22,23 @@
       //the replay stays smooth.
       sessionplayer.minimumOffset = Math.floor(serverloader.pollingInterval * 1.5);
       
-      sessionplayer.replay();      
-      serverloader.start();
+      window.onload = function(){
+      
+	      sessionplayer.replay();      
+	      serverloader.start();
+      
+      };
       
     </script>
     
     
   </head>
-<body></body>
+<body>
+
+<!-- Recorded content will be displayed in there. This is needed to simulate the 
+original window-size. -->
+<iframe src="/static/blank.html" id="watchframe" width="500" height="600" name="watchframe">
+</iframe>
+
+</body>
 </html>

@@ -38,10 +38,13 @@ function Recorder(){
   this.record = function (){
     
     
+    //Save State at start of recording.
     this.pagehistory = new Pagehistory();
     this.pagehistory.starthtml = convertElement(document.documentElement, new State());
     this.pagehistory.time = new Date();
     this.pagehistory.url = window.location.href;
+    this.pagehistory.windowWidth = window.innerWidth;
+    this.pagehistory.windowHeight = window.innerHeight;
     this.pagehistory.sessionId = this.getSessionId();
 
     this.mutation_observer = new MutationObserver(recordMutation.bind(this));  

@@ -25,8 +25,11 @@ function Player(history) {
     console.log("replaying history", this.history);
 
     // Restore the snapshot.
-    document.replaceChild(this.restore(this.history.starthtml),
-        document.childNodes[0]);
+    this.getContentDocument().replaceChild(this.restore(this.history.starthtml),
+        this.getContentDocument().childNodes[0]);
+    
+    this.getContentIFrame().setAttribute("width", this.history.windowWidth);
+    this.getContentIFrame().setAttribute("height", this.history.windowHeight);
 
     this.addActionsToTimer(this.history.modifications);
 
@@ -64,8 +67,8 @@ function Player(history) {
   this.replayScrollAction = function(action){
     var target = this.findTarget(action.target);
     
-    if (target == document){
-      window.scrollTo(action.left, action.top);
+    if (target == this.getContentDocument()){
+      this.getContentWindow().scrollTo(action.left, action.top);
     }else{
       target.scrollTop = action.top;
       target.scrollLeft = action.left;
@@ -79,23 +82,23 @@ function Player(history) {
 
     if (mouseaction.type == "move") {
 
-      var fakemouse = document.getElementById("fakemouse");
+      var fakemouse = this.getContentDocument().getElementById("fakemouse");
       if (!fakemouse) {
-        fakemouse = document.createElement("img");
+        fakemouse = this.getContentDocument().createElement("img");
         fakemouse.id = "fakemouse";
         fakemouse.notrelevant = true;
         fakemouse.setAttribute("src", "/static/mouse.png");
         fakemouse.style.position = "absolute";
         fakemouse.style.zIndex = 100;
         fakemouse.zIndex = 100;
-        document.body.appendChild(fakemouse);
+        this.getContentDocument().body.appendChild(fakemouse);
       }
       fakemouse.style.left = mouseaction.x + "px";
       fakemouse.style.top = mouseaction.y + "px";
 
     } else if (mouseaction.type == "click") {
 
-      var clickmarker = document.createElement("div");
+      var clickmarker = this.getContentDocument().createElement("div");
       clickmarker.notrelevant = true;
 
       clickmarker.style.position = "absolute";
@@ -104,12 +107,12 @@ function Player(history) {
       clickmarker.zIndex = 50;
       clickmarker.style.zIndex = 50;
 
-      clickmarker.appendChild(document.createTextNode("*click*"));
-      document.body.appendChild(clickmarker);
+      clickmarker.appendChild(this.getContentDocument().createTextNode("*click*"));
+      this.getContentDocument().body.appendChild(clickmarker);
 
       window.setTimeout(function() {
-        document.body.removeChild(clickmarker);
-      }, 500);
+        this.getContentDocument().body.removeChild(clickmarker);
+      }.bind(this), 500);
 
     } else {
       log.error("unknown mouseaction type.");
@@ -169,9 +172,9 @@ function Player(history) {
 
     var elem;
     if (converted.nodeType == TextNode) {
-      elem = document.createTextNode(converted.nodeValue);
+      elem =  this.getContentDocument().createTextNode(converted.nodeValue);
     } else if (converted.nodeType == ElementNode) {
-      elem = document.createElement(converted.nodeName);
+      elem = this.getContentDocument().createElement(converted.nodeName);
 
       for (var i = 0; i < converted.children.length; i++) {
         elem.appendChild(this.restore(converted.children[i]));
@@ -208,11 +211,23 @@ function Player(history) {
   };
   
   this.findTarget = function(positions){
-    var target = document;
+    var target = this.getContentWindow().document;
     for (var i = 0; i < positions.length; i++) {
       target = relevantChilds(target)[positions[i]];
     }
     return target;
+  };
+  
+  this.getContentDocument = function(){
+    return this.getContentWindow().document;
+  };
+  
+  this.getContentWindow = function(){
+    return this.getContentIFrame().contentWindow;
+  };
+  
+  this.getContentIFrame = function(){
+    return document.getElementById("watchframe");
   };
 
 }

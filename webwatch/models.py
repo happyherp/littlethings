@@ -20,6 +20,8 @@ class Pagerecording(Base):
   time = Column(DateTime, nullable = False)
   starthtml = Column(String, nullable = False)
   url = Column(String, nullable = False)
+  windowWidth = Column(Integer, nullable = False)
+  windowHeight = Column(Integer, nullable = False)
   
   session = relationship("Session", 
                          backref=backref("recordings", cascade="all,delete",  order_by=time))

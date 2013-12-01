@@ -48,7 +48,8 @@ Pagehistory.fromJSON = function(json_pagehistory){
   var pagehistory = new Pagehistory();
   pagehistory.time = new Date(json_pagehistory.time);
   pagehistory.modifications = Pagemodifications.fromJSON(json_pagehistory.modifications);
-  copyAttributes(json_pagehistory, pagehistory, "starthtml", "url", "sessionId", "id");
+  copyAttributes(json_pagehistory, pagehistory, 
+      "starthtml", "url", "sessionId", "id", "windowWidth", "windowHeight");
   return pagehistory;
 };
 
