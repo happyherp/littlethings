@@ -60,10 +60,26 @@ class MouseAction(Base):
                            backref=backref("mouse_actions", cascade="all,delete", order_by=position))  
   
 class FocusAction(Base):
-  __tablename__="Focus"
+  __tablename__="Focusaction"
   record_id = Column(Integer, ForeignKey('Pagerecording.id'), primary_key = True, nullable = False)
   position = Column(Integer, primary_key = True, nullable = False)
   time = Column(DateTime, nullable = False)   
   
   recording = relationship("Pagerecording", 
-                         backref=backref("focus_actions", cascade="all,delete", order_by=position))  
+                         backref=backref("focus_actions", cascade="all,delete", order_by=position))
+  
+  
+class ScrollAction(Base):
+  __tablename__="Scrollaction"
+  record_id = Column(Integer, ForeignKey('Pagerecording.id'), primary_key = True, nullable = False)
+  position = Column(Integer, primary_key = True, nullable = False)
+  time = Column(DateTime, nullable = False) 
+  target = Column(String, nullable = False)
+  left = Column(Integer, nullable = False)
+  top = Column(Integer, nullable = False)  
+  
+  recording = relationship("Pagerecording", 
+                         backref=backref("scroll_actions", cascade="all,delete", order_by=position))  
+  
+  
+      

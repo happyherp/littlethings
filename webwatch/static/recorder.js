@@ -58,7 +58,7 @@ function Recorder(){
     });
   
     
-    this.mousemove_observer = new IntervalObserver("mousemove");
+    this.mousemove_observer = new IntervalObserver(document.body, "mousemove",false);
     this.mousemove_observer.event.handlers.push(recordMouseMove.bind(this));
     this.mousemove_observer.observe();
           
@@ -68,7 +68,7 @@ function Recorder(){
     this.focus_handler = recordFocus.bind(this);
     window.addEventListener("focus",this.focus_handler);
     
-    this.scroll_observer = new IntervalObserver("scroll");
+    this.scroll_observer = new IntervalObserver(window, "scroll", true);
     this.scroll_observer.event.handlers.push(this.__recordScroll.bind(this));
     this.scroll_observer.observe();
     
@@ -199,12 +199,24 @@ function Recorder(){
   }
   
   this.__recordScroll = function(event){
+    console.log("adding scroll action");
     
-    this.pagehistory.modifications.scrolls.push({
+    var left;
+    var top;
+    if (event.target == document){
+      left = window.scrollX;
+      top = window.scrollY;
+    }else{
+      left = event.target.scrollLeft;
+      top = event.target.scrollTop;
+    }
+    
+    
+    this.pagehistory.modifications.scrollactions.push({
       time:new Date(),
-      top:event.scrollTop,
-      left:event.scrollLeft,
-      target:findPath(mutation.target, new State())
+      left:left,
+      top:top,
+      target:findPath(event.target, new State())
     });
     
   };

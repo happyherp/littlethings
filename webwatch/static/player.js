@@ -40,27 +40,42 @@ function Player(history) {
     var offsetDate = function(date) {
       return new Date(date.getTime() + _this.offset);
     };
-
-    for (var i = 0; i < modifications.domactions.length; i++) {
-      var callback = saveState(this.replayAction.bind(this), 
-                               modifications.domactions[i]);
-      this.timer.addEvent(callback,
-          offsetDate(modifications.domactions[i].time));
+    
+    function addToTimer(actions, replayfunction){
+      actions.map(function(action){
+        var callback = function(){
+          replayfunction.bind(_this)(action);
+        };
+        _this.timer.addEvent(callback, offsetDate(action.time));
+      });
     }
-
-    for (var i = 0; i < modifications.mouseactions.length; i++) {
-      var callback = saveState(replayMouseAction, modifications.mouseactions[i]);
-      this.timer.addEvent(callback,
-          offsetDate(modifications.mouseactions[i].time));
-    }
+    
+    addToTimer(modifications.domactions, this.replayAction);
+    addToTimer(modifications.mouseactions, this.replayMouseAction);
+    addToTimer(modifications.scrollactions, this.replayScrollAction);
+    
+    
   };
 
   this.stop = function() {
     this.timer.stop();
   };
+  
+  this.replayScrollAction = function(action){
+    var target = this.findTarget(action.target);
+    
+    if (target == document){
+      window.scrollTo(action.left, action.top);
+    }else{
+      target.scrollTop = action.top;
+      target.scrollLeft = action.left;
+    }
+    
+    
+  };
 
   // * Recreates a mouse move */
-  function replayMouseAction(mouseaction) {
+  this.replayMouseAction = function(mouseaction) {
 
     if (mouseaction.type == "move") {
 
@@ -99,17 +114,14 @@ function Player(history) {
     } else {
       log.error("unknown mouseaction type.");
     }
-  }
+  };
 
   /**
    * Does a single action.
    */
   this.replayAction = function(action) {
 
-    var target = document;
-    for (var i = 0; i < action.target.length; i++) {
-      target = target.childNodes[action.target[i]];
-    }
+    var target = this.findTarget(action.target);
 
     // console.log("replaying", action, "On", target);
 
@@ -193,6 +205,14 @@ function Player(history) {
     }
   
 
+  };
+  
+  this.findTarget = function(positions){
+    var target = document;
+    for (var i = 0; i < positions.length; i++) {
+      target = relevantChilds(target)[positions[i]];
+    }
+    return target;
   };
 
 }

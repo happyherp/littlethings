@@ -226,9 +226,11 @@ function copyAllAttributes(source, dest){
  * after a certain time has passes. this is done to improve
  * performance, as otherwise onMouseMove eats up all the cpu.
  */
-function IntervalObserver(eventname){
+function IntervalObserver(eventsource, eventname, bubbles){
   
+  this.eventsource = eventsource;
   this.eventname = eventname;
+  this.bubbles = bubbles;
   
   this.event = new Event();
   
@@ -264,16 +266,16 @@ function IntervalObserver(eventname){
     //mousemove-event. It the removes itself as a listener and
     //sets a timeout that will reconnect it to the bodys events
     //after a certain time has passed.
-    this.__movelistener = this.__onMouseMove.bind(this);      
+    this.__movelistener = this.__onEventFired.bind(this);      
     
-    document.body.addEventListener(this.eventname,this.__movelistener ,false);    
+    eventsource.addEventListener(this.eventname,this.__movelistener ,this.bubbles);    
   
   };
   
-  this.__onMouseMove = function(event){
+  this.__onEventFired = function(event){
     
     if (this.state == listening){
-      document.body.removeEventListener(this.eventname, this.__movelistener);
+      eventsource.removeEventListener(this.eventname, this.__movelistener, this.bubbles);
       this.event.fire(event);   
       this.state = waitingForTimeout;
       window.setTimeout(this.__onTimeout.bind(this), this.waittime);
