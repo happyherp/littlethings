@@ -26,7 +26,8 @@ def recordingToDict(recording):
                        "domactions"   : list(map(domActionToDict, recording.dom_actions)),
                        "mouseactions" : list(map(mouseActionToDict, recording.mouse_actions)),
                        "focusactions" : list(map(focusToDict, recording.focus_actions)),
-                       "scrollactions": list(map(scrollToDict, recording.scroll_actions))
+                       "scrollactions": list(map(scrollToDict, recording.scroll_actions)),
+                       "resizeactions": list(map(resizeToDict, recording.resize_actions))                       
                       }
                     } 
   
@@ -56,6 +57,13 @@ def scrollToDict(scroll):
   objToDict(scroll, scroll_dict, ("record_id", "position", "left", "top"))
   
   return scroll_dict;
+
+def resizeToDict(resize):
+  resize_dict = {"time":resize.time.isoformat()}
+  
+  objToDict(resize, resize_dict, ("record_id", "position", "windowWidth", "windowHeight"))
+  
+  return resize_dict;
   
 def mouseActionToDict(mouseaction):   
   mouseaction_dict = {"time"     :mouseaction.time.isoformat()}
@@ -96,7 +104,17 @@ def addChildrenToRecording(record, json_modifications, json_count):
                  position = position,
                  time = dateutil.parser.parse(scroll_dict["time"]))
     dictToObj(scroll_dict, scrollaction, ("left", "top", "target"))
-    position += 1                     
+    position += 1        
+    
+    
+  position = json_count["resizeactions"]
+  for resize_dict in json_modifications["resizeactions"]:
+    resizeaction = ResizeAction(
+                 recording = record, 
+                 position = position,
+                 time = dateutil.parser.parse(resize_dict["time"]))
+    dictToObj(resize_dict, resizeaction, ("windowWidth", "windowHeight"))
+    position += 1                      
     
   logger.log(logging.DEBUG, "addChildrenToRecording -> End")
 

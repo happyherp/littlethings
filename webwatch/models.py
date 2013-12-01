@@ -84,4 +84,16 @@ class ScrollAction(Base):
                          backref=backref("scroll_actions", cascade="all,delete", order_by=position))  
   
   
+  
+class ResizeAction(Base):
+  __tablename__="Resizeaction"
+  record_id = Column(Integer, ForeignKey('Pagerecording.id'), primary_key = True, nullable = False)
+  position = Column(Integer, primary_key = True, nullable = False)
+  time = Column(DateTime, nullable = False) 
+  windowWidth = Column(Integer, nullable = False)
+  windowHeight = Column(Integer, nullable = False)  
+  
+  recording = relationship("Pagerecording", 
+                         backref=backref("resize_actions", cascade="all,delete", order_by=position))  
+    
       

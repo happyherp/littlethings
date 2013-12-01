@@ -11,6 +11,8 @@ function Serverloader(sessionplayer){
   
   this.windowhasfocus = false;
   
+  this.only_load_with_focus = false;
+  
   
   this.onNewData = new Event();
   
@@ -37,7 +39,7 @@ function Serverloader(sessionplayer){
   };
   
   this.__load = function(){
-    if (this.running && this.windowhasfocus){
+    if (this.running && (this.windowhasfocus || !this.only_load_with_focus)){
       var data = [];
       
       for (var i = 0 ; i < this.sessionplayer.session.pages.length;i++){
@@ -54,7 +56,7 @@ function Serverloader(sessionplayer){
       console.log("serverloading requests new data.", data);
       post("/getSessionUpdate", JSON.stringify(data), this.__processResponse.bind(this));
       
-    }else if (this.running){
+    }else if (this.running && this.only_load_with_focus){
       //We don't have focus right now. try again.
       window.setTimeout(this.__load.bind(this),40);
     }

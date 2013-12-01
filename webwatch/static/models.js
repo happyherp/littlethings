@@ -55,7 +55,7 @@ Pagehistory.fromJSON = function(json_pagehistory){
 
 
 
-modificationtypes = ["dom", "mouse", "focus", "scroll"];
+modificationtypes = ["dom", "mouse", "focus", "scroll", "resize"];
 
 /**
  * All modifications that happen while the user is on the same site.

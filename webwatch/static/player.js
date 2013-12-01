@@ -28,8 +28,7 @@ function Player(history) {
     this.getContentDocument().replaceChild(this.restore(this.history.starthtml),
         this.getContentDocument().childNodes[0]);
     
-    this.getContentIFrame().setAttribute("width", this.history.windowWidth);
-    this.getContentIFrame().setAttribute("height", this.history.windowHeight);
+    this.resizeContentWindow(this.history),
 
     this.addActionsToTimer(this.history.modifications);
 
@@ -56,6 +55,7 @@ function Player(history) {
     addToTimer(modifications.domactions, this.replayAction);
     addToTimer(modifications.mouseactions, this.replayMouseAction);
     addToTimer(modifications.scrollactions, this.replayScrollAction);
+    addToTimer(modifications.resizeactions, this.resizeContentWindow);
     
     
   };
@@ -84,17 +84,26 @@ function Player(history) {
 
       var fakemouse = this.getContentDocument().getElementById("fakemouse");
       if (!fakemouse) {
-        fakemouse = this.getContentDocument().createElement("img");
+        fakemouse = this.getContentDocument().createElement("div");
         fakemouse.id = "fakemouse";
         fakemouse.notrelevant = true;
-        fakemouse.setAttribute("src", "/static/mouse.png");
         fakemouse.style.position = "absolute";
         fakemouse.style.zIndex = 100;
         fakemouse.zIndex = 100;
+        
+        var img = this.getContentDocument().createElement("img");
+        img.setAttribute("src", "/static/mouse.png");
+        img.style.position = "relative";
+        img.style.top = "-5px";//Correct for bad image-margin.        
+        img.style.left = "-3px";//Correct for bad image-margin.        
+        fakemouse.appendChild(img);
+        
+        
+        
         this.getContentDocument().body.appendChild(fakemouse);
       }
       fakemouse.style.left = mouseaction.x + "px";
-      fakemouse.style.top = mouseaction.y + "px";
+      fakemouse.style.top = mouseaction.y + "px" ;
 
     } else if (mouseaction.type == "click") {
 
@@ -228,6 +237,15 @@ function Player(history) {
   
   this.getContentIFrame = function(){
     return document.getElementById("watchframe");
+  };
+  
+  /**
+   * obj must have .windowHeight and .windowWidth.
+   * 
+   */
+  this.resizeContentWindow = function(obj){
+    this.getContentIFrame().setAttribute("width", obj.windowWidth);
+    this.getContentIFrame().setAttribute("height", obj.windowHeight);
   };
 
 }

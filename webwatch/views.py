@@ -80,14 +80,18 @@ def getSessionUpdate(request):
     
     scrollactions = request.session.query(ScrollAction)\
                 .filter(ScrollAction.record_id == recording_id)\
-                .filter(ScrollAction.position >= count["focusactions"]).all()
+                .filter(ScrollAction.position >= count["scrollactions"]).all()
     
+    resizeactions = request.session.query(ResizeAction)\
+                .filter(ResizeAction.record_id == recording_id)\
+                .filter(ResizeAction.position >= count["resizeactions"]).all()    
               
     recordingupdates.append({          
-        "domactions"      : list(map(domActionToDict, actions)),
+        "domactions"   : list(map(domActionToDict, actions)),
         "mouseactions" : list(map(mouseActionToDict, mouseactions)),
-        "focusactions": list(map(focusToDict, focusactions)),
+        "focusactions" : list(map(focusToDict, focusactions)),
         "scrollactions": list(map(scrollToDict, scrollactions)),
+        "resizeactions": list(map(resizeToDict, resizeactions)),
         "id":recording_id})
   
   

@@ -23,6 +23,7 @@ function Recorder(){
   this.mouseclick_handler = null;
   this.focus_handler = null;
   this.scroll_observer = null;
+  this.resize_handler = null;
 
   /**
    * Information about DOM-Changes is collected here.
@@ -75,6 +76,9 @@ function Recorder(){
     this.scroll_observer.event.handlers.push(this.__recordScroll.bind(this));
     this.scroll_observer.observe();
     
+    this.resize_handler = this.__recordResize.bind(this);
+    window.addEventListener("resize", this.resize_handler);
+    
   
     console.log("observer online");
   };
@@ -83,8 +87,9 @@ function Recorder(){
     this.mutation_observer.disconnect();
     this.mousemove_observer.disconnect();
     document.body.removeEventListener("mouseup", this.mouseclick_handler);
-    document.body.removeEventListener("focus", this.focus_handler);
+    window.removeEventListener("focus", this.focus_handler);
     this.scroll_observer.disconnect();
+    window.removeEventListener("resize", this.resize_handler)
 
   };
   
@@ -202,7 +207,6 @@ function Recorder(){
   }
   
   this.__recordScroll = function(event){
-    console.log("adding scroll action");
     
     var left;
     var top;
@@ -212,8 +216,7 @@ function Recorder(){
     }else{
       left = event.target.scrollLeft;
       top = event.target.scrollTop;
-    }
-    
+    }    
     
     this.pagehistory.modifications.scrollactions.push({
       time:new Date(),
@@ -222,6 +225,14 @@ function Recorder(){
       target:findPath(event.target, new State())
     });
     
+  };
+  
+  this.__recordResize = function(event){
+    this.pagehistory.modifications.resizeactions.push({
+      time:new Date(),
+      windowWidth:window.innerWidth,
+      windowHeight:window.innerHeight
+    });
   };
   
   
