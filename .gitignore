@@ -4,3 +4,4 @@
 Servers/
 RemoteSystemsTempFiles/
 *.classpath
+.gradle
