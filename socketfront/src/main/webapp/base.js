@@ -1,7 +1,7 @@
 var ws = null;
 
-function connect() {
-	var target = 'ws://' + window.location.host + '/socketfront/guiEndpoint';
+function connect(endpoint) {
+	var target = 'ws://' + window.location.host + '/socketfront/'+endpoint;
 	console.log("connecting");
 	if ('WebSocket' in window) {
 		ws = new WebSocket(target);

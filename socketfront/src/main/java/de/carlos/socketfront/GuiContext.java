@@ -12,6 +12,9 @@ public class GuiContext {
     
     private Map<String, Widget> idToWidget = new HashMap<String, Widget>();
     private Map<Widget, String> widgetToid = new HashMap<Widget, String>();
+    
+    private MainPane mainPane;
+
 
     public JSPipe getJsPipe() {
         return jsPipe;
@@ -37,6 +40,15 @@ public class GuiContext {
     public void generateId(Widget widget) {
 	String id = String.format("generated:%d", new Random().nextInt());
 	setId(widget, id);	
+    }
+    
+
+    public MainPane getMainPane() {
+        return mainPane;
+    }
+
+    public void setMainPane(MainPane mainPane) {
+        this.mainPane = mainPane;
     }
 
 }
