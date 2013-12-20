@@ -10,13 +10,13 @@ public class Button extends WidgetBase {
     
     public Observable<ClickEvent> onclick = new Observable<ClickEvent>();
         
-    public Button(JSPipe pipe, String caption) {
-	super(pipe);
-	generateId();
+    public Button(GuiContext context, String caption) {
+	super(context);
+	context.generateId(this);
 	this.caption = caption;
 	this.jsPipe.addStatement(
 		String.format("new Button(%s, %s);\n", 
-			JSONObject.quote(this.id), 
+			JSONObject.quote(this.getId()), 
 			JSONObject.quote(this.caption)));
     }
 
@@ -26,6 +26,13 @@ public class Button extends WidgetBase {
         
     public Observable<ClickEvent> getOnClick(){
 	return this.onclick;
+    }
+    
+    @Override
+    public void receiveEvent(JSONObject jsonevent){
+	ClickEvent event = new ClickEvent();
+	event.setSource(this);
+	this.onclick.fire(event);
     }
 
 }

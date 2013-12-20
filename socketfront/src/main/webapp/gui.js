@@ -47,14 +47,16 @@ Button = function(id, caption) {
 	this.captionDiv.appendChild(document.createTextNode(this.caption));
 	this.mainDiv.appendChild(this.captionDiv);
 
-	this.mainDiv.onclick = this.clickHandler;
+	this.mainDiv.onclick = this.clickHandler.bind(this);
 
 };
 
 Button.prototype.clickHandler = function(e) {
 	console.log("button clicked", e);
 	var event = {
-			id:this.id
+			id:this.id,
+			type:"click",
+			data:e
 			};
 	ws.send(JSON.stringify(event));
 };

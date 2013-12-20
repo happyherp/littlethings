@@ -7,6 +7,7 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 
 import de.carlos.observer.Observer;
 
@@ -21,7 +22,7 @@ public class GuiEndpoint {
     
     MainPane mainPane;
     
-    JSPipe jsPipe;
+    GuiContext context;
     
     int buttoncount = 1;
 
@@ -38,11 +39,13 @@ public class GuiEndpoint {
 	LOGGER.debug( "Connection open!.");
 	session.getAsyncRemote().sendText("alert(\"here we go\");");
 	
-	jsPipe = new JSPipe(session);
+	//Setup
+	context = new GuiContext();
+	context.setJsPipe(new JSPipe(session));
+	mainPane = new MainPane(context);
 	
-	mainPane = new MainPane(jsPipe);
-	
-	Button first = new Button(jsPipe, "More buttons");
+	//Create a button that makes more buttons.
+	Button first = new Button(context, "More buttons");
 	
 	mainPane.add(first);
 
@@ -51,14 +54,14 @@ public class GuiEndpoint {
 	    
 	    @Override
 	    public void update(ClickEvent event) {
-		Button newbutton = new Button(jsPipe, "Button number "+ buttoncount);
+		Button newbutton = new Button(context, "Button number "+ buttoncount);
 		buttoncount++;
 		mainPane.add(newbutton);
 		
 		newbutton.getOnClick().getObservers().add(new Observer<ClickEvent>() {		    
 		    @Override
 		    public void update(ClickEvent event) {
-			jsPipe.addStatement("alert(\"Button clicked!\");");			
+			context.getJsPipe().addStatement("alert(\"Button clicked!\");");			
 		    }
 		});		
 	    }
@@ -72,6 +75,17 @@ public class GuiEndpoint {
     @OnMessage
     public void receiveEvent(Session session, String msg, boolean last) {
 	LOGGER.debug( "Got an event! Message: "+ msg);
+	
+	JSONObject event = new JSONObject(msg);
+	
+	String id = event.getString("id");
+	
+	Widget widget = context.getWidget(id);
+	if (widget == null){
+	    LOGGER.warn("Could not find widget with id: "+ id);
+	}
+	widget.receiveEvent(event);
+	
     }
 
 }
