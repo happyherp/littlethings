@@ -2,6 +2,10 @@ package de.carlos.socketfront;
 
 import org.json.JSONObject;
 
+import de.carlos.socketfront.widgets.Parent;
+import de.carlos.socketfront.widgets.Widget;
+import de.carlos.socketfront.widgets.WidgetBase;
+
 public class MainPane extends WidgetBase implements Parent {
 
     protected MainPane(GuiContext context) {

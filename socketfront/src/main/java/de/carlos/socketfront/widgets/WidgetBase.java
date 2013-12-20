@@ -1,9 +1,10 @@
-package de.carlos.socketfront;
-
-import java.util.Random;
+package de.carlos.socketfront.widgets;
 
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
+
+import de.carlos.socketfront.GuiContext;
+import de.carlos.socketfront.JSPipe;
 
 public class WidgetBase implements Widget {
 
@@ -35,6 +36,10 @@ public class WidgetBase implements Widget {
     @Override
     public void receiveEvent(JSONObject event) {
 	LOGGER.info("Unhandled Event received: " + event.toString(2));
+    }
+    
+    protected String getJSObject(){
+	return String.format("idToWidget[%s]", JSONObject.quote(this.getId()));
     }
 
 }

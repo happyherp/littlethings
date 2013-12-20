@@ -10,23 +10,21 @@ import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 import de.carlos.observer.Observer;
-
-
+import de.carlos.socketfront.widgets.Button;
+import de.carlos.socketfront.widgets.ClickEvent;
+import de.carlos.socketfront.widgets.TextInput;
+import de.carlos.socketfront.widgets.Widget;
 
 @ServerEndpoint("/guiEndpoint")
 public class GuiEndpoint {
-    
-    
-    
+           
     private static Logger LOGGER = Logger.getLogger(GuiEndpoint.class);
     
-    MainPane mainPane;
-    
-    GuiContext context;
-    
-    int buttoncount = 1;
+    MainPane mainPane;    
+    GuiContext context;   
+    int buttoncount = 1;    
+    TextInput textinput;
 
-    
     
     public GuiEndpoint(){
 	super();
@@ -37,7 +35,6 @@ public class GuiEndpoint {
     @OnOpen
     public void createStuff(Session session, EndpointConfig config) {
 	LOGGER.debug( "Connection open!.");
-	session.getAsyncRemote().sendText("alert(\"here we go\");");
 	
 	//Setup
 	context = new GuiContext();
@@ -65,11 +62,20 @@ public class GuiEndpoint {
 		    }
 		});		
 	    }
+	});	
+	
+	textinput = new TextInput(context);
+	textinput.setValue("Edit me!");
+	mainPane.add(textinput);
+	
+	Button submit = new Button(context, "Eingabe");
+	submit.getOnClick().getObservers().add(new Observer<ClickEvent>() {
+	    @Override
+	    public void update(ClickEvent event) {
+		context.getJsPipe().addStatement("alert(\""+textinput.getValue()+"\");\n");
+	    }
 	});
-	
-	
-	
-	
+	mainPane.add(submit);
     }
 
     @OnMessage
@@ -84,8 +90,7 @@ public class GuiEndpoint {
 	if (widget == null){
 	    LOGGER.warn("Could not find widget with id: "+ id);
 	}
-	widget.receiveEvent(event);
-	
+	widget.receiveEvent(event);	
     }
 
 }

@@ -1,4 +1,4 @@
-package de.carlos.socketfront;
+package de.carlos.socketfront.widgets;
 
 public class ClickEvent {
     
