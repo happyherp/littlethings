@@ -8,7 +8,9 @@ import javax.websocket.server.ServerEndpoint;
 
 import de.carlos.observer.Observer;
 import de.carlos.socketfront.widgets.Button;
+import de.carlos.socketfront.widgets.Checkbox;
 import de.carlos.socketfront.widgets.ClickEvent;
+import de.carlos.socketfront.widgets.Select;
 import de.carlos.socketfront.widgets.TextInput;
 
 @ServerEndpoint("/testGuiEndpoint")
@@ -17,6 +19,8 @@ public class TestGUI extends GuiEndpoint {
     GuiContext context;
     int buttoncount = 1;    
     TextInput textinput;
+    Checkbox box;
+    Select<Double> select;
 
     @Override
     public void onStart(GuiContext ctx) {
@@ -57,6 +61,40 @@ public class TestGUI extends GuiEndpoint {
 	    }
 	});
 	context.getMainPane().add(submit);
+	
+	
+	
+	box = new Checkbox(context);
+	context.getMainPane().add(box);
+	
+	Button toggle = new Button(context, "Toggle");
+	toggle.getOnClick().getObservers().add(new Observer<ClickEvent>() {
+	    @Override
+	    public void update(ClickEvent event) {
+		box.setValue(!box.getValue());
+	    }
+	});
+	context.getMainPane().add(toggle);
+	
+	
+	select = new Select<Double>(context);	
+	select.addOption("half", 0.5);
+	select.addOption("a third", 0.3);
+	select.addOption("pii", Math.PI);
+	select.setSelected(0.3);
+	context.getMainPane().add(select);
+	
+	Button selectButton = new Button(ctx, "show selection");
+	selectButton.getOnClick().getObservers().add(new Observer<ClickEvent>() {
+	    @Override
+	    public void update(ClickEvent event) {
+		context.getJsPipe().addStatement("alert(\""+ select.getSelected() +"\")");
+		
+	    }
+	});
+	
+	context.getMainPane().add(selectButton);
+	
 	
     }
     

@@ -41,5 +41,22 @@ public class WidgetBase implements Widget {
     protected String getJSObject(){
 	return String.format("idToWidget[%s]", JSONObject.quote(this.getId()));
     }
+    
+    protected void callThisJS(String method, Object... args){
+	String call = getJSObject()+"."+method+"(";
+	
+	if (args.length > 0){
+	    call += JSONObject.valueToString(args[0]);
+	    for (int i = 1 ; i< args.length; i++){
+		call += ","+ JSONObject.valueToString(args[i]);
+	    }
+	}
+	call += ");\n";
+	this.jsPipe.addStatement(call);
+    }
+    protected void callConstructorWithId(String constructorname){
+	context.getJsPipe().addStatement(
+		String.format("new %s(%s);\n", constructorname, JSONObject.quote(getId())));
+    }
 
 }
