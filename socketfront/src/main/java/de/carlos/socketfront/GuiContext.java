@@ -16,6 +16,8 @@ public class GuiContext {
     private Map<Widget, String> widgetToid = new HashMap<Widget, String>();
     
     private MainPane mainPane;
+    
+    int idCount = 0;
 
     public <T extends Widget> T addWidget(T widget){
 	widget.setContext(this);
@@ -53,7 +55,13 @@ public class GuiContext {
     }
 
     public void generateId(Widget widget) {
-	String id = String.format("generated:%d", new Random().nextInt());
+	
+	String id = String.format("generated:%d", this.idCount);
+	while (this.idToWidget.containsKey(id)){
+	    this.idCount++;
+	    id = String.format("generated:%d", this.idCount);
+	}
+	
 	setId(widget, id);	
     }
     
@@ -64,6 +72,11 @@ public class GuiContext {
 
     public void setMainPane(MainPane mainPane) {
         this.mainPane = mainPane;
+    }
+
+    public void removeWidget(Widget widgetBase) {
+	this.idToWidget.remove(widgetBase.getId());
+	this.widgetToid.remove(widgetBase);	
     }
 
 }

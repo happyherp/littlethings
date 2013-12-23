@@ -1,7 +1,8 @@
 var ws = null;
 
-function connect(endpoint) {
-	var target = 'ws://' + window.location.host + '/socketfront/'+endpoint;
+function connect(guiname) {
+	var endpoint = "guiEndpoint";
+	var target = 'ws://' + window.location.host + '/socketfront/'+endpoint+ "/"+guiname;
 	console.log("connecting");
 	if ('WebSocket' in window) {
 		ws = new WebSocket(target);
@@ -37,6 +38,17 @@ function copyObj(obj){
 		copy[key] = obj[key];
 	}
 	return copy;
+}
+
+/**
+ * Extends the destinations prototype with all methods from the sources prototype.
+ * @param source
+ * @param dest
+ */
+function extend(source, dest){
+	for (var key in source.prototype){
+		dest.prototype[key] = source.prototype[key];
+	}	
 }
 
 

@@ -15,6 +15,19 @@ Widget.prototype.addTo = function(widgetId){
 	idToWidget[widgetId].appendChild(this);
 };
 
+Widget.prototype.setPositionAbsolute = function(x,y){
+	this.mainDiv.style.position = "absolute";
+	this.mainDiv.style.left = x;
+	this.mainDiv.style.top = y;
+};
+
+Widget.prototype.remove = function(){
+	idToWidget[this.id] = undefined;
+	if (this.mainDiv.parentNode != null){
+		this.mainDiv.parentNode.removeChild(this.mainDiv);
+	}
+}
+
 Button = function(id, caption) {
 
 	Widget.call(this, id);
@@ -29,6 +42,8 @@ Button = function(id, caption) {
 	this.input.onclick = this.clickHandler.bind(this);
 
 };
+
+extend(Widget, Button);
 
 Button.prototype.clickHandler = function(e) {
 	console.log("button clicked", e);
@@ -50,6 +65,8 @@ TextInput = function(id, value){
 
 	this.input.onchange = this.changeHandler.bind(this);	
 }
+
+extend(Widget, TextInput);
 
 TextInput.prototype.changeHandler = function(e) {
 	console.log("input changed", e);
@@ -77,6 +94,8 @@ Checkbox = function(id){
 
 	this.input.onchange = this.changeHandler.bind(this);		
 }
+
+extend(Widget, Checkbox);
 
 Checkbox.prototype.changeHandler = function(e) {
 	console.log("input changed", e);
@@ -110,6 +129,8 @@ Select.prototype.addOption = function(id, label){
 	this.select.appendChild(option);
 }
 
+extend(Widget, Select);
+
 Select.prototype.changeHandler = function(e) {
 	console.log("select changed", e);
 	var event = {
@@ -142,6 +163,9 @@ Text = function(id, text){
 	this.mainDiv.appendChild(document.createTextNode(text));
 }
 
+extend(Widget, Text);
+
+
 Text.prototype.setText = function(text){
 	while (this.mainDiv.hasChildNodes()) {
 		this.mainDiv.removeChild(this.mainDiv.lastChild);
@@ -172,6 +196,8 @@ Table = function(id, cols, rows){
 	this.mainDiv.appendChild(this.table);
 }
 
+extend(Widget, Table);
+
 Table.prototype.setCell = function(widgetId, col, row){
 	var td = this.posToTd[row][col];
 	while (td.hasChildNodes()) {
@@ -181,5 +207,20 @@ Table.prototype.setCell = function(widgetId, col, row){
 	td.appendChild(idToWidget[widgetId].mainDiv);
 	
 }
+
+Window = function(id){
+	Widget.call(this, id);
+	
+	this.mainDiv.style.border = "3px solid #AAA";
+	this.mainDiv.style.backgroundColor = "#777"
+}
+extend(Widget, Window);
+
+Window.prototype.addChild = function(childId){
+	this.mainDiv.appendChild(idToWidget[childId].mainDiv);
+}
+
+
+
 
 

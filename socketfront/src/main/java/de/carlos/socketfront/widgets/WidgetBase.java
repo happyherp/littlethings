@@ -40,5 +40,19 @@ public abstract class WidgetBase implements Widget {
     protected void callThisJS(String method, Object... args) {
 	context.getJsPipe().addCall(getJSObject() + "." + method, args);
     }
+    
+    public void setPositionAbsolute(int x, int y){
+	this.callThisJS("setPositionAbsolute", x,y);
+    }
+    
+    /**
+     * Call this to remove references to this widget from the GUIContext as well as
+     * its javascript representation in the browser.
+     * 
+     */
+    public void remove(){
+	this.callThisJS("remove");
+	this.context.removeWidget(this);
+    }
 
 }

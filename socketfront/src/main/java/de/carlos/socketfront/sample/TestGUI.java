@@ -1,12 +1,10 @@
-package de.carlos.socketfront;
+package de.carlos.socketfront.sample;
 
-import javax.websocket.EndpointConfig;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
 import de.carlos.observer.Observer;
+import de.carlos.socketfront.GuiContext;
+import de.carlos.socketfront.SocketGUI;
 import de.carlos.socketfront.widgets.Button;
 import de.carlos.socketfront.widgets.Checkbox;
 import de.carlos.socketfront.widgets.ClickEvent;
@@ -14,9 +12,9 @@ import de.carlos.socketfront.widgets.Select;
 import de.carlos.socketfront.widgets.Table;
 import de.carlos.socketfront.widgets.Text;
 import de.carlos.socketfront.widgets.TextInput;
+import de.carlos.socketfront.widgets.Window;
 
-@ServerEndpoint("/testGuiEndpoint")
-public class TestGUI extends GuiEndpoint {
+public class TestGUI implements SocketGUI {
 
     GuiContext context;
     int buttoncount = 1;
@@ -27,7 +25,7 @@ public class TestGUI extends GuiEndpoint {
     Table table;
 
     @Override
-    public void onStart(GuiContext ctx) {
+    public void onCreate(GuiContext ctx) {
 	this.context = ctx;
 
 	// Create a button that makes more buttons.
@@ -35,7 +33,7 @@ public class TestGUI extends GuiEndpoint {
 
 	this.context.getMainPane().add(first);
 
-	first.getOnClick().getObservers().add(new Observer<ClickEvent>() {
+	first.getOnClick().addObserver(new Observer<ClickEvent>() {
 
 	    @Override
 	    public void update(ClickEvent event) {
@@ -44,8 +42,7 @@ public class TestGUI extends GuiEndpoint {
 		buttoncount++;
 		context.getMainPane().add(newbutton);
 
-		newbutton.getOnClick().getObservers()
-			.add(new Observer<ClickEvent>() {
+		newbutton.getOnClick().addObserver(new Observer<ClickEvent>() {
 			    @Override
 			    public void update(ClickEvent event) {
 				context.getJsPipe().addStatement(
@@ -60,7 +57,7 @@ public class TestGUI extends GuiEndpoint {
 	context.getMainPane().add(textinput);
 
 	Button submit = ctx.addWidget(new Button("Eingabe"));
-	submit.getOnClick().getObservers().add(new Observer<ClickEvent>() {
+	submit.getOnClick().addObserver(new Observer<ClickEvent>() {
 	    @Override
 	    public void update(ClickEvent event) {
 		context.getJsPipe().addStatement(
@@ -73,7 +70,7 @@ public class TestGUI extends GuiEndpoint {
 	context.getMainPane().add(box);
 
 	Button toggle = ctx.addWidget(new Button("Toggle"));
-	toggle.getOnClick().getObservers().add(new Observer<ClickEvent>() {
+	toggle.getOnClick().addObserver(new Observer<ClickEvent>() {
 	    @Override
 	    public void update(ClickEvent event) {
 		box.setValue(!box.getValue());
@@ -91,8 +88,7 @@ public class TestGUI extends GuiEndpoint {
 	context.getMainPane().add(select);
 
 	Button selectButton = ctx.addWidget(new Button("show selection"));
-	selectButton.getOnClick().getObservers()
-		.add(new Observer<ClickEvent>() {
+	selectButton.getOnClick().addObserver(new Observer<ClickEvent>() {
 		    @Override
 		    public void update(ClickEvent event) {
 			selecttext.setText("You selected "+ select.getSelected());
@@ -102,7 +98,7 @@ public class TestGUI extends GuiEndpoint {
 
 	context.getMainPane().add(selectButton);
 	
-	table = ctx.addWidget(new Table(10,20), ctx.getMainPane());
+	table = ctx.addWidget(new Table(4,7));
 
 	for (int x = 1;x<=table.getColumns();x++){
 	    for (int y = 1;y <= table.getRows();y++){
@@ -110,20 +106,38 @@ public class TestGUI extends GuiEndpoint {
 	    }
 	}
 	
-
+	table.setCell(context.addWidget(new Button("I am button")), 2, 6);
+	context.getMainPane().add(table);
+	
+	Text absText = context.addWidget(new Text("I am flying over things!"), context.getMainPane());
+	absText.setPositionAbsolute(100, 200);
+	
+	Button openWindow = context.addWidget(new Button("open window"), context.getMainPane());
+	openWindow.getOnClick().addObserver(new Observer<ClickEvent>() {
+	    @Override
+	    public void update(ClickEvent event) {
+		Window window = context.addWidget(new Window(), context.getMainPane());
+		Button closeButton = context.addWidget(new Button("Close"));
+		window.add(closeButton);		
+		closeButton.getOnClick().addObserver(new WindowCloser(window));
+	    }
+	});
+	
     }
+    
+    private class WindowCloser implements Observer<ClickEvent>{
+	
+	Window window;
+	
+	public WindowCloser(Window window){
+	    this.window = window;
+	}
 
-    // TODO: These two methods must be here so the annotations are found.
-    // Must find better way to do this.
-    @OnOpen
-    public void onOpen(Session session, EndpointConfig config) {
-	super.onOpen(session, config);
-
-    }
-
-    @OnMessage
-    public void receiveEvent(Session session, String msg, boolean last) {
-	super.receiveEvent(session, msg, last);
+	@Override
+	public void update(ClickEvent event) {
+	    this.window.close();
+	}
+	
     }
 
 }

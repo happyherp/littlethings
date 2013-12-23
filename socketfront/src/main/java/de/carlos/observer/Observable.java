@@ -13,7 +13,8 @@ public class Observable<T> {
 	}
     }
     
-    public List<Observer<T>> getObservers(){
-	return observers;
+    public void addObserver(Observer<T> observer){
+	this.observers.add(observer);
     }
+    
 }
