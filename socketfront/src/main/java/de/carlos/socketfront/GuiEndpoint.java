@@ -8,6 +8,7 @@ import javax.websocket.Session;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
+import de.carlos.socketfront.widgets.MainPane;
 import de.carlos.socketfront.widgets.Widget;
 
 public abstract class GuiEndpoint {
@@ -31,7 +32,7 @@ public abstract class GuiEndpoint {
 	//Setup
 	context = new GuiContext();
 	context.setJsPipe(new JSPipe(session));
-	context.setMainPane(new MainPane(context));
+	context.setMainPane(context.addWidget(new MainPane()));
 	
 	onStart(context);
 	

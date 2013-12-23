@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import de.carlos.socketfront.GuiContext;
-
 public class Select<T> extends WidgetBase {
 
     List<Option> options = new ArrayList<Option>();
@@ -14,16 +12,15 @@ public class Select<T> extends WidgetBase {
     Option selectedOption = null;
 
     int idcount = 0;
-
-    public Select(GuiContext context) {
-	super(context);
-	context.generateId(this);
-	this.callConstructorWithId("Select");
+    
+    @Override
+    public void constructJSObject() {
+	this.jsPipe.addCall("new Select", this.getId());
     }
+    
 
     public void addOption(String label, T obj) {
 	Option option = new Option();
-	option.label = label;
 	option.object = obj;
 	option.id = idcount;
 	idcount++;
@@ -57,6 +54,7 @@ public class Select<T> extends WidgetBase {
 		    "That object is not part of the options: " + obj);
 	} else {
 	    this.callThisJS("setSelected", newSelectedOption.id);
+	    this.selectedOption = newSelectedOption;
 	}
 
     }
@@ -76,10 +74,11 @@ public class Select<T> extends WidgetBase {
     }
 
     private class Option {
-	String label;
 	T object;
 	int id;
 
     }
+
+
 
 }

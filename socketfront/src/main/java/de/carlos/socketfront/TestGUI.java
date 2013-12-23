@@ -17,7 +17,7 @@ import de.carlos.socketfront.widgets.TextInput;
 public class TestGUI extends GuiEndpoint {
 
     GuiContext context;
-    int buttoncount = 1;    
+    int buttoncount = 1;
     TextInput textinput;
     Checkbox box;
     Select<Double> select;
@@ -26,48 +26,49 @@ public class TestGUI extends GuiEndpoint {
     public void onStart(GuiContext ctx) {
 	this.context = ctx;
 
-	//Create a button that makes more buttons.
-	Button first = new Button(context, "More buttons");
-	
+	// Create a button that makes more buttons.
+	Button first = ctx.addWidget(new Button("More buttons"));
+
 	this.context.getMainPane().add(first);
 
-	
 	first.getOnClick().getObservers().add(new Observer<ClickEvent>() {
-	    
+
 	    @Override
 	    public void update(ClickEvent event) {
-		Button newbutton = new Button(context, "Button number "+ buttoncount);
+		Button newbutton = context.addWidget(new Button(
+			"Button number " + buttoncount));
 		buttoncount++;
 		context.getMainPane().add(newbutton);
-		
-		newbutton.getOnClick().getObservers().add(new Observer<ClickEvent>() {		    
-		    @Override
-		    public void update(ClickEvent event) {
-			context.getJsPipe().addStatement("alert(\"Button clicked!\");");			
-		    }
-		});		
+
+		newbutton.getOnClick().getObservers()
+			.add(new Observer<ClickEvent>() {
+			    @Override
+			    public void update(ClickEvent event) {
+				context.getJsPipe().addStatement(
+					"alert(\"Button clicked!\");");
+			    }
+			});
 	    }
-	});	
-	
-	textinput = new TextInput(context);
+	});
+
+	textinput = ctx.addWidget(new TextInput());
 	textinput.setValue("Edit me!");
 	context.getMainPane().add(textinput);
-	
-	Button submit = new Button(context, "Eingabe");
+
+	Button submit = ctx.addWidget(new Button("Eingabe"));
 	submit.getOnClick().getObservers().add(new Observer<ClickEvent>() {
 	    @Override
 	    public void update(ClickEvent event) {
-		context.getJsPipe().addStatement("alert(\""+textinput.getValue()+"\");\n");
+		context.getJsPipe().addStatement(
+			"alert(\"" + textinput.getValue() + "\");\n");
 	    }
 	});
 	context.getMainPane().add(submit);
-	
-	
-	
-	box = new Checkbox(context);
+
+	box = ctx.addWidget(new Checkbox());
 	context.getMainPane().add(box);
-	
-	Button toggle = new Button(context, "Toggle");
+
+	Button toggle = ctx.addWidget(new Button("Toggle"));
 	toggle.getOnClick().getObservers().add(new Observer<ClickEvent>() {
 	    @Override
 	    public void update(ClickEvent event) {
@@ -75,42 +76,40 @@ public class TestGUI extends GuiEndpoint {
 	    }
 	});
 	context.getMainPane().add(toggle);
-	
-	
-	select = new Select<Double>(context);	
+
+	select = ctx.addWidget(new Select<Double>());
 	select.addOption("half", 0.5);
 	select.addOption("a third", 0.3);
 	select.addOption("pii", Math.PI);
 	select.setSelected(0.3);
 	context.getMainPane().add(select);
-	
-	Button selectButton = new Button(ctx, "show selection");
-	selectButton.getOnClick().getObservers().add(new Observer<ClickEvent>() {
-	    @Override
-	    public void update(ClickEvent event) {
-		context.getJsPipe().addStatement("alert(\""+ select.getSelected() +"\")");
-		
-	    }
-	});
-	
+
+	Button selectButton = ctx.addWidget(new Button("show selection"));
+	selectButton.getOnClick().getObservers()
+		.add(new Observer<ClickEvent>() {
+		    @Override
+		    public void update(ClickEvent event) {
+			context.getJsPipe().addStatement(
+				"alert(\"" + select.getSelected() + "\")");
+
+		    }
+		});
+
 	context.getMainPane().add(selectButton);
-	
-	
+
     }
-    
-    
-    //TODO: These two methods must be here so the annotations are found. 
+
+    // TODO: These two methods must be here so the annotations are found.
     // Must find better way to do this.
     @OnOpen
     public void onOpen(Session session, EndpointConfig config) {
 	super.onOpen(session, config);
-	
+
     }
 
     @OnMessage
     public void receiveEvent(Session session, String msg, boolean last) {
-	super.receiveEvent(session, msg, last);	
+	super.receiveEvent(session, msg, last);
     }
-    
 
 }

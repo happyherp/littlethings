@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import de.carlos.socketfront.widgets.MainPane;
 import de.carlos.socketfront.widgets.Widget;
 
 public class GuiContext {
@@ -15,6 +16,11 @@ public class GuiContext {
     
     private MainPane mainPane;
 
+    public <T extends Widget> T addWidget(T widget){
+	widget.setContext(this);
+	widget.constructJSObject();
+	return widget;
+    }
 
     public JSPipe getJsPipe() {
         return jsPipe;

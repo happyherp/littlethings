@@ -3,7 +3,6 @@ package de.carlos.socketfront.widgets;
 import org.json.JSONObject;
 
 import de.carlos.observer.Observable;
-import de.carlos.socketfront.GuiContext;
 
 public class Button extends WidgetBase {
 
@@ -11,15 +10,16 @@ public class Button extends WidgetBase {
 
     public Observable<ClickEvent> onclick = new Observable<ClickEvent>();
 
-    public Button(GuiContext context, String caption) {
-	super(context);
-	context.generateId(this);
+    public Button(String caption) {
 	this.caption = caption;
-	this.jsPipe
-		.addStatement(String.format("new Button(%s, %s);\n",
-			JSONObject.quote(this.getId()),
-			JSONObject.quote(this.caption)));
     }
+    
+
+    @Override
+    public void constructJSObject() {
+	this.jsPipe.addCall("new Button", this.getId(), this.caption);
+    }
+    
 
     public String getCaption() {
 	return this.caption;

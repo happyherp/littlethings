@@ -2,18 +2,17 @@ package de.carlos.socketfront.widgets;
 
 import org.json.JSONObject;
 
+import de.carlos.socketfront.GuiContext;
+
 public interface Widget {
     
-    public String getId();
+    String getId();
     
-    /**
-     * Set the initial id of this widget.
-     * 
-     * @param id
-     */
-    public void setId(String id);
+    void setContext(GuiContext context);
+    
+    void constructJSObject();
 
-    public void receiveEvent(JSONObject event);
+    void receiveEvent(JSONObject event);
         
 
 }

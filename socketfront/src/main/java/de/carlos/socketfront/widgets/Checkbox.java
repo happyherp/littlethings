@@ -2,18 +2,15 @@ package de.carlos.socketfront.widgets;
 
 import org.json.JSONObject;
 
-import de.carlos.socketfront.GuiContext;
-
 public class Checkbox extends WidgetBase {
 
     Boolean value = false;
-
-    public Checkbox(GuiContext context) {
-	super(context);
-	context.generateId(this);
-	callConstructorWithId("Checkbox");
-
+    
+    @Override
+    public void constructJSObject() {
+	this.jsPipe.addCall("new Checkbox", this.getId());
     }
+    
 
     public void receiveEvent(JSONObject jsonevent) {
 	String type = jsonevent.getString("type");
@@ -29,9 +26,9 @@ public class Checkbox extends WidgetBase {
     }
 
     public void setValue(Boolean value) {
-	String jsbool = value ? "true" : "false";//TODO: remove if not necessary.
-	jsPipe.addStatement(String.format(getJSObject() + ".setValue(%s);\n",
-		JSONObject.valueToString(value)));
+	this.callThisJS("setValue", value);
 	this.value = value;
     }
+
+
 }
