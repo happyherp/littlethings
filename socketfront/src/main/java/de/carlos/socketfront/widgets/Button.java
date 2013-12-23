@@ -12,8 +12,7 @@ public class Button extends WidgetBase {
 
     public Button(String caption) {
 	this.caption = caption;
-    }
-    
+    }    
 
     @Override
     public void constructJSObject() {

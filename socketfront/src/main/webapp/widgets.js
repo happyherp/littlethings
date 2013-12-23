@@ -30,8 +30,6 @@ Button = function(id, caption) {
 
 };
 
-extend(Widget.prototype, Button.prototype)
-
 Button.prototype.clickHandler = function(e) {
 	console.log("button clicked", e);
 	var event = {
@@ -52,8 +50,6 @@ TextInput = function(id, value){
 
 	this.input.onchange = this.changeHandler.bind(this);	
 }
-
-extend(Widget.prototype, TextInput.prototype)
 
 TextInput.prototype.changeHandler = function(e) {
 	console.log("input changed", e);
@@ -82,8 +78,6 @@ Checkbox = function(id){
 	this.input.onchange = this.changeHandler.bind(this);		
 }
 
-extend(Widget, Checkbox);
-
 Checkbox.prototype.changeHandler = function(e) {
 	console.log("input changed", e);
 	var event = {
@@ -108,7 +102,6 @@ Select = function(id){
 	this.select.onchange = this.changeHandler.bind(this);		
 }
 
-extend(Widget, Select);
 
 Select.prototype.addOption = function(id, label){
 	var option = document.createElement("option");
@@ -142,5 +135,51 @@ Select.prototype.setSelected = function(id){
 	
 	this.select.selectedIndex = newIndex;
 };
+
+
+Text = function(id, text){
+	Widget.call(this, id);
+	this.mainDiv.appendChild(document.createTextNode(text));
+}
+
+Text.prototype.setText = function(text){
+	while (this.mainDiv.hasChildNodes()) {
+		this.mainDiv.removeChild(this.mainDiv.lastChild);
+	}
+	this.mainDiv.appendChild(document.createTextNode(text));
+	
+}
+
+Table = function(id, cols, rows){
+	Widget.call(this, id);
+	
+	this.table = document.createElement("table");
+	
+	
+	this.posToTd=[];
+	
+	for (var row = 0; row < rows; row++){
+		this.posToTd.push([]);
+		var tr = document.createElement("tr");
+		for (var col = 0; col<cols;col++){
+			var td = document.createElement("td");
+			this.posToTd[row].push(td);
+			tr.appendChild(td);
+		}
+		this.table.appendChild(tr);
+	}
+	
+	this.mainDiv.appendChild(this.table);
+}
+
+Table.prototype.setCell = function(widgetId, col, row){
+	var td = this.posToTd[row][col];
+	while (td.hasChildNodes()) {
+		td.removeChild(td.lastChild);
+	}
+
+	td.appendChild(idToWidget[widgetId].mainDiv);
+	
+}
 
 

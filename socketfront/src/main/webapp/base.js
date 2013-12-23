@@ -39,14 +39,4 @@ function copyObj(obj){
 	return copy;
 }
 
-/**
- * Extends all attributes of source to dest.
- * @param source
- * @param dest
- */
-function extend(source, dest){
-	for (var key in source){
-		dest[key] = source[key];
-	}	
-}
 
