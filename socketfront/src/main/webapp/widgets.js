@@ -239,10 +239,19 @@ Window = function(id){
 extend(Widget, Window);
 
 Window.prototype.addChild = function(childId){
-	this.mainDiv.appendChild(idToWidget[childId].mainDiv);
+	this.contentDiv.appendChild(idToWidget[childId].mainDiv);
 }
 
+Group = function(id){
+	Widget.call(this, id);
+	this.mainDiv.style.border = "1px solid grey";
+}
 
+extend(Widget, Group);
+
+Group.prototype.addChild = function(childId){
+	this.contentDiv.appendChild(idToWidget[childId].mainDiv);
+}
 
 
 

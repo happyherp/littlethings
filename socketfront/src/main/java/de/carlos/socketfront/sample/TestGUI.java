@@ -6,6 +6,7 @@ import de.carlos.socketfront.SocketGUI;
 import de.carlos.socketfront.widgets.Button;
 import de.carlos.socketfront.widgets.Checkbox;
 import de.carlos.socketfront.widgets.ClickEvent;
+import de.carlos.socketfront.widgets.Group;
 import de.carlos.socketfront.widgets.NumberInput;
 import de.carlos.socketfront.widgets.Select;
 import de.carlos.socketfront.widgets.Table;
@@ -54,7 +55,7 @@ public class TestGUI implements SocketGUI {
 	});
 
 	textinput = ctx.addWidget(new TextInput());
-	textinput.setValue("Edit me!");
+	textinput.setStringValue("Edit me!");
 	context.getMainPane().add(textinput);
 
 	Button submit = ctx.addWidget(new Button("Eingabe"));
@@ -62,7 +63,7 @@ public class TestGUI implements SocketGUI {
 	    @Override
 	    public void update(ClickEvent event) {
 		context.getJsPipe().addStatement(
-			"alert(\"" + textinput.getValue() + "\");\n");
+			"alert(\"" + textinput.getStringValue() + "\");\n");
 	    }
 	});
 	context.getMainPane().add(submit);
@@ -79,25 +80,27 @@ public class TestGUI implements SocketGUI {
 	});
 	context.getMainPane().add(toggle);
 	
-	selecttext =  ctx.addWidget(new Text("This is a selectbox"), ctx.getMainPane());
+	Group selectgroup = ctx.addWidget(new Group(), ctx.getMainPane());
+	
+	selecttext =  ctx.addWidget(new Text("This is a selectbox"),selectgroup);
 
 	select = ctx.addWidget(new Select<Double>());
 	select.addOption("half", 0.5);
 	select.addOption("a third", 0.3);
 	select.addOption("pii", Math.PI);
-	select.setSelected(0.3);
-	context.getMainPane().add(select);
+	select.setValue(0.3);
+	selectgroup.add(select);
 
 	Button selectButton = ctx.addWidget(new Button("show selection"));
 	selectButton.getOnClick().addObserver(new Observer<ClickEvent>() {
 		    @Override
 		    public void update(ClickEvent event) {
-			selecttext.setText("You selected "+ select.getSelected());
+			selecttext.setText("You selected "+ select.getValue());
 
 		    }
 		});
 
-	context.getMainPane().add(selectButton);
+	selectgroup.add(selectButton);
 	
 	table = ctx.addWidget(new Table(4,7));
 
@@ -132,7 +135,7 @@ public class TestGUI implements SocketGUI {
 	    @Override
 	    public void update(ClickEvent event) {
 		if (numberinput.hasValidInput()){
-		    numberinput.setFilteredValue(numberinput.getFilteredValue() * numberinput.getFilteredValue());;
+		    numberinput.setValue(numberinput.getValue() * numberinput.getValue());;
 		}else{
 		    context.getJsPipe().addCall("alert", "Please enter a number" );
 		}

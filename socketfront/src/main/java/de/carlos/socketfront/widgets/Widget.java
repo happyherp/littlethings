@@ -10,6 +10,8 @@ public interface Widget {
     
     void setContext(GuiContext context);
     
+    GuiContext getContext();
+    
     void constructJSObject();
 
     void receiveEvent(JSONObject event);

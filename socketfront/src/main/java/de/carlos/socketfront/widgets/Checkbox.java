@@ -2,7 +2,7 @@ package de.carlos.socketfront.widgets;
 
 import org.json.JSONObject;
 
-public class Checkbox extends ControlWidget {
+public class Checkbox extends ControlWidget implements InputSource<Boolean> {
 
     Boolean value = false;
     
@@ -28,6 +28,12 @@ public class Checkbox extends ControlWidget {
     public void setValue(Boolean value) {
 	this.callThisJS("setValue", value);
 	this.value = value;
+    }
+
+
+    @Override
+    public boolean hasValidInput() {
+	return true;
     }
 
 

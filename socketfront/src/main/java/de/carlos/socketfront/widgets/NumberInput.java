@@ -4,18 +4,18 @@ package de.carlos.socketfront.widgets;
 public class NumberInput extends FilterInput<Integer> {
 
     @Override
-    public Integer getFilteredValue() {
-	return Integer.parseInt(this.getValue());
+    public Integer getValue() {
+	return Integer.parseInt(this.getStringValue());
     }
 
     @Override
     public boolean hasValidInput() {
-	return this.getValue().matches("^ *-?\\d+ *$");
+	return this.getStringValue().matches("^ *-?\\d+ *$");
     }
 
     @Override
-    public void setFilteredValue(Integer value) {
-	this.setValue(value+"");
+    public void setValue(Integer value) {
+	this.setStringValue(value+"");
     }
 
 }

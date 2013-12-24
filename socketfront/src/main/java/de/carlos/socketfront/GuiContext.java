@@ -19,6 +19,9 @@ public class GuiContext {
     int idCount = 0;
 
     public <T extends Widget> T addWidget(T widget){
+	if (widget.getContext() != null){
+	    throw new RuntimeException("Widget with id "+widget.getId() + " already has a context.");
+	}
 	widget.setContext(this);
 	widget.constructJSObject();
 	return widget;

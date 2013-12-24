@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-public class Select<T> extends ControlWidget {
+public class Select<T> extends ControlWidget implements InputSource<T> {
 
     List<Option> options = new ArrayList<Option>();
 
@@ -33,7 +33,7 @@ public class Select<T> extends ControlWidget {
 
     }
 
-    public T getSelected() {
+    public T getValue() {
 	if (selectedOption == null) {
 	    return null;
 	} else {
@@ -41,7 +41,7 @@ public class Select<T> extends ControlWidget {
 	}
     }
 
-    public void setSelected(T obj) {
+    public void setValue(T obj) {
 
 	Option newSelectedOption = null;
 	for (Option option : options) {
@@ -77,6 +77,13 @@ public class Select<T> extends ControlWidget {
 	T object;
 	int id;
 
+    }
+
+
+
+    @Override
+    public boolean hasValidInput() {
+	return selectedOption != null;
     }
 
 
