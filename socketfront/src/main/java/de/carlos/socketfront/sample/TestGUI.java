@@ -6,6 +6,7 @@ import de.carlos.socketfront.SocketGUI;
 import de.carlos.socketfront.widgets.Button;
 import de.carlos.socketfront.widgets.Checkbox;
 import de.carlos.socketfront.widgets.ClickEvent;
+import de.carlos.socketfront.widgets.NumberInput;
 import de.carlos.socketfront.widgets.Select;
 import de.carlos.socketfront.widgets.Table;
 import de.carlos.socketfront.widgets.Text;
@@ -21,6 +22,8 @@ public class TestGUI implements SocketGUI {
     Select<Double> select;
     private Text selecttext;
     Table table;
+    NumberInput numberinput;
+    Button squarebutton;
 
     @Override
     public void onCreate(GuiContext ctx) {
@@ -120,6 +123,33 @@ public class TestGUI implements SocketGUI {
 		closeButton.getOnClick().addObserver(new WindowCloser(window));
 	    }
 	});
+	
+	
+	numberinput = context.addWidget(new NumberInput(), context.getMainPane());
+	
+	squarebutton = context.addWidget(new Button("squareit"), context.getMainPane());
+	squarebutton.getOnClick().addObserver(new Observer<ClickEvent>() {
+	    @Override
+	    public void update(ClickEvent event) {
+		if (numberinput.hasValidInput()){
+		    numberinput.setFilteredValue(numberinput.getFilteredValue() * numberinput.getFilteredValue());;
+		}else{
+		    context.getJsPipe().addCall("alert", "Please enter a number" );
+		}
+	    }
+	});
+	
+	Button toggleEnabled = context.addWidget(new Button("toggle disabled"), context.getMainPane());
+	toggleEnabled.getOnClick().addObserver(new Observer<ClickEvent>() {
+	    @Override
+	    public void update(ClickEvent event) {
+		numberinput.setDisabled(!numberinput.isDisabled());
+		select.setDisabled(!select.isDisabled());
+		box.setDisabled(!box.isDisabled());
+		squarebutton.setDisabled(!squarebutton.isDisabled());
+	    }
+	});
+	
 	
     }
     

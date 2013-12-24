@@ -2,7 +2,7 @@ package de.carlos.socketfront.widgets;
 
 import org.json.JSONObject;
 
-public class Checkbox extends WidgetBase {
+public class Checkbox extends ControlWidget {
 
     Boolean value = false;
     
@@ -14,7 +14,7 @@ public class Checkbox extends WidgetBase {
 
     public void receiveEvent(JSONObject jsonevent) {
 	String type = jsonevent.getString("type");
-	if (type.equals("change")) {
+	if (type.equals("change") && !this.isDisabled()) {
 	    this.value = jsonevent.getBoolean("value");
 	} else {
 	    throw new RuntimeException("Unknown event type: " + type);

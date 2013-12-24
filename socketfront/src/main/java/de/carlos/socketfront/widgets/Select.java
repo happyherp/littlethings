@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-public class Select<T> extends WidgetBase {
+public class Select<T> extends ControlWidget {
 
     List<Option> options = new ArrayList<Option>();
 
@@ -60,7 +60,7 @@ public class Select<T> extends WidgetBase {
     }
 
     public void receiveEvent(JSONObject jsonevent) {
-	if (jsonevent.getString("type").equals("change")) {
+	if (jsonevent.getString("type").equals("change") && !this.isDisabled()) {
 	    int id = jsonevent.getInt("optionid");
 	    for (Option option : this.options){
 		if (option.id == id){

@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 import de.carlos.observer.Observable;
 
-public class Button extends WidgetBase {
+public class Button extends ControlWidget {
 
     private String caption;
 
@@ -33,7 +33,7 @@ public class Button extends WidgetBase {
 
 	String type = jsonevent.getString("type");
 
-	if (type.equals("click")) {
+	if (type.equals("click") && !this.isDisabled()) {
 
 	    ClickEvent event = new ClickEvent();
 	    event.setSource(this);

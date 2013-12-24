@@ -9,6 +9,12 @@ Widget = function(id){
 	this.mainDiv = document.createElement("div");
 	this.mainDiv.style.border = "1 px solid black";
 	this.mainDiv.style.margin = "3px";	
+	
+	this.contentDiv = document.createElement("div");
+	this.mainDiv.appendChild(this.contentDiv);
+	
+	this.infoDiv = document.createElement("div");
+	this.mainDiv.appendChild(this.infoDiv);
 };
 
 Widget.prototype.addTo = function(widgetId){
@@ -28,6 +34,10 @@ Widget.prototype.remove = function(){
 	}
 }
 
+Widget.prototype.addInfoText = function(widgetId){
+	this.infoDiv.appendChild(idToWidget[widgetId].mainDiv);
+}
+
 Button = function(id, caption) {
 
 	Widget.call(this, id);
@@ -37,7 +47,7 @@ Button = function(id, caption) {
 	this.input = document.createElement("input");
 	this.input.type="submit";
 	this.input.value = this.caption;
-	this.mainDiv.appendChild(this.input);
+	this.contentDiv.appendChild(this.input);
 
 	this.input.onclick = this.clickHandler.bind(this);
 
@@ -55,18 +65,24 @@ Button.prototype.clickHandler = function(e) {
 	ws.send(JSON.stringify(event));
 };
 
+Button.prototype.setDisabled = function(disabled){
+	this.input.disabled = disabled;
+}
+
 TextInput = function(id, value){
 	Widget.call(this, id);
 	
 	this.input = document.createElement("input");
 	this.input.type="text";
 	this.input.value = value;
-	this.mainDiv.appendChild(this.input);
+	this.contentDiv.appendChild(this.input);
 
 	this.input.onchange = this.changeHandler.bind(this);	
 }
 
 extend(Widget, TextInput);
+
+TextInput.prototype.setDisabled =  Button.prototype.setDisabled
 
 TextInput.prototype.changeHandler = function(e) {
 	console.log("input changed", e);
@@ -90,12 +106,14 @@ Checkbox = function(id){
 	this.input = document.createElement("input");
 	this.input.type="checkbox";
 	this.input.checked = false;
-	this.mainDiv.appendChild(this.input);
+	this.contentDiv.appendChild(this.input);
 
 	this.input.onchange = this.changeHandler.bind(this);		
 }
 
 extend(Widget, Checkbox);
+
+Checkbox.prototype.setDisabled =  Button.prototype.setDisabled
 
 Checkbox.prototype.changeHandler = function(e) {
 	console.log("input changed", e);
@@ -116,11 +134,16 @@ Select = function(id){
 	Widget.call(this, id);
 	
 	this.select = document.createElement("select");
-	this.mainDiv.appendChild(this.select);
+	this.contentDiv.appendChild(this.select);
 
 	this.select.onchange = this.changeHandler.bind(this);		
 }
 
+extend(Widget, Select);
+
+Select.prototype.setDisabled =  function(value){
+	this.select.disabled = value;
+}
 
 Select.prototype.addOption = function(id, label){
 	var option = document.createElement("option");
@@ -129,7 +152,6 @@ Select.prototype.addOption = function(id, label){
 	this.select.appendChild(option);
 }
 
-extend(Widget, Select);
 
 Select.prototype.changeHandler = function(e) {
 	console.log("select changed", e);
@@ -160,17 +182,17 @@ Select.prototype.setSelected = function(id){
 
 Text = function(id, text){
 	Widget.call(this, id);
-	this.mainDiv.appendChild(document.createTextNode(text));
+	this.contentDiv.appendChild(document.createTextNode(text));
 }
 
 extend(Widget, Text);
 
 
 Text.prototype.setText = function(text){
-	while (this.mainDiv.hasChildNodes()) {
-		this.mainDiv.removeChild(this.mainDiv.lastChild);
+	while (this.contentDiv.hasChildNodes()) {
+		this.contentDiv.removeChild(this.contentDiv.lastChild);
 	}
-	this.mainDiv.appendChild(document.createTextNode(text));
+	this.contentDiv.appendChild(document.createTextNode(text));
 	
 }
 
@@ -193,7 +215,7 @@ Table = function(id, cols, rows){
 		this.table.appendChild(tr);
 	}
 	
-	this.mainDiv.appendChild(this.table);
+	this.contentDiv.appendChild(this.table);
 }
 
 extend(Widget, Table);

@@ -17,6 +17,10 @@ public abstract class WidgetBase implements Widget {
 	this.jsPipe = context.getJsPipe();
 	this.context = context;	
     }
+    
+    public GuiContext getContext(){
+	return this.context;
+    }
 
     @Override
     public String getId() {
@@ -54,5 +58,10 @@ public abstract class WidgetBase implements Widget {
 	this.callThisJS("remove");
 	this.context.removeWidget(this);
     }
+    
+    public void addInfoText(InfoText infotext){
+	this.callThisJS("addInfoText", infotext.getId());
+    }
+    
 
 }
