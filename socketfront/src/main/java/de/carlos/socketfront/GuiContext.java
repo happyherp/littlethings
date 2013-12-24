@@ -2,7 +2,6 @@ package de.carlos.socketfront;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import de.carlos.socketfront.widgets.MainPane;
 import de.carlos.socketfront.widgets.Parent;

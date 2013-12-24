@@ -1,7 +1,5 @@
 package de.carlos.socketfront.sample;
 
-import javax.websocket.server.ServerEndpoint;
-
 import de.carlos.observer.Observer;
 import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.SocketGUI;

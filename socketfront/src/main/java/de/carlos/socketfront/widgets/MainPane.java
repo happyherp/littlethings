@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 public class MainPane extends WidgetBase implements Parent {
     
+    @Override
     public String getId() {
 	return "mainpane";
     }

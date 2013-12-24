@@ -2,8 +2,6 @@ package de.carlos.util;
 
 import java.lang.reflect.InvocationTargetException;
 
-import de.carlos.socketfront.sample.TestGUI;
-
 public class FactoryImpl<T> implements Factory<T> {
     
     Class<? extends T> clazz;
