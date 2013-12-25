@@ -1,6 +1,6 @@
 package de.carlos.socketfront.widgets;
 
-public class TextInput extends Input implements InputSource<String> {
+public class TextInput extends Input<String> implements InputSource<String> {
 
     @Override
     public String getValue() {
@@ -15,6 +15,11 @@ public class TextInput extends Input implements InputSource<String> {
     @Override
     public boolean hasValidInput() {
 	return true;
+    }
+
+    @Override
+    InputSource<String> getThis() {
+	return this;
     }
 
 }

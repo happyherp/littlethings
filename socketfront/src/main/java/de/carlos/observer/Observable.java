@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Observable<T> {
     
-    protected List<Observer<T>> observers = new ArrayList<Observer<T>>();
+    protected List<Observer <T>> observers = new ArrayList<Observer <T>>();
     
     public void fire(T event){
 	for (Observer<T> o : observers){

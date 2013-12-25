@@ -1,6 +1,6 @@
 package de.carlos.socketfront.widgets;
 
-public abstract class FilterInput<T> extends Input implements InputSource<T> {
+public abstract class FilterInput<T> extends Input<T> {
     
     protected InfoText invalidmarker = null;
     

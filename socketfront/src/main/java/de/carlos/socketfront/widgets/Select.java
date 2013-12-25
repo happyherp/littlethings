@@ -5,19 +5,18 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-public class Select<T> extends ControlWidget implements InputSource<T> {
+public class Select<T> extends InputSourceWidget<T, Select<T>> {
 
     List<Option> options = new ArrayList<Option>();
 
     Option selectedOption = null;
-
-    int idcount = 0;
     
+    int idcount = 0;
+
     @Override
     public void constructJSObject() {
 	this.jsPipe.addCall("new Select", this.getId());
     }
-    
 
     public void addOption(String label, T obj) {
 	Option option = new Option();
@@ -59,27 +58,11 @@ public class Select<T> extends ControlWidget implements InputSource<T> {
 
     }
 
-    public void receiveEvent(JSONObject jsonevent) {
-	if (jsonevent.getString("type").equals("change") && !this.isDisabled()) {
-	    int id = jsonevent.getInt("optionid");
-	    for (Option option : this.options){
-		if (option.id == id){
-		    this.selectedOption = option;
-		}
-	    }
-	} else {
-	    throw new RuntimeException("Unhandled event type "
-		    + jsonevent.getString("type"));
-	}
-    }
-
     private class Option {
 	T object;
 	int id;
 
     }
-
-
 
     @Override
     public boolean hasValidInput() {
@@ -87,5 +70,19 @@ public class Select<T> extends ControlWidget implements InputSource<T> {
     }
 
 
+    @Override
+    protected void reactToChange(JSONObject jsonevent) {
+	int id = jsonevent.getInt("optionid");
+	for (Option option : this.options) {
+	    if (option.id == id) {
+		this.selectedOption = option;
+	    }
+	}
+    }
+
+    @Override
+    Select<T> getThis() {
+	return this;
+    }
 
 }

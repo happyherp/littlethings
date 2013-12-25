@@ -3,12 +3,13 @@ package de.carlos.socketfront.widgets;
 import org.json.JSONObject;
 
 import de.carlos.observer.Observable;
+import de.carlos.socketfront.widgets.events.ClickEvent;
 
 public class Button extends ControlWidget {
 
     private String caption;
 
-    public Observable<ClickEvent> onclick = new Observable<ClickEvent>();
+    public Observable<ClickEvent<Button>> onclick = new Observable<ClickEvent<Button>>();
 
     public Button(String caption) {
 	this.caption = caption;
@@ -24,7 +25,7 @@ public class Button extends ControlWidget {
 	return this.caption;
     }
 
-    public Observable<ClickEvent> getOnClick() {
+    public Observable<ClickEvent<Button>> getOnClick() {
 	return this.onclick;
     }
 
@@ -35,8 +36,7 @@ public class Button extends ControlWidget {
 
 	if (type.equals("click") && !this.isDisabled()) {
 
-	    ClickEvent event = new ClickEvent();
-	    event.setSource(this);
+	    ClickEvent<Button> event = new ClickEvent<Button>(this);
 	    this.onclick.fire(event);
 	} else {
 	    throw new RuntimeException("Unknown event type: " + type);

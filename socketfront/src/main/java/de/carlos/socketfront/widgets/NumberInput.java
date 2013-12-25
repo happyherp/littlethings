@@ -18,4 +18,9 @@ public class NumberInput extends FilterInput<Integer> {
 	this.setStringValue(value+"");
     }
 
+    @Override
+    InputSource<Integer> getThis() {
+	return this;
+    }
+
 }

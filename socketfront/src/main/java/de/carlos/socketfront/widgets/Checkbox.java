@@ -2,7 +2,7 @@ package de.carlos.socketfront.widgets;
 
 import org.json.JSONObject;
 
-public class Checkbox extends ControlWidget implements InputSource<Boolean> {
+public class Checkbox extends InputSourceWidget<Boolean, Checkbox> {
 
     Boolean value = false;
     
@@ -11,15 +11,6 @@ public class Checkbox extends ControlWidget implements InputSource<Boolean> {
 	this.jsPipe.addCall("new Checkbox", this.getId());
     }
     
-
-    public void receiveEvent(JSONObject jsonevent) {
-	String type = jsonevent.getString("type");
-	if (type.equals("change") && !this.isDisabled()) {
-	    this.value = jsonevent.getBoolean("value");
-	} else {
-	    throw new RuntimeException("Unknown event type: " + type);
-	}
-    }
 
     public Boolean getValue() {
 	return value;
@@ -34,6 +25,18 @@ public class Checkbox extends ControlWidget implements InputSource<Boolean> {
     @Override
     public boolean hasValidInput() {
 	return true;
+    }
+
+
+    @Override
+    Checkbox getThis() {
+	return this;
+    }
+
+
+    @Override
+    protected void reactToChange(JSONObject jsonevent) {
+	this.value = jsonevent.getBoolean("value");	
     }
 
 

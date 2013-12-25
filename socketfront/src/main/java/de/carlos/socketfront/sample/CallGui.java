@@ -11,13 +11,13 @@ import de.carlos.observer.Observer;
 import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.autogui.AutoGuiConfig;
 import de.carlos.socketfront.widgets.Button;
-import de.carlos.socketfront.widgets.ClickEvent;
 import de.carlos.socketfront.widgets.Group;
 import de.carlos.socketfront.widgets.InfoText;
 import de.carlos.socketfront.widgets.InputSource;
 import de.carlos.socketfront.widgets.Text;
 import de.carlos.socketfront.widgets.TextInput;
 import de.carlos.socketfront.widgets.Widget;
+import de.carlos.socketfront.widgets.events.ClickEvent;
 
 public class CallGui {
     
@@ -61,9 +61,9 @@ public class CallGui {
 	}
 
 	this.button = context.addWidget(new Button(methodname), this.group);
-	this.button.getOnClick().addObserver(new Observer<ClickEvent>() {
+	this.button.getOnClick().addObserver(new Observer<ClickEvent<Button>>() {
 	    @Override
-	    public void update(ClickEvent event) {
+	    public void update(ClickEvent<Button> event) {
 		onButtonClick();
 	    }
 	});
