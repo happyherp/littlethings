@@ -1,4 +1,4 @@
-package de.carlos.socketfront.sample;
+package de.carlos.socketfront.autogui;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -9,7 +9,6 @@ import java.util.List;
 
 import de.carlos.observer.Observer;
 import de.carlos.socketfront.GuiContext;
-import de.carlos.socketfront.autogui.AutoGuiConfig;
 import de.carlos.socketfront.widgets.Button;
 import de.carlos.socketfront.widgets.Group;
 import de.carlos.socketfront.widgets.InfoText;
@@ -34,10 +33,13 @@ public class CallGui {
     TextInput output;
 
     private Method targetmethod = null;
+    
+    private Object targetinstance = null;
 
-    public void create(GuiContext context, AutoGuiConfig autoguiconfig,
+    public void createStatic(GuiContext context, AutoGuiConfig autoguiconfig,
 	    Class clazz, String methodname) {
-	
+
+
 	this.context = context;
 
 	group = context.addWidget(new Group());
@@ -70,8 +72,16 @@ public class CallGui {
 
 	context.addWidget(new Text("Result:"), this.group);
 	this.output = context.addWidget(new TextInput(), this.group);
-
     }
+    
+    public void createMember(GuiContext context, AutoGuiConfig autoguiconfig,
+	    Object object, String methodname) {
+	
+	this.targetinstance = object;
+	createStatic(context, autoguiconfig, object.getClass(), methodname);
+	
+    }
+    
 
     protected void onButtonClick() {
 
@@ -92,7 +102,7 @@ public class CallGui {
 	    }
 
 	    try {
-		Object result = this.targetmethod.invoke(null,
+		Object result = this.targetmethod.invoke(this.targetinstance,
 			arguments.toArray());
 		this.output.setValue(result.toString());
 	    } catch (IllegalAccessException | IllegalArgumentException e) {
