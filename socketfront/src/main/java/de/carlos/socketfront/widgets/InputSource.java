@@ -8,5 +8,5 @@ public interface InputSource<T> extends Widget {
     public void setValue(T value);
     
     public boolean hasValidInput();    
-
+    
 }

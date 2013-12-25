@@ -3,6 +3,8 @@ package de.carlos.socketfront.sample;
 import de.carlos.observer.Observer;
 import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.SocketGUI;
+import de.carlos.socketfront.util.OnAllValid;
+import de.carlos.socketfront.util.OnAllValidHandler;
 import de.carlos.socketfront.widgets.Button;
 import de.carlos.socketfront.widgets.Checkbox;
 import de.carlos.socketfront.widgets.Group;
@@ -141,6 +143,21 @@ public class TestGUI implements SocketGUI {
 		}
 	    }
 	});
+	
+	
+	new OnAllValid(new OnAllValidHandler() {
+	    
+	    @Override
+	    public void onInvalid() {
+		squarebutton.setDisabled(true);
+	    }
+	    
+	    @Override
+	    public void onAllValid() {
+		squarebutton.setDisabled(false);
+	    }
+	}, numberinput);
+	
 	
 	Button toggleEnabled = context.addWidget(new Button("toggle disabled"), context.getMainPane());
 	toggleEnabled.getOnClick().addObserver(new Observer<ClickEvent<Button>>() {
