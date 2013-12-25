@@ -5,14 +5,12 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import de.carlos.observer.Observer;
-import de.carlos.socketfront.widgets.ControlWidget;
 import de.carlos.socketfront.widgets.InputSourceWidget;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 
 /**
  * Class that will enable a group of Widgets, when all sources have a valid
  * input and disable it, when one of them has an invalid input.
- * 
  * 
  * @author Carlos
  * 

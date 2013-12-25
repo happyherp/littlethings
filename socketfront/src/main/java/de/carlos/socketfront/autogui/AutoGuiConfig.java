@@ -8,31 +8,35 @@ import de.carlos.socketfront.widgets.Checkbox;
 import de.carlos.socketfront.widgets.InputSource;
 import de.carlos.socketfront.widgets.NumberInput;
 import de.carlos.socketfront.widgets.TextInput;
-import de.carlos.util.Factory;
-import de.carlos.util.FactoryImpl;
 
 public class AutoGuiConfig {
 
-    Map<Class, Factory<InputSource>> classmapping = new HashMap<Class, Factory<InputSource>>();
+    Map<Class<?>, InputSourceFactory> classmapping = new HashMap<>();
 
     public AutoGuiConfig() {
-	this.classmapping.put(String.class, new FactoryImpl<InputSource>(TextInput.class));
-	this.classmapping.put(Integer.class, new FactoryImpl<InputSource>(NumberInput.class));
-	this.classmapping.put(Boolean.class, new FactoryImpl<InputSource>(Checkbox.class));
-	
-	//TODO: Handle primitive types.
+	this.classmapping.put(String.class, new InputSourceFactoryImpl(TextInput.class));
+	this.classmapping.put(Integer.class, new InputSourceFactoryImpl(NumberInput.class));
+	this.classmapping.put(int.class, new InputSourceFactoryImpl(NumberInput.class));	
+	this.classmapping.put(Boolean.class, new InputSourceFactoryImpl(Checkbox.class));
+	this.classmapping.put(boolean.class, new InputSourceFactoryImpl(Checkbox.class));
+	this.classmapping.put(Enum.class, new EnumInputSourceFactory());
     }
 
+    public InputSource<?> buildInput(GuiContext context, Class<?> paramclass) {
 
-    public InputSource buildInput(GuiContext context, Class paramclass) {
-
-	Factory<InputSource> factory = this.classmapping.get(paramclass);
+		
+	InputSourceFactory factory = this.classmapping.get(paramclass);
+	Class currentclass = paramclass;
+	while (factory == null && currentclass.getSuperclass() != null){
+	    factory = this.classmapping.get(currentclass);
+	    currentclass = currentclass.getSuperclass();
+	}
+	
 	if (factory != null) {
-	    return context.addWidget(factory.create());
+	    return factory.create(context, paramclass);
 	} else {
 	    throw new RuntimeException("Cant handle type: " + paramclass);
 	}
-
-    }
+    }      
 
 }

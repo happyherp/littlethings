@@ -26,7 +26,7 @@ public class CallGui {
 
     Group group;
 
-    List<InputSource> parameterInputs = new ArrayList<InputSource>();
+    List<InputSource<?>> parameterInputs = new ArrayList<InputSource<?>>();
 
     Button button;
 
@@ -37,7 +37,7 @@ public class CallGui {
     private Object targetinstance = null;
 
     public void createStatic(GuiContext context, AutoGuiConfig autoguiconfig,
-	    Class clazz, String methodname) {
+	    Class<?> clazz, String methodname) {
 
 
 	this.context = context;
@@ -53,10 +53,10 @@ public class CallGui {
 	if (targetmethod == null) {
 	    throw new RuntimeException("Method with name " + methodname
 		    + " could not be found in " + clazz);
-	}
+	}	
 
-	for (Class paramclass : targetmethod.getParameterTypes()) {
-	    InputSource inputsource = autoguiconfig.buildInput(context,
+	for (Class<?> paramclass : targetmethod.getParameterTypes()) {   
+	    InputSource<?> inputsource = autoguiconfig.buildInput(context,
 		    paramclass);
 	    this.parameterInputs.add(inputsource);
 	    this.group.add(inputsource);
@@ -86,8 +86,8 @@ public class CallGui {
     protected void onButtonClick() {
 
 	boolean allready = true;
-	List arguments = new ArrayList();
-	for (InputSource input : parameterInputs) {
+	List<Object> arguments = new ArrayList<Object>();
+	for (InputSource<?> input : parameterInputs) {
 	    allready = allready && input.hasValidInput();
 	    if (!allready){
 		break;
