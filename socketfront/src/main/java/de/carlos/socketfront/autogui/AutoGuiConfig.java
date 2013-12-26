@@ -35,8 +35,8 @@ public class AutoGuiConfig {
 	InputSourceFactory factory = this.classmapping.get(paramclass);
 	Class currentclass = paramclass;
 	while (factory == null && currentclass.getSuperclass() != null){
-	    factory = this.classmapping.get(currentclass);
 	    currentclass = currentclass.getSuperclass();
+	    factory = this.classmapping.get(currentclass);
 	}
 	
 	if (factory != null) {

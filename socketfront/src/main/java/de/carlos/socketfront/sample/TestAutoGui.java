@@ -25,10 +25,14 @@ public class TestAutoGui implements SocketGUI {
 	CallGui callgui3 = new CallGui();
 	callgui3.createMember(context, autoguiconfig, new TestClass(), "greet");
 	context.getMainPane().add(callgui3.getGroup());
-
+	
 	CallGui callgui4 = new CallGui();
 	callgui4.createStatic(context, autoguiconfig, Integer.class, "parseInt");
 	context.getMainPane().add(callgui4.getGroup());
+	
+	CallGui callgui5 = new CallGui();
+	callgui5.createMember(context, autoguiconfig, new TestClass(), "describeRGB");
+	context.getMainPane().add(callgui5.getGroup());
 
     }
 
@@ -48,17 +52,34 @@ public class TestAutoGui implements SocketGUI {
     public static Integer parseInt(String input) {
 	return Integer.parseInt(input);
     }
+    
 
     public class TestClass {
 
 	public String greet(String name, Color color) {
 	    return "Hello " + name + " your color is " + color.toString();
 	}
+	
+	public String describeRGB(RGB rgb){
+	    return String.format("R:%d G:%d B:%d", rgb.r, rgb.g, rgb.b);
+	}
 
     }
 
     public enum Color {
 	RED, BLUE, GREY, YELLOW, GREEN;
+    }
+    
+    public static class RGB{
+	
+	public int r,g,b;
+	
+	public RGB(int r,int g,int b){
+	    this.r = r;
+	    this.g = g;
+	    this.b = b;	    
+	}
+	
     }
 
 }

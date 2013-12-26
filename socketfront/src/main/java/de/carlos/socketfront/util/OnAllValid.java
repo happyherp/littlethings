@@ -5,7 +5,8 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import de.carlos.observer.Observer;
-import de.carlos.socketfront.widgets.InputSourceWidget;
+import de.carlos.socketfront.widgets.Button;
+import de.carlos.socketfront.widgets.InputSource;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 
 /**
@@ -17,15 +18,15 @@ import de.carlos.socketfront.widgets.events.ChangeEvent;
  */
 public class OnAllValid implements Observer<ChangeEvent<?>> {
 
-    private Collection<InputSourceWidget> sources = new ArrayList<InputSourceWidget>();
+    private Collection<InputSource> sources = new ArrayList<InputSource>();
     
     private OnAllValidHandler handler;
 
-    public OnAllValid(OnAllValidHandler handler,  InputSourceWidget... sources) {
+    public OnAllValid(OnAllValidHandler handler,  InputSource... sources) {
 	this.handler = handler;
 	this.sources.addAll(Arrays.asList(sources));
 	
-	for (InputSourceWidget source : sources){
+	for (InputSource source : sources){
 	    source.getOnChange().addObserver(this);
 	}
 	checkValid();
@@ -34,7 +35,7 @@ public class OnAllValid implements Observer<ChangeEvent<?>> {
 
     private void checkValid() {
 	boolean allready = true;
-	for (InputSourceWidget source : sources){
+	for (InputSource source : sources){
 	    allready = allready && source.hasValidInput();
 	}
 	if (allready){
@@ -51,5 +52,20 @@ public class OnAllValid implements Observer<ChangeEvent<?>> {
     public void update(ChangeEvent<?> event) {
 	checkValid();
     } 
+    
+    public static void enableButton(final Button button, InputSource... sources ){
+	new OnAllValid(new OnAllValidHandler() {
+	    
+	    @Override
+	    public void onInvalid() {
+		button.setDisabled(true);
+	    }
+	    
+	    @Override
+	    public void onAllValid() {
+		button.setDisabled(false);
+	    }
+	}, sources);
+    }
     
 }
