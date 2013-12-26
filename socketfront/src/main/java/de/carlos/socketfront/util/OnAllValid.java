@@ -51,4 +51,5 @@ public class OnAllValid implements Observer<ChangeEvent<?>> {
     public void update(ChangeEvent<?> event) {
 	checkValid();
     } 
+    
 }

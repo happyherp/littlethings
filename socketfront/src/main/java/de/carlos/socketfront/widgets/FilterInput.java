@@ -12,7 +12,7 @@ public abstract class FilterInput<T> extends Input<T> {
 	    invalidmarker = null;
 	}else if (!this.hasValidInput() && invalidmarker == null){
 	    this.invalidmarker = this.getContext().addWidget(new InfoText("Please enter a number. "));
-	    this.addInfoText(this.invalidmarker);
+	    this.addInfoText(this.invalidmarker);	    
 	}
     }
 

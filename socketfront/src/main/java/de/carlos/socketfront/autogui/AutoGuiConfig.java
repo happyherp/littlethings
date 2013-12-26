@@ -10,6 +10,12 @@ import de.carlos.socketfront.widgets.NumberInput;
 import de.carlos.socketfront.widgets.TextInput;
 
 public class AutoGuiConfig {
+    
+    static private AutoGuiConfig instance = new AutoGuiConfig();
+    
+    static public AutoGuiConfig getInstance(){
+	return instance;
+    }
 
     Map<Class<?>, InputSourceFactory> classmapping = new HashMap<>();
 
@@ -20,6 +26,7 @@ public class AutoGuiConfig {
 	this.classmapping.put(Boolean.class, new InputSourceFactoryImpl(Checkbox.class));
 	this.classmapping.put(boolean.class, new InputSourceFactoryImpl(Checkbox.class));
 	this.classmapping.put(Enum.class, new EnumInputSourceFactory());
+	this.classmapping.put(Object.class, new ObjectInputSourceFactory());
     }
 
     public InputSource<?> buildInput(GuiContext context, Class<?> paramclass) {

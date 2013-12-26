@@ -2,9 +2,13 @@ package de.carlos.socketfront.widgets;
 
 import org.json.JSONObject;
 
-public class Checkbox extends InputSourceWidget<Boolean, Checkbox> {
+import de.carlos.observer.Observable;
+import de.carlos.socketfront.widgets.events.ChangeEvent;
+
+public class Checkbox extends InputSourceWidget<Boolean> {
 
     Boolean value = false;
+    private Observable<ChangeEvent<Checkbox>> onchange = new Observable<>();
     
     @Override
     public void constructJSObject() {
@@ -28,15 +32,22 @@ public class Checkbox extends InputSourceWidget<Boolean, Checkbox> {
     }
 
 
+
     @Override
-    Checkbox getThis() {
-	return this;
+    protected void reactToChange(JSONObject jsonevent) {
+	this.value = jsonevent.getBoolean("value");
     }
 
 
     @Override
-    protected void reactToChange(JSONObject jsonevent) {
-	this.value = jsonevent.getBoolean("value");	
+    public Observable<ChangeEvent<Checkbox>> getOnChange() {
+	return this.onchange ;
+    }
+
+
+    @Override
+    protected void fireOnChangeEvent(JSONObject jsonobject) {
+	this.getOnChange().fire(new ChangeEvent<Checkbox>(this));
     }
 
 

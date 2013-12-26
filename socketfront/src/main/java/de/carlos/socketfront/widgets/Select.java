@@ -5,7 +5,10 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-public class Select<T> extends InputSourceWidget<T, Select<T>> {
+import de.carlos.observer.Observable;
+import de.carlos.socketfront.widgets.events.ChangeEvent;
+
+public class Select<T> extends InputSourceWidget<T> {
 
     List<Option> options = new ArrayList<Option>();
 
@@ -80,9 +83,16 @@ public class Select<T> extends InputSourceWidget<T, Select<T>> {
 	}
     }
 
+
     @Override
-    Select<T> getThis() {
-	return this;
+    protected void fireOnChangeEvent(JSONObject jsonobject) {
+	this.getOnChange().fire(new ChangeEvent<Select<T>>(this));
     }
+
+    @Override
+    public Observable<ChangeEvent<Select<T>>> getOnChange() {
+	return (Observable<ChangeEvent<Select<T>>>) this.onchange;
+    }
+
 
 }

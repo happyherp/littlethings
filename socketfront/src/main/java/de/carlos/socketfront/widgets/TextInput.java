@@ -1,5 +1,10 @@
 package de.carlos.socketfront.widgets;
 
+import org.json.JSONObject;
+
+import de.carlos.observer.Observable;
+import de.carlos.socketfront.widgets.events.ChangeEvent;
+
 public class TextInput extends Input<String> implements InputSource<String> {
 
     @Override
@@ -17,9 +22,15 @@ public class TextInput extends Input<String> implements InputSource<String> {
 	return true;
     }
 
+
     @Override
-    InputSource<String> getThis() {
-	return this;
+    protected void fireOnChangeEvent(JSONObject jsonobject) {
+	this.getOnChange().fire(new ChangeEvent<TextInput>(this));
+    }
+
+    @Override
+    public Observable<ChangeEvent<TextInput>> getOnChange() {
+	return (Observable<ChangeEvent<TextInput>>) onchange;
     }
 
 }

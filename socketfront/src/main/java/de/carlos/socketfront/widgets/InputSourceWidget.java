@@ -7,19 +7,16 @@ import org.json.JSONObject;
 import de.carlos.observer.Observable;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 
-public abstract class InputSourceWidget<T, U extends InputSource<T>> extends ControlWidget implements InputSource<T> {
+public abstract class InputSourceWidget<T> extends ControlWidget implements InputSource<T> {
     
-    private static Logger LOGGER = Logger.getLogger(InputSourceWidget.class);
+    private static Logger LOGGER = Logger.getLogger(InputSourceWidget.class);  
     
-    protected Observable<ChangeEvent<U>> onchange = new Observable<ChangeEvent<U>>();
+    protected Observable<? extends ChangeEvent> onchange = new Observable<>();
     
+    public abstract Observable<? extends ChangeEvent> getOnChange();
     
-    public Observable<ChangeEvent<U>> getOnChange(){
-	return onchange;
-    }
-    
-    abstract U getThis();
-    
+    abstract protected void fireOnChangeEvent(JSONObject jsonobject);
+        
     /**
      * 
      * Will be called for onChange events that happened on the browser. Updates the state of the widget with 
@@ -35,7 +32,7 @@ public abstract class InputSourceWidget<T, U extends InputSource<T>> extends Con
 		LOGGER.info("Got on change-Event but Widget was Disabled. Id: "+this.getId());
 	    }else{
 		this.reactToChange(jsonevent);
-		this.getOnChange().fire(new ChangeEvent<U>(this.getThis()));
+		this.fireOnChangeEvent(jsonevent);
 	    }
 	    
 	} else {
