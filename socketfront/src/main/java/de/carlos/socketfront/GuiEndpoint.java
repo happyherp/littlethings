@@ -13,6 +13,7 @@ import javax.websocket.server.ServerEndpoint;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
+import de.carlos.socketfront.sample.PersonGui;
 import de.carlos.socketfront.sample.TestAutoGui;
 import de.carlos.socketfront.sample.TestGUI;
 import de.carlos.socketfront.widgets.MainPane;
@@ -31,6 +32,7 @@ public class GuiEndpoint {
     static{
 	nameToGui.put("Test", new FactoryImpl<SocketGUI>(TestGUI.class));
 	nameToGui.put("TestAuto", new FactoryImpl<SocketGUI>(TestAutoGui.class));
+	nameToGui.put("Person", new FactoryImpl<SocketGUI>(PersonGui.class));
     }
 
     

@@ -1,11 +1,11 @@
 package de.carlos.socketfront.widgets;
 
-public class Table extends WidgetBase {
+public class Grid extends WidgetBase {
     
     protected int columns;
     protected int rows;
     
-    public Table(int columns, int rows){
+    public Grid(int columns, int rows){
 	this.columns = columns;
 	this.rows = rows;
     }

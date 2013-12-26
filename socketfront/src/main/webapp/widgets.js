@@ -200,7 +200,7 @@ Table = function(id, cols, rows){
 	Widget.call(this, id);
 	
 	this.table = document.createElement("table");
-	
+	this.table.border = "1px";
 	
 	this.posToTd=[];
 	

@@ -10,7 +10,7 @@ import de.carlos.socketfront.widgets.Checkbox;
 import de.carlos.socketfront.widgets.Group;
 import de.carlos.socketfront.widgets.NumberInput;
 import de.carlos.socketfront.widgets.Select;
-import de.carlos.socketfront.widgets.Table;
+import de.carlos.socketfront.widgets.Grid;
 import de.carlos.socketfront.widgets.Text;
 import de.carlos.socketfront.widgets.TextInput;
 import de.carlos.socketfront.widgets.Window;
@@ -24,7 +24,7 @@ public class TestGUI implements SocketGUI {
     Checkbox box;
     Select<Double> select;
     private Text selecttext;
-    Table table;
+    Grid table;
     NumberInput numberinput;
     Button squarebutton;
 
@@ -104,7 +104,7 @@ public class TestGUI implements SocketGUI {
 
 	selectgroup.add(selectButton);
 	
-	table = ctx.addWidget(new Table(4,7));
+	table = ctx.addWidget(new Grid(4,7));
 
 	for (int x = 1;x<=table.getColumns();x++){
 	    for (int y = 1;y <= table.getRows();y++){
