@@ -16,6 +16,7 @@ public class Grid extends WidgetBase {
     }
     
     public void setCell(Widget widget,int col, int row){
+	//Repeated calls to setCell will cause memory-leaks....
 	if (col < 0 || row < 0 ||  col >= this.columns || row >= this.rows){
 	    throw new RuntimeException("Dimensions out of bounds. Col: "+col +" Row: "+ row);
 	}

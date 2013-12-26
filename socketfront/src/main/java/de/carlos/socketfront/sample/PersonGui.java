@@ -2,12 +2,15 @@ package de.carlos.socketfront.sample;
 
 import java.util.List;
 
+import de.carlos.observer.Observer;
 import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.SocketGUI;
+import de.carlos.socketfront.autogui.EntityEdit;
 import de.carlos.socketfront.autogui.EntityTable;
 import de.carlos.socketfront.sample.PersonProvider.Person;
 import de.carlos.socketfront.widgets.Grid;
 import de.carlos.socketfront.widgets.Text;
+import de.carlos.socketfront.widgets.events.ChangeEvent;
 
 public class PersonGui implements SocketGUI {
 
@@ -16,7 +19,8 @@ public class PersonGui implements SocketGUI {
 
 	List<Person> allpersons = PersonProvider.getInstance().getAll();
 
-	Grid table = context.addWidget(new Grid(3, allpersons.size() + 1), context.getMainPane());
+	Grid table = context.addWidget(new Grid(3, allpersons.size() + 1),
+		context.getMainPane());
 
 	table.setCell(context.addWidget(new Text("ID")), 0, 0);
 	table.setCell(context.addWidget(new Text("Firstname")), 1, 0);
@@ -32,10 +36,23 @@ public class PersonGui implements SocketGUI {
 		    row);
 	    row++;
 	}
-	
-	EntityTable<Person> persontable= new EntityTable<>(allpersons, Person.class);
+
+	final EntityTable<Person> persontable = new EntityTable<>(allpersons,
+		Person.class);
 	context.addWidget(persontable, context.getMainPane());
+
+	EntityEdit<Person> personedit = new EntityEdit<PersonProvider.Person>(
+		allpersons.get(0));
+
+	context.addWidget(personedit, context.getMainPane());
 	
+	personedit.getOnChange().addObserver(new Observer<ChangeEvent<EntityEdit<Person>>>() {
+	    
+	    @Override
+	    public void update(ChangeEvent<EntityEdit<Person>> event) {
+		persontable.refresh();
+	    }
+	});
 
     }
 
