@@ -84,7 +84,7 @@ public class TestGUI implements SocketGUI {
 	
 	Group selectgroup = ctx.addWidget(new Group(), ctx.getMainPane());
 	
-	selecttext =  ctx.addWidget(new Text("This is a selectbox"),selectgroup);
+	selecttext =  ctx.addWidget(new Text("This is a select"),selectgroup);
 
 	select = ctx.addWidget(new Select<Double>());
 	select.addOption("half", 0.5);

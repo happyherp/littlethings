@@ -7,13 +7,15 @@ import org.json.JSONObject;
 public class JSPipe {
 
     Session session;
+    
+    StringBuffer buffer = new StringBuffer();
 
     public JSPipe(Session session) {
 	this.session = session;
     }
 
     public void addStatement(String stmt) {
-	this.session.getAsyncRemote().sendText(stmt);
+    	this.buffer.append(stmt+"\n");
     }
     
     public void addCall(String function, Object... args){
@@ -25,8 +27,13 @@ public class JSPipe {
 		call += ","+ JSONObject.valueToString(args[i]);
 	    }
 	}
-	call += ");\n";
+	call += ")";
 	this.addStatement(call);	
+    }
+    
+    public void sendToServer(){
+    	this.session.getAsyncRemote().sendText(buffer.toString());
+    	buffer = new StringBuffer();
     }
 
 }

@@ -23,54 +23,58 @@ import de.carlos.util.FactoryImpl;
 
 @ServerEndpoint("/guiEndpoint/{gui-name}")
 public class GuiEndpoint {
-           
-    private static Logger LOGGER = Logger.getLogger(GuiEndpoint.class);
-    
-    GuiContext context;   
-    
-    static private Map<String,Factory<SocketGUI>> nameToGui = new HashMap<String, Factory<SocketGUI>>();
-    static{
-	nameToGui.put("Test", new FactoryImpl<SocketGUI>(TestGUI.class));
-	nameToGui.put("TestAuto", new FactoryImpl<SocketGUI>(TestAutoGui.class));
-	nameToGui.put("Person", new FactoryImpl<SocketGUI>(PersonGui.class));
-    }
 
-    
-    public GuiEndpoint(){
-	super();
-	LOGGER.debug("Class instantiated.");
-    }
-    
-    @OnOpen
-    public void onOpen(Session session, EndpointConfig config, @PathParam("gui-name") String guiname) {
-	LOGGER.debug( "Connection open!.");
-	
-	 Factory<SocketGUI> factory = nameToGui.get(guiname);
-	 if (factory == null){
-	     LOGGER.warn("GUI with name: "+ guiname + " not found.");
-	 }else{
-	//Setup
-	context = new GuiContext();
-	context.setJsPipe(new JSPipe(session));
-	context.setMainPane(context.addWidget(new MainPane()));
-	
-	factory.create().onCreate(context);
-	
-	 }
-    }
+	private static Logger LOGGER = Logger.getLogger(GuiEndpoint.class);
 
-    @OnMessage
-    public void receiveEvent(Session session, String msg, boolean last) {
-	LOGGER.debug( "Got an event! Message: "+ msg);
-	
-	JSONObject event = new JSONObject(msg);	
-	String id = event.getString("id");
-	
-	Widget widget = context.getWidget(id);
-	if (widget == null){
-	    LOGGER.warn("Could not find widget with id: "+ id);
+	GuiContext context;
+
+	static private Map<String, Factory<SocketGUI>> nameToGui = new HashMap<String, Factory<SocketGUI>>();
+	static {
+		nameToGui.put("Test", new FactoryImpl<SocketGUI>(TestGUI.class));
+		nameToGui
+				.put("TestAuto", new FactoryImpl<SocketGUI>(TestAutoGui.class));
+		nameToGui.put("Person", new FactoryImpl<SocketGUI>(PersonGui.class));
 	}
-	widget.receiveEvent(event);	
-    }
+
+	public GuiEndpoint() {
+		super();
+		LOGGER.debug("Class instantiated.");
+	}
+
+	@OnOpen
+	public void onOpen(Session session, EndpointConfig config,
+			@PathParam("gui-name") String guiname) {
+		LOGGER.debug("Connection open!.");
+
+		Factory<SocketGUI> factory = nameToGui.get(guiname);
+		if (factory == null) {
+			LOGGER.warn("GUI with name: " + guiname + " not found.");
+		} else {
+			// Setup
+			context = new GuiContext();
+			context.setJsPipe(new JSPipe(session));
+			context.setMainPane(context.addWidget(new MainPane()));
+
+			factory.create().onCreate(context);
+			context.getJsPipe().sendToServer();
+
+		}
+	}
+
+	@OnMessage
+	public void receiveEvent(Session session, String msg, boolean last) {
+		LOGGER.debug("Got an event! Message: " + msg);
+
+		JSONObject event = new JSONObject(msg);
+		String id = event.getString("id");
+		
+		Widget widget = context.getWidget(id);
+		if (widget == null) {
+			LOGGER.warn("Could not find widget with id: " + id);
+		}
+		widget.receiveEvent(event);
+		
+		context.getJsPipe().sendToServer();
+	}
 
 }
