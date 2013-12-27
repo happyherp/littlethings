@@ -1,5 +1,7 @@
 package de.carlos.socketfront;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,11 +15,16 @@ import javax.websocket.server.ServerEndpoint;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
+import de.carlos.observer.Observer;
 import de.carlos.socketfront.sample.PersonGui;
 import de.carlos.socketfront.sample.TestAutoGui;
 import de.carlos.socketfront.sample.TestGUI;
+import de.carlos.socketfront.widgets.Button;
 import de.carlos.socketfront.widgets.MainPane;
+import de.carlos.socketfront.widgets.Text;
 import de.carlos.socketfront.widgets.Widget;
+import de.carlos.socketfront.widgets.Window;
+import de.carlos.socketfront.widgets.events.ClickEvent;
 import de.carlos.util.Factory;
 import de.carlos.util.FactoryImpl;
 
@@ -55,26 +62,57 @@ public class GuiEndpoint {
 			context.setJsPipe(new JSPipe(session));
 			context.setMainPane(context.addWidget(new MainPane()));
 
-			factory.create().onCreate(context);
+			try {
+				factory.create().onCreate(context);
+			} catch (RuntimeException e) {
+				LOGGER.error(e);
+				showExceptionWindow(context, e);
+			}
+
 			context.getJsPipe().sendToServer();
 
 		}
 	}
 
+
 	@OnMessage
 	public void receiveEvent(Session session, String msg, boolean last) {
 		LOGGER.debug("Got an event! Message: " + msg);
 
+		try{
 		JSONObject event = new JSONObject(msg);
 		String id = event.getString("id");
-		
+
 		Widget widget = context.getWidget(id);
 		if (widget == null) {
-			LOGGER.warn("Could not find widget with id: " + id);
+			throw new RuntimeException("Could not find widget with id: " + id);
 		}
 		widget.receiveEvent(event);
-		
+		}catch (RuntimeException e){
+			LOGGER.error(e);
+			showExceptionWindow(context, e);
+		}
+
 		context.getJsPipe().sendToServer();
+	}
+	
+
+	protected void showExceptionWindow(GuiContext context2, RuntimeException e) {
+		final Window window = context.addWidget(new Window(), context.getMainPane());
+		
+		StringWriter writer = new StringWriter();
+		writer.write("An Excpetion occurred. ");
+		e.printStackTrace(new PrintWriter(writer));
+		
+		window.add(context.addWidget(new Text(writer.toString())));
+		Button closebutton = context.addWidget(new Button("OK"), window);
+		closebutton.getOnClick().addObserver(new Observer<ClickEvent<Button>>() {
+			
+			@Override
+			public void update(ClickEvent<Button> event) {
+				window.close();
+			}
+		});
 	}
 
 }

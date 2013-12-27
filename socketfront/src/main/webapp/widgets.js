@@ -253,8 +253,13 @@ Grid.prototype.addRow = function(rowindex){
 		this.posToTd.splice(rowindex, 0, row);
 	}else{
 		this.__appendRow(this.trs.length)
-	}
-	
+	}	
+}
+
+Grid.prototype.removeRow = function(rowindex){
+	this.table.removeChild(this.trs[rowindex]);
+	this.trs.splice(rowindex, 1);
+	this.posToTd.splice(rowindex, 1);
 }
 
 Window = function(id){
