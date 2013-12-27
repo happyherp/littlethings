@@ -196,37 +196,64 @@ Text.prototype.setText = function(text){
 	
 }
 
-Table = function(id, cols, rows){
+Grid = function(id, cols, rows){
 	Widget.call(this, id);
+	this.cols = cols;
+	this.rows = rows;
 	
 	this.table = document.createElement("table");
 	this.table.border = "1px";
 	
 	this.posToTd=[];
+	this.trs=[];
 	
 	for (var row = 0; row < rows; row++){
-		this.posToTd.push([]);
-		var tr = document.createElement("tr");
-		for (var col = 0; col<cols;col++){
-			var td = document.createElement("td");
-			this.posToTd[row].push(td);
-			tr.appendChild(td);
-		}
-		this.table.appendChild(tr);
+		this.__appendRow(row);
 	}
 	
 	this.contentDiv.appendChild(this.table);
 }
 
-extend(Widget, Table);
+extend(Widget, Grid);
 
-Table.prototype.setCell = function(widgetId, col, row){
+Grid.prototype.__appendRow = function(row){
+	this.posToTd.push([]);
+	var tr = document.createElement("tr");
+	for (var col = 0; col<this.cols;col++){
+		var td = document.createElement("td");
+		this.posToTd[row].push(td);
+		tr.appendChild(td);
+	}
+	this.table.appendChild(tr);
+	this.trs.push(tr);	
+}
+
+Grid.prototype.setCell = function(widgetId, col, row){
 	var td = this.posToTd[row][col];
 	while (td.hasChildNodes()) {
 		td.removeChild(td.lastChild);
 	}
 
 	td.appendChild(idToWidget[widgetId].mainDiv);
+	
+}
+
+Grid.prototype.addRow = function(rowindex){
+	if (this.trs.length > rowindex){
+		var row = []
+		var tr = document.createElement("tr");		
+		for (var col = 0; col<this.cols;col++){
+			var td = document.createElement("td");
+			row.push(td);
+			tr.appendChild(td);
+		}	
+		var oldrow = this.trs[rowindex]
+		this.table.insertBefore(tr, oldrow);
+		this.trs.splice(rowindex, 0, tr);
+		this.posToTd.splice(rowindex, 0, row);
+	}else{
+		this.__appendRow(this.trs.length)
+	}
 	
 }
 

@@ -5,6 +5,7 @@ public class Grid extends WidgetBase {
     protected int columns;
     protected int rows;
     
+    
     public Grid(int columns, int rows){
 	this.columns = columns;
 	this.rows = rows;
@@ -12,7 +13,7 @@ public class Grid extends WidgetBase {
 
     @Override
     public void constructJSObject() {
-	this.jsPipe.addCall("new Table", this.getId(), this.columns, this.rows);
+	this.jsPipe.addCall("new Grid", this.getId(), this.columns, this.rows);
     }
     
     public void setCell(Widget widget,int col, int row){
@@ -22,6 +23,11 @@ public class Grid extends WidgetBase {
 	}
 	this.callThisJS("setCell", widget.getId(), col, row);
 	
+    }
+    
+    public void addRow(int rownum){
+	this.rows++;
+	this.callThisJS("addRow", rownum);
     }
 
     public int getColumns() {

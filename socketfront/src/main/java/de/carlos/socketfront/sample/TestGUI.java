@@ -170,6 +170,13 @@ public class TestGUI implements SocketGUI {
 	    }
 	});
 	
+	Grid grid = context.addWidget(new Grid(2,0), context.getMainPane());
+	for (int i = 0; i<6;i++){
+	    grid.addRow(3);
+	    grid.setCell(context.addWidget(new Text(i+"")), 0,Math.min(grid.getRows()-1, 3));
+	    grid.setCell(context.addWidget(new Text(i*2+"")), 1,Math.min(grid.getRows()-1, 3));
+	}
+	
 	
     }
     
