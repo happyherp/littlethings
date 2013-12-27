@@ -8,7 +8,8 @@
     <script type="text/javascript" src="/static/map.js"></script>
     <script type="text/javascript" src="/static/timer.js"></script>
     <script type="text/javascript" src="/static/domtest.js"></script>   
-    <script type="text/javascript" src="/static/serversender.js"></script>  
+    <script type="text/javascript" src="/static/URI.js"></script>
+     
      
     
     <script type="text/javascript"> 
@@ -69,9 +70,9 @@
       }
       
 
-
-      window.onload = function(){       
-                
+      window.onload = function(){      
+        
+                 
         runtests([function(){},
                   function(){
                     var b = document.getElementById("B");
@@ -97,6 +98,7 @@
     
   </head>
   <body>
+ 
   
     <div id = "A">A
       <input type="text" value="hi" id="input" />
@@ -111,6 +113,10 @@
       <div id ="child2" >c2</div>      
     </div>
 
+<!-- Recorded content will be displayed in there. This is needed to simulate the 
+original window-size. -->
+<iframe src="/static/blank.html" id="watchframe" width="500" height="600" name="watchframe" notrelevant="1" >
+</iframe>
   </body>
 
 </html>

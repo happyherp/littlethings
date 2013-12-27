@@ -11,7 +11,8 @@ function isRelevantNode(elem){
   return    (elem.nodeType == TextNode
                  || elem.nodeType == ElementNode 
                      && elem.nodeName != "SCRIPT" 
-                     && !elem.notrelevant);
+                     && !elem.notrelevant
+                     && !elem.getAttribute("notrelevant") == "1");
 }
 
 function relevantChilds(node){
