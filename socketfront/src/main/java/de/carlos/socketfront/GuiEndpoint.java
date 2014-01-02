@@ -28,12 +28,6 @@ public class GuiEndpoint {
     
     GuiContext context;   
     
-    static private Map<String,Factory<SocketGUI>> nameToGui = new HashMap<String, Factory<SocketGUI>>();
-    static{
-	nameToGui.put("Test", new FactoryImpl<SocketGUI>(TestGUI.class));
-	nameToGui.put("TestAuto", new FactoryImpl<SocketGUI>(TestAutoGui.class));
-	nameToGui.put("Person", new FactoryImpl<SocketGUI>(PersonGui.class));
-    }
 
     
     public GuiEndpoint(){
@@ -45,18 +39,17 @@ public class GuiEndpoint {
     public void onOpen(Session session, EndpointConfig config, @PathParam("gui-name") String guiname) {
 	LOGGER.debug( "Connection open!.");
 	
-	 Factory<SocketGUI> factory = nameToGui.get(guiname);
-	 if (factory == null){
-	     LOGGER.warn("GUI with name: "+ guiname + " not found.");
-	 }else{
+	 SocketGUI gui = GuiMapping.getInstance().createGUI(guiname);
 	//Setup
 	context = new GuiContext();
-	context.setJsPipe(new JSPipe(session));
+	context.setJsPipe(new JSPipe());
 	context.setMainPane(context.addWidget(new MainPane()));
 	
-	factory.create().onCreate(context);
+	gui.onCreate(context);
 	
-	 }
+	String js = context.getJsPipe().flushJS();
+	
+	 
     }
 
     @OnMessage
