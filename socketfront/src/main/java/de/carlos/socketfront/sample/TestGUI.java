@@ -84,7 +84,7 @@ public class TestGUI implements SocketGUI {
 	
 	Group selectgroup = ctx.addWidget(new Group(), ctx.getMainPane());
 	
-	selecttext =  ctx.addWidget(new Text("This is a selectbox"),selectgroup);
+	selecttext =  ctx.addWidget(new Text("This is a select"),selectgroup);
 
 	select = ctx.addWidget(new Select<Double>());
 	select.addOption("half", 0.5);
@@ -114,6 +114,14 @@ public class TestGUI implements SocketGUI {
 	
 	table.setCell(context.addWidget(new Button("I am button")), 2, 6);
 	context.getMainPane().add(table);
+	
+	Button removeSnd = context.addWidget(new Button("remove 2nd row"), context.getMainPane());
+	removeSnd.getOnClick().addObserver(new Observer<ClickEvent<Button>>() {
+		@Override
+		public void update(ClickEvent<Button> event) {
+			table.removeRow(1);
+		}
+	});
 	
 	Text absText = context.addWidget(new Text("I am flying over things!"), context.getMainPane());
 	absText.setPositionAbsolute(100, 200);

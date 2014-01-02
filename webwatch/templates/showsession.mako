@@ -37,7 +37,7 @@
 
 <!-- Recorded content will be displayed in there. This is needed to simulate the 
 original window-size. -->
-<iframe src="/static/blank.html" id="watchframe" width="500" height="600" name="watchframe">
+<iframe src="/static/blank.html" id="watchframe" width="500" height="600" name="watchframe" notrelevant="1" >
 </iframe>
 
 </body>
