@@ -38,7 +38,7 @@ public abstract class WidgetBase implements Widget {
     }
 
     protected String getJSObject() {
-	return String.format("idToWidget[%s]", JSONObject.quote(this.getId()));
+	return String.format("GuiInfo.idToWidget[%s]", JSONObject.quote(this.getId()));
     }
 
     protected void callThisJS(String method, Object... args) {

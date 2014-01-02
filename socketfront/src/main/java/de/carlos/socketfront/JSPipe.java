@@ -5,14 +5,9 @@ import javax.websocket.Session;
 import org.json.JSONObject;
 
 public class JSPipe {
-
-    Session session;
     
     StringBuffer buffer = new StringBuffer();
 
-    public JSPipe(Session session) {
-	this.session = session;
-    }
 
     public void addStatement(String stmt) {
     	this.buffer.append(stmt+"\n");
@@ -31,9 +26,10 @@ public class JSPipe {
 	this.addStatement(call);	
     }
     
-    public void sendToServer(){
-    	this.session.getAsyncRemote().sendText(buffer.toString());
+    public String  takeOutJS(){
+	String js = buffer.toString();
     	buffer = new StringBuffer();
+    	return js; 
     }
 
 }

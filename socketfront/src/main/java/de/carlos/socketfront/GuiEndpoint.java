@@ -55,7 +55,7 @@ public class GuiEndpoint {
 	    gui.onCreate(context);
 	} catch (RuntimeException e) {
 	    LOGGER.error(e);
-	    showExceptionWindow(context, e);
+	    context.showExceptionWindow(e);
 	}
 
 	String js =  context.getJsPipe().takeOutJS();
@@ -69,17 +69,13 @@ public class GuiEndpoint {
 
 	try {
 	    JSONObject event = new JSONObject(msg);
-	    String id = event.getString("id");
+	    
+	    context.processEvent(event);
+	    
 
-	    Widget widget = context.getWidget(id);
-	    if (widget == null) {
-		throw new RuntimeException("Could not find widget with id: "
-			+ id);
-	    }
-	    widget.receiveEvent(event);
 	} catch (RuntimeException e) {
 	    LOGGER.error(e);
-	    showExceptionWindow(context, e);
+	    context.showExceptionWindow(e);
 	}
 
 	String js =  context.getJsPipe().takeOutJS();
@@ -87,24 +83,6 @@ public class GuiEndpoint {
 	
     }
 
-    protected void showExceptionWindow(GuiContext context2, RuntimeException e) {
-	final Window window = context.addWidget(new Window(),
-		context.getMainPane());
 
-	StringWriter writer = new StringWriter();
-	writer.write("An Excpetion occurred. ");
-	e.printStackTrace(new PrintWriter(writer));
-
-	window.add(context.addWidget(new Text(writer.toString())));
-	Button closebutton = context.addWidget(new Button("OK"), window);
-	closebutton.getOnClick().addObserver(
-		new Observer<ClickEvent<Button>>() {
-
-		    @Override
-		    public void update(ClickEvent<Button> event) {
-			window.close();
-		    }
-		});
-    }
 
 }

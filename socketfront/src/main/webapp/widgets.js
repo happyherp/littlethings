@@ -1,10 +1,9 @@
 
-idToWidget = {};
 
 
 Widget = function(id){	
 	this.id = id;
-	idToWidget[id] = this;
+	GuiInfo.idToWidget[id] = this;
 
 	this.mainDiv = document.createElement("div");
 	this.mainDiv.style.border = "1 px solid black";
@@ -18,7 +17,7 @@ Widget = function(id){
 };
 
 Widget.prototype.addTo = function(widgetId){
-	idToWidget[widgetId].appendChild(this);
+	GuiInfo.idToWidget[widgetId].appendChild(this);
 };
 
 Widget.prototype.setPositionAbsolute = function(x,y){
@@ -28,14 +27,14 @@ Widget.prototype.setPositionAbsolute = function(x,y){
 };
 
 Widget.prototype.remove = function(){
-	idToWidget[this.id] = undefined;
+	GuiInfo.idToWidget[this.id] = undefined;
 	if (this.mainDiv.parentNode != null){
 		this.mainDiv.parentNode.removeChild(this.mainDiv);
 	}
 }
 
 Widget.prototype.addInfoText = function(widgetId){
-	this.infoDiv.appendChild(idToWidget[widgetId].mainDiv);
+	this.infoDiv.appendChild(GuiInfo.idToWidget[widgetId].mainDiv);
 }
 
 Button = function(id, caption) {
@@ -62,7 +61,7 @@ Button.prototype.clickHandler = function(e) {
 			type:"click",
 			data:e
 			};
-	ws.send(JSON.stringify(event));
+	sendEvent(event);
 };
 
 Button.prototype.setDisabled = function(disabled){
@@ -92,7 +91,7 @@ TextInput.prototype.changeHandler = function(e) {
 			value:this.input.value,
 			data:e
 			};
-	ws.send(JSON.stringify(event));
+	sendEvent(event);
 };
 
 TextInput.prototype.setValue = function(value){
@@ -123,7 +122,7 @@ Checkbox.prototype.changeHandler = function(e) {
 			value:this.input.checked,
 			data:e
 			};
-	ws.send(JSON.stringify(event));
+	sendEvent(event);
 };
 
 Checkbox.prototype.setValue = function(value){
@@ -161,7 +160,7 @@ Select.prototype.changeHandler = function(e) {
 			optionid:this.select.options[this.select.selectedIndex].id,
 			data:e
 			};
-	ws.send(JSON.stringify(event));
+	sendEvent(event);
 };
 
 Select.prototype.setSelected = function(id){
@@ -234,7 +233,7 @@ Grid.prototype.setCell = function(widgetId, col, row){
 		td.removeChild(td.lastChild);
 	}
 
-	td.appendChild(idToWidget[widgetId].mainDiv);
+	td.appendChild(GuiInfo.idToWidget[widgetId].mainDiv);
 	
 }
 
@@ -271,7 +270,7 @@ Window = function(id){
 extend(Widget, Window);
 
 Window.prototype.addChild = function(childId){
-	this.contentDiv.appendChild(idToWidget[childId].mainDiv);
+	this.contentDiv.appendChild(GuiInfo.idToWidget[childId].mainDiv);
 }
 
 Group = function(id){
@@ -282,7 +281,7 @@ Group = function(id){
 extend(Widget, Group);
 
 Group.prototype.addChild = function(childId){
-	this.contentDiv.appendChild(idToWidget[childId].mainDiv);
+	this.contentDiv.appendChild(GuiInfo.idToWidget[childId].mainDiv);
 }
 
 
