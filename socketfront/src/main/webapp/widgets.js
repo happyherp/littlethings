@@ -261,6 +261,16 @@ Grid.prototype.removeRow = function(rowindex){
 	this.posToTd.splice(rowindex, 1);
 }
 
+Grid.prototype.appendColumn = function(){
+	this.cols++;
+	for (var row = 0; row<this.rows;row++){
+		var tr = this.trs[row];
+		var td = document.createElement("td");
+		tr.appendChild(td);
+		this.posToTd[row][this.cols - 1] = td;
+	}
+}
+
 Window = function(id){
 	Widget.call(this, id);
 	

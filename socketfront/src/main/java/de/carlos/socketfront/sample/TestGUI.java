@@ -123,6 +123,16 @@ public class TestGUI implements SocketGUI {
 		}
 	});
 	
+	
+	Button addCol = context.addWidget(new Button("append Col"), context.getMainPane());
+	addCol.getOnClick().addObserver(new Observer<ClickEvent<Button>>() {
+
+	    @Override
+	    public void update(ClickEvent<Button> event) {
+		table.appendColumn();
+	    }
+	});
+	
 	Text absText = context.addWidget(new Text("I am flying over things!"), context.getMainPane());
 	absText.setPositionAbsolute(100, 200);
 	

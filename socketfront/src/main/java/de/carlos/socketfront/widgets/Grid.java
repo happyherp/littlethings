@@ -46,4 +46,9 @@ public class Grid extends WidgetBase {
 		return rows;
 	}
 
+	public void appendColumn() {
+	    this.columns++;
+	    this.callThisJS("appendColumn");
+	}
+
 }
