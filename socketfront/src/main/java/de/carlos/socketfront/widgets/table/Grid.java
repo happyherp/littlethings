@@ -1,4 +1,7 @@
-package de.carlos.socketfront.widgets;
+package de.carlos.socketfront.widgets.table;
+
+import de.carlos.socketfront.widgets.Widget;
+import de.carlos.socketfront.widgets.WidgetBase;
 
 public class Grid extends WidgetBase {
 
@@ -28,6 +31,10 @@ public class Grid extends WidgetBase {
 	public void addRow(int rowindex) {
 		this.rows++;
 		this.callThisJS("addRow", rowindex);
+	}
+	
+	public void appendRow(){
+	    this.addRow(this.rows);
 	}
 	
 	public void removeRow(int rowindex){

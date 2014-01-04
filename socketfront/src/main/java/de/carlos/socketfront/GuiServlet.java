@@ -23,9 +23,7 @@ public class GuiServlet extends HttpServlet {
 	    throws ServletException, IOException {
 	
 	
-	JSONObject data = new JSONObject(new JSONTokener(req.getInputStream()));
-	
-	
+	JSONObject data = new JSONObject(new JSONTokener(req.getInputStream()));	
 	
 
 	if (data.has("openGui")) {

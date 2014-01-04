@@ -9,12 +9,14 @@ import de.carlos.socketfront.widgets.Button;
 import de.carlos.socketfront.widgets.Checkbox;
 import de.carlos.socketfront.widgets.Group;
 import de.carlos.socketfront.widgets.NumberInput;
+import de.carlos.socketfront.widgets.Radiobutton;
+import de.carlos.socketfront.widgets.RadioGroup;
 import de.carlos.socketfront.widgets.Select;
-import de.carlos.socketfront.widgets.Grid;
 import de.carlos.socketfront.widgets.Text;
 import de.carlos.socketfront.widgets.TextInput;
 import de.carlos.socketfront.widgets.Window;
 import de.carlos.socketfront.widgets.events.ClickEvent;
+import de.carlos.socketfront.widgets.table.Grid;
 
 public class TestGUI implements SocketGUI {
 
@@ -46,7 +48,8 @@ public class TestGUI implements SocketGUI {
 		buttoncount++;
 		context.getMainPane().add(newbutton);
 
-		newbutton.getOnClick().addObserver(new Observer<ClickEvent<Button>>() {
+		newbutton.getOnClick().addObserver(
+			new Observer<ClickEvent<Button>>() {
 			    @Override
 			    public void update(ClickEvent<Button> event) {
 				context.getJsPipe().addStatement(
@@ -81,10 +84,10 @@ public class TestGUI implements SocketGUI {
 	    }
 	});
 	context.getMainPane().add(toggle);
-	
+
 	Group selectgroup = ctx.addWidget(new Group(), ctx.getMainPane());
-	
-	selecttext =  ctx.addWidget(new Text("This is a select"),selectgroup);
+
+	selecttext = ctx.addWidget(new Text("This is a select"), selectgroup);
 
 	select = ctx.addWidget(new Select<Double>());
 	select.addOption("half", 0.5);
@@ -94,37 +97,40 @@ public class TestGUI implements SocketGUI {
 	selectgroup.add(select);
 
 	Button selectButton = ctx.addWidget(new Button("show selection"));
-	selectButton.getOnClick().addObserver(new Observer<ClickEvent<Button>>() {
+	selectButton.getOnClick().addObserver(
+		new Observer<ClickEvent<Button>>() {
 		    @Override
 		    public void update(ClickEvent<Button> event) {
-			selecttext.setText("You selected "+ select.getValue());
+			selecttext.setText("You selected " + select.getValue());
 
 		    }
 		});
 
 	selectgroup.add(selectButton);
-	
-	table = ctx.addWidget(new Grid(4,7));
 
-	for (int x = 1;x<=table.getColumns();x++){
-	    for (int y = 1;y <= table.getRows();y++){
-		table.setCell(ctx.addWidget(new Text(""+(x*y))), x-1, y-1);
+	table = ctx.addWidget(new Grid(4, 7));
+
+	for (int x = 1; x <= table.getColumns(); x++) {
+	    for (int y = 1; y <= table.getRows(); y++) {
+		table.setCell(ctx.addWidget(new Text("" + (x * y))), x - 1,
+			y - 1);
 	    }
 	}
-	
+
 	table.setCell(context.addWidget(new Button("I am button")), 2, 6);
 	context.getMainPane().add(table);
-	
-	Button removeSnd = context.addWidget(new Button("remove 2nd row"), context.getMainPane());
+
+	Button removeSnd = context.addWidget(new Button("remove 2nd row"),
+		context.getMainPane());
 	removeSnd.getOnClick().addObserver(new Observer<ClickEvent<Button>>() {
-		@Override
-		public void update(ClickEvent<Button> event) {
-			table.removeRow(1);
-		}
+	    @Override
+	    public void update(ClickEvent<Button> event) {
+		table.removeRow(1);
+	    }
 	});
-	
-	
-	Button addCol = context.addWidget(new Button("append Col"), context.getMainPane());
+
+	Button addCol = context.addWidget(new Button("append Col"),
+		context.getMainPane());
 	addCol.getOnClick().addObserver(new Observer<ClickEvent<Button>>() {
 
 	    @Override
@@ -132,77 +138,102 @@ public class TestGUI implements SocketGUI {
 		table.appendColumn();
 	    }
 	});
-	
-	Text absText = context.addWidget(new Text("I am flying over things!"), context.getMainPane());
+
+	Text absText = context.addWidget(new Text("I am flying over things!"),
+		context.getMainPane());
 	absText.setPositionAbsolute(100, 200);
-	
-	Button openWindow = context.addWidget(new Button("open window"), context.getMainPane());
+
+	Button openWindow = context.addWidget(new Button("open window"),
+		context.getMainPane());
 	openWindow.getOnClick().addObserver(new Observer<ClickEvent<Button>>() {
 	    @Override
 	    public void update(ClickEvent<Button> event) {
-		Window window = context.addWidget(new Window(), context.getMainPane());
+		Window window = context.addWidget(new Window(),
+			context.getMainPane());
 		Button closeButton = context.addWidget(new Button("Close"));
-		window.add(closeButton);		
+		window.add(closeButton);
 		closeButton.getOnClick().addObserver(new WindowCloser(window));
 	    }
 	});
-	
-	
-	numberinput = context.addWidget(new NumberInput(), context.getMainPane());
-	
-	squarebutton = context.addWidget(new Button("squareit"), context.getMainPane());
-	squarebutton.getOnClick().addObserver(new Observer<ClickEvent<Button>>() {
-	    @Override
-	    public void update(ClickEvent<Button> event) {
-		if (numberinput.hasValidInput()){
-		    numberinput.setValue(numberinput.getValue() * numberinput.getValue());;
-		}else{
-		    context.getJsPipe().addCall("alert", "Please enter a number" );
-		}
-	    }
-	});
-	
-	
+
+	numberinput = context.addWidget(new NumberInput(),
+		context.getMainPane());
+
+	squarebutton = context.addWidget(new Button("squareit"),
+		context.getMainPane());
+	squarebutton.getOnClick().addObserver(
+		new Observer<ClickEvent<Button>>() {
+		    @Override
+		    public void update(ClickEvent<Button> event) {
+			if (numberinput.hasValidInput()) {
+			    numberinput.setValue(numberinput.getValue()
+				    * numberinput.getValue());
+			    ;
+			} else {
+			    context.getJsPipe().addCall("alert",
+				    "Please enter a number");
+			}
+		    }
+		});
+
 	new OnAllValid(new OnAllValidHandler() {
-	    
+
 	    @Override
 	    public void onInvalid() {
 		squarebutton.setDisabled(true);
 	    }
-	    
+
 	    @Override
 	    public void onAllValid() {
 		squarebutton.setDisabled(false);
 	    }
 	}, numberinput);
-	
-	
-	Button toggleEnabled = context.addWidget(new Button("toggle disabled"), context.getMainPane());
-	toggleEnabled.getOnClick().addObserver(new Observer<ClickEvent<Button>>() {
+
+	Button toggleEnabled = context.addWidget(new Button("toggle disabled"),
+		context.getMainPane());
+	toggleEnabled.getOnClick().addObserver(
+		new Observer<ClickEvent<Button>>() {
+		    @Override
+		    public void update(ClickEvent<Button> event) {
+			numberinput.setDisabled(!numberinput.isDisabled());
+			select.setDisabled(!select.isDisabled());
+			box.setDisabled(!box.isDisabled());
+			squarebutton.setDisabled(!squarebutton.isDisabled());
+		    }
+		});
+
+	Grid grid = context.addWidget(new Grid(2, 0), context.getMainPane());
+	for (int i = 0; i < 6; i++) {
+	    grid.addRow(3);
+	    grid.setCell(context.addWidget(new Text(i + "")), 0,
+		    Math.min(grid.getRows() - 1, 3));
+	    grid.setCell(context.addWidget(new Text(i * 2 + "")), 1,
+		    Math.min(grid.getRows() - 1, 3));
+	}
+
+	final RadioGroup<Integer> group = new RadioGroup<>(this.context);
+
+	for (int i = 0; i < 4; i++) {
+	    Radiobutton<Integer> radiobutton = group.newRadio(i);
+	    context.getMainPane().add(radiobutton);
+	}
+	Button showRadio = context.addWidget(new Button("showResult."), this.context.getMainPane());
+	showRadio.getOnClick().addObserver(new Observer<ClickEvent<Button>>() {
+
 	    @Override
 	    public void update(ClickEvent<Button> event) {
-		numberinput.setDisabled(!numberinput.isDisabled());
-		select.setDisabled(!select.isDisabled());
-		box.setDisabled(!box.isDisabled());
-		squarebutton.setDisabled(!squarebutton.isDisabled());
+		context.getJsPipe().addCall("alert", group.getValue());
 	    }
 	});
-	
-	Grid grid = context.addWidget(new Grid(2,0), context.getMainPane());
-	for (int i = 0; i<6;i++){
-	    grid.addRow(3);
-	    grid.setCell(context.addWidget(new Text(i+"")), 0,Math.min(grid.getRows()-1, 3));
-	    grid.setCell(context.addWidget(new Text(i*2+"")), 1,Math.min(grid.getRows()-1, 3));
-	}
-	
-	
+
+
     }
-    
-    private class WindowCloser implements Observer<ClickEvent<Button>>{
-	
+
+    private class WindowCloser implements Observer<ClickEvent<Button>> {
+
 	Window window;
-	
-	public WindowCloser(Window window){
+
+	public WindowCloser(Window window) {
 	    this.window = window;
 	}
 
@@ -210,7 +241,7 @@ public class TestGUI implements SocketGUI {
 	public void update(ClickEvent<Button> event) {
 	    this.window.close();
 	}
-	
+
     }
 
 }

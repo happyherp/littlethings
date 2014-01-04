@@ -8,7 +8,7 @@ import org.json.JSONObject;
 import de.carlos.observer.Observable;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 
-public class Select<T> extends InputSourceWidget<T> {
+public class Select<T> extends InputSourceWidgetBase<T> {
 
     List<Option> options = new ArrayList<Option>();
 

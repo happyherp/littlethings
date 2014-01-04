@@ -15,13 +15,13 @@ import de.carlos.socketfront.autogui.EntityUtil.EntityField;
 import de.carlos.socketfront.util.OnAllValid;
 import de.carlos.socketfront.widgets.Button;
 import de.carlos.socketfront.widgets.Group;
-import de.carlos.socketfront.widgets.InputSource;
+import de.carlos.socketfront.widgets.InputSourceWidget;
 import de.carlos.socketfront.widgets.Text;
 import de.carlos.socketfront.widgets.Widget;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 import de.carlos.socketfront.widgets.events.ClickEvent;
 
-public class EntityEdit<T> implements InputSource<T> {
+public class EntityEdit<T> implements InputSourceWidget<T> {
     
     private static final Logger LOGGER = Logger.getLogger(EntityEdit.class);
 
@@ -33,7 +33,7 @@ public class EntityEdit<T> implements InputSource<T> {
 
     List<EntityField> fields;
 
-    List<InputSource> inputs = new ArrayList<InputSource>();;
+    List<InputSourceWidget> inputs = new ArrayList<InputSourceWidget>();;
 
     List<String> excludedMethods = new ArrayList<String>();
     
@@ -54,7 +54,7 @@ public class EntityEdit<T> implements InputSource<T> {
 	for (EntityField field : fields) {
 	    if (!excludedMethods.contains(field.name)) {
 		this.getContext().addWidget(new Text(field.name), this.group);
-		InputSource inputsource = AutoGuiConfig.getInstance()
+		InputSourceWidget inputsource = AutoGuiConfig.getInstance()
 			.buildInput(getContext(), field.type);
 		
 		if (field.getter != null){
@@ -74,7 +74,7 @@ public class EntityEdit<T> implements InputSource<T> {
 	Button savebutton = this.getContext().addWidget(new Button("save"),
 		this.group);
 	OnAllValid.enableButton(savebutton,
-		this.inputs.toArray(new InputSource[] {}));
+		this.inputs.toArray(new InputSourceWidget[] {}));
 	savebutton.getOnClick().addObserver(new Observer<ClickEvent<Button>>() {
 
 	    @Override
@@ -87,7 +87,7 @@ public class EntityEdit<T> implements InputSource<T> {
 
     protected void saveToObject() {
 	int i = 0;
-	for (InputSource inputsource : this.inputs){
+	for (InputSourceWidget inputsource : this.inputs){
 	    EntityField field = this.fields.get(i);
 	    
 	    if (field.setter != null){

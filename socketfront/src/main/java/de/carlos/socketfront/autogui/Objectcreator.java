@@ -13,13 +13,13 @@ import de.carlos.socketfront.util.OnAllValid;
 import de.carlos.socketfront.widgets.Button;
 import de.carlos.socketfront.widgets.Group;
 import de.carlos.socketfront.widgets.InfoText;
-import de.carlos.socketfront.widgets.InputSource;
+import de.carlos.socketfront.widgets.InputSourceWidget;
 import de.carlos.socketfront.widgets.Text;
 import de.carlos.socketfront.widgets.TextInput;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 import de.carlos.socketfront.widgets.events.ClickEvent;
 
-public class Objectcreator<T> extends Group implements InputSource<T> {
+public class Objectcreator<T> extends Group implements InputSourceWidget<T> {
 
     private static final Logger LOGGER = Logger
 	    .getLogger(ObjectInputSourceFactory.class);
@@ -47,9 +47,9 @@ public class Objectcreator<T> extends Group implements InputSource<T> {
 
 	    this.getContext().addWidget(new Text("Constructor"), this);
 
-	    final List<InputSource<?>> parameterssources = new ArrayList<>();
+	    final List<InputSourceWidget<?>> parameterssources = new ArrayList<>();
 	    for (Class<?> parameter : constructor.getParameterTypes()) {
-		InputSource<?> parameterInput = AutoGuiConfig.getInstance()
+		InputSourceWidget<?> parameterInput = AutoGuiConfig.getInstance()
 			.buildInput(this.getContext(), parameter);
 		this.add(parameterInput);
 		parameterssources.add(parameterInput);
@@ -57,8 +57,8 @@ public class Objectcreator<T> extends Group implements InputSource<T> {
 
 	    final Button createButton = this.getContext().addWidget(
 		    new Button("create"), this);
-	    InputSource<?>[] inputsource_array = parameterssources
-		    .toArray(new InputSource[] {});
+	    InputSourceWidget<?>[] inputsource_array = parameterssources
+		    .toArray(new InputSourceWidget[] {});
 	    OnAllValid.enableButton(createButton, inputsource_array);
 
 	    createButton.getOnClick().addObserver(
@@ -76,10 +76,10 @@ public class Objectcreator<T> extends Group implements InputSource<T> {
     }
 
     protected void callConstructor(Constructor<?> constructor,
-	    List<InputSource<?>> parameters) {
+	    List<InputSourceWidget<?>> parameters) {
 	List<Object> args = new ArrayList<>();
 
-	for (InputSource<?> inputsource : parameters) {
+	for (InputSourceWidget<?> inputsource : parameters) {
 	    args.add(inputsource.getValue());
 	}
 

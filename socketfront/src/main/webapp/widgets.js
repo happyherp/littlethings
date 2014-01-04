@@ -129,6 +129,23 @@ Checkbox.prototype.setValue = function(value){
 	this.input.checked = value;
 };
 
+RadioButton = function(id, name){
+	Widget.call(this,id);
+	this.input = document.createElement("input");
+	this.input.type="radio";
+	this.input.checked = false;
+	this.input.name = name;
+	this.contentDiv.appendChild(this.input);
+	this.input.onchange = this.changeHandler.bind(this);		
+	
+}
+
+extend(Widget, RadioButton);
+
+RadioButton.prototype.setDisabled =  Button.prototype.setDisabled
+RadioButton.prototype.setValue =  Checkbox.prototype.setValue
+RadioButton.prototype.changeHandler = Checkbox.prototype.changeHandler;
+
 Select = function(id){
 	Widget.call(this, id);
 	
@@ -177,7 +194,6 @@ Select.prototype.setSelected = function(id){
 	
 	this.select.selectedIndex = newIndex;
 };
-
 
 Text = function(id, text){
 	Widget.call(this, id);

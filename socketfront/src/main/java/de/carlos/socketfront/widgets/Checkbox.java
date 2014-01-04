@@ -5,7 +5,7 @@ import org.json.JSONObject;
 import de.carlos.observer.Observable;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 
-public class Checkbox extends InputSourceWidget<Boolean> {
+public class Checkbox extends InputSourceWidgetBase<Boolean> {
 
     Boolean value = false;
     private Observable<ChangeEvent<Checkbox>> onchange = new Observable<>();

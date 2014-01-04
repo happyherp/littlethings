@@ -27,6 +27,8 @@ public class GuiContext {
 
     int idCount = 0;
 
+    int radioCount = 0;
+
     public <T extends Widget> T addWidget(T widget) {
 	if (widget.getContext() != null) {
 	    throw new RuntimeException("Widget with id " + widget.getId()
@@ -115,6 +117,11 @@ public class GuiContext {
 	    throw new RuntimeException("Could not find widget with id: " + id);
 	}
 	widget.receiveEvent(event);
+    }
+
+    public String newRadioGroupName() {
+	radioCount++;
+	return "radiogroup#" + radioCount;
     }
 
 }

@@ -42,6 +42,9 @@ public abstract class WidgetBase implements Widget {
     }
 
     protected void callThisJS(String method, Object... args) {
+	if (context == null){
+	    throw new RuntimeException("Context was not set. Probable cause is that this Object was not added to a Context.");
+	}
 	context.getJsPipe().addCall(getJSObject() + "." + method, args);
     }
     

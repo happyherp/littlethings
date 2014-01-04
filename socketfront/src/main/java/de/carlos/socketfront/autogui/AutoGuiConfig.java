@@ -5,7 +5,7 @@ import java.util.Map;
 
 import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.Checkbox;
-import de.carlos.socketfront.widgets.InputSource;
+import de.carlos.socketfront.widgets.InputSourceWidget;
 import de.carlos.socketfront.widgets.NumberInput;
 import de.carlos.socketfront.widgets.TextInput;
 
@@ -29,7 +29,7 @@ public class AutoGuiConfig {
 	this.classmapping.put(Object.class, new ObjectInputSourceFactory());
     }
 
-    public InputSource<?> buildInput(GuiContext context, Class<?> paramclass) {
+    public InputSourceWidget<?> buildInput(GuiContext context, Class<?> paramclass) {
 
 		
 	InputSourceFactory factory = this.classmapping.get(paramclass);

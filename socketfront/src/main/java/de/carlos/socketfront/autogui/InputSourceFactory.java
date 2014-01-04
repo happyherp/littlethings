@@ -1,10 +1,10 @@
 package de.carlos.socketfront.autogui;
 
 import de.carlos.socketfront.GuiContext;
-import de.carlos.socketfront.widgets.InputSource;
+import de.carlos.socketfront.widgets.InputSourceWidget;
 
 public interface InputSourceFactory<T> {
 
-    public InputSource<T> create(GuiContext context, Class<T> parameter);
+    public InputSourceWidget<T> create(GuiContext context, Class<T> parameter);
 
 }

@@ -12,7 +12,7 @@ import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.Button;
 import de.carlos.socketfront.widgets.Group;
 import de.carlos.socketfront.widgets.InfoText;
-import de.carlos.socketfront.widgets.InputSource;
+import de.carlos.socketfront.widgets.InputSourceWidget;
 import de.carlos.socketfront.widgets.Text;
 import de.carlos.socketfront.widgets.TextInput;
 import de.carlos.socketfront.widgets.Widget;
@@ -26,7 +26,7 @@ public class CallGui {
 
     Group group;
 
-    List<InputSource<?>> parameterInputs = new ArrayList<InputSource<?>>();
+    List<InputSourceWidget<?>> parameterInputs = new ArrayList<InputSourceWidget<?>>();
 
     Button button;
 
@@ -56,7 +56,7 @@ public class CallGui {
 	}	
 
 	for (Class<?> paramclass : targetmethod.getParameterTypes()) {   
-	    InputSource<?> inputsource = autoguiconfig.buildInput(context,
+	    InputSourceWidget<?> inputsource = autoguiconfig.buildInput(context,
 		    paramclass);
 	    this.parameterInputs.add(inputsource);
 	    this.group.add(inputsource);
@@ -87,7 +87,7 @@ public class CallGui {
 
 	boolean allready = true;
 	List<Object> arguments = new ArrayList<Object>();
-	for (InputSource<?> input : parameterInputs) {
+	for (InputSourceWidget<?> input : parameterInputs) {
 	    allready = allready && input.hasValidInput();
 	    if (!allready){
 		break;

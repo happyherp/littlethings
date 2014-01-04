@@ -6,11 +6,12 @@ import de.carlos.observer.Observer;
 import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.SocketGUI;
 import de.carlos.socketfront.autogui.EntityEdit;
-import de.carlos.socketfront.autogui.EntityTable;
+import de.carlos.socketfront.autogui.EntityTableDrawInstuctions;
 import de.carlos.socketfront.sample.PersonProvider.Person;
-import de.carlos.socketfront.widgets.Grid;
 import de.carlos.socketfront.widgets.Text;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
+import de.carlos.socketfront.widgets.table.Grid;
+import de.carlos.socketfront.widgets.table.RowTable;
 
 public class PersonGui implements SocketGUI {
 
@@ -36,21 +37,20 @@ public class PersonGui implements SocketGUI {
 		    row);
 	    row++;
 	}
+	
+	context.addWidget(new Text("Automated"), context.getMainPane());
 
-	final EntityTable<Person> persontable = new EntityTable<>(allpersons,
-		Person.class);
+	final RowTable<Person> persontable = new RowTable<>(new EntityTableDrawInstuctions<>(context, Person.class));
+	persontable.setData(PersonProvider.getInstance().getAll());
 	context.addWidget(persontable, context.getMainPane());
 
 	EntityEdit<Person> personedit = new EntityEdit<PersonProvider.Person>(
 		allpersons.get(0));
-
 	context.addWidget(personedit, context.getMainPane());
-	
-	personedit.getOnChange().addObserver(new Observer<ChangeEvent<EntityEdit<Person>>>() {
-	    
+	personedit.getOnChange().addObserver(new Observer<ChangeEvent<EntityEdit<Person>>>() {	    
 	    @Override
 	    public void update(ChangeEvent<EntityEdit<Person>> event) {
-		persontable.refresh();
+		persontable.redrawData();
 	    }
 	});
 

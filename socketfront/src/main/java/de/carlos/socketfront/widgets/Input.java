@@ -2,7 +2,7 @@ package de.carlos.socketfront.widgets;
 
 import org.json.JSONObject;
 
-public abstract class Input<T> extends InputSourceWidget<T> {
+public abstract class Input<T> extends InputSourceWidgetBase<T> {
 
     String value = "";
 

@@ -1,10 +1,5 @@
 package de.carlos.socketfront;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.websocket.EndpointConfig;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -15,18 +10,7 @@ import javax.websocket.server.ServerEndpoint;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
-import de.carlos.observer.Observer;
-import de.carlos.socketfront.sample.PersonGui;
-import de.carlos.socketfront.sample.TestAutoGui;
-import de.carlos.socketfront.sample.TestGUI;
-import de.carlos.socketfront.widgets.Button;
 import de.carlos.socketfront.widgets.MainPane;
-import de.carlos.socketfront.widgets.Text;
-import de.carlos.socketfront.widgets.Widget;
-import de.carlos.socketfront.widgets.Window;
-import de.carlos.socketfront.widgets.events.ClickEvent;
-import de.carlos.util.Factory;
-import de.carlos.util.FactoryImpl;
 
 @ServerEndpoint("/guiEndpoint/{gui-name}")
 public class GuiEndpoint {
@@ -54,7 +38,7 @@ public class GuiEndpoint {
 	try {
 	    gui.onCreate(context);
 	} catch (RuntimeException e) {
-	    LOGGER.error(e);
+	    LOGGER.error("Error while calling process Event",e);
 	    context.showExceptionWindow(e);
 	}
 
@@ -74,7 +58,7 @@ public class GuiEndpoint {
 	    
 
 	} catch (RuntimeException e) {
-	    LOGGER.error(e);
+	    LOGGER.error("Error while calling process Event",e);
 	    context.showExceptionWindow(e);
 	}
 
