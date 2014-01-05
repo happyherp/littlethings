@@ -22,13 +22,7 @@ public abstract class WidgetBase implements Widget {
 	return this.context;
     }
 
-    @Override
     public String getId() {
-
-	if (this.context.getId(this) == null) {
-	    this.context.generateId(this);
-	}
-
 	return this.context.getId(this);
     }
 

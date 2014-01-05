@@ -1,5 +1,7 @@
 package de.carlos.socketfront.widgets;
 
+import de.carlos.socketfront.GuiContext;
+
 public class Text extends WidgetBase {
 
     String text;
@@ -9,7 +11,7 @@ public class Text extends WidgetBase {
     }
 
     @Override
-    public void constructJSObject() {
+    public void constructJSObject(GuiContext context) {
 	this.jsPipe.addCall("new Text", this.getId(), this.getText());
     }
 

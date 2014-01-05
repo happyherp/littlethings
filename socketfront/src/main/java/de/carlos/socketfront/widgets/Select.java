@@ -6,6 +6,7 @@ import java.util.List;
 import org.json.JSONObject;
 
 import de.carlos.observer.Observable;
+import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 
 public class Select<T> extends InputSourceWidgetBase<T> {
@@ -17,7 +18,7 @@ public class Select<T> extends InputSourceWidgetBase<T> {
     int idcount = 0;
 
     @Override
-    public void constructJSObject() {
+    public void constructJSObject(GuiContext context) {
 	this.jsPipe.addCall("new Select", this.getId());
     }
 

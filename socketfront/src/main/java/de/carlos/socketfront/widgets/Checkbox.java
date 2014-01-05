@@ -3,6 +3,7 @@ package de.carlos.socketfront.widgets;
 import org.json.JSONObject;
 
 import de.carlos.observer.Observable;
+import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 
 public class Checkbox extends InputSourceWidgetBase<Boolean> {
@@ -11,7 +12,7 @@ public class Checkbox extends InputSourceWidgetBase<Boolean> {
     private Observable<ChangeEvent<Checkbox>> onchange = new Observable<>();
     
     @Override
-    public void constructJSObject() {
+    public void constructJSObject(GuiContext context) {
 	this.jsPipe.addCall("new Checkbox", this.getId());
     }
     

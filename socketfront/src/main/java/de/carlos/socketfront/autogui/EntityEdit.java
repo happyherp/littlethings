@@ -2,7 +2,6 @@ package de.carlos.socketfront.autogui;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -17,7 +16,6 @@ import de.carlos.socketfront.widgets.Button;
 import de.carlos.socketfront.widgets.Group;
 import de.carlos.socketfront.widgets.InputSourceWidget;
 import de.carlos.socketfront.widgets.Text;
-import de.carlos.socketfront.widgets.Widget;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 import de.carlos.socketfront.widgets.events.ClickEvent;
 
@@ -45,7 +43,7 @@ public class EntityEdit<T> implements InputSourceWidget<T> {
     }
 
     @Override
-    public void constructJSObject() {
+    public void constructJSObject(GuiContext context) {
 
 	this.group = this.getContext().addWidget(new Group());
 
@@ -104,11 +102,6 @@ public class EntityEdit<T> implements InputSourceWidget<T> {
 	
 	this.getOnChange().fire(new ChangeEvent(this));
 	
-    }
-
-    @Override
-    public String getId() {
-	return group.getId();
     }
 
     @Override

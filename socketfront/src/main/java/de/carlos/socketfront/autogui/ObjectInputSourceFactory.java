@@ -1,7 +1,5 @@
 package de.carlos.socketfront.autogui;
 
-import org.apache.log4j.Logger;
-
 import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.InputSourceWidget;
 

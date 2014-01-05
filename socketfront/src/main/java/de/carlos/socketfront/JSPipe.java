@@ -1,7 +1,5 @@
 package de.carlos.socketfront;
 
-import javax.websocket.Session;
-
 import org.json.JSONObject;
 
 public class JSPipe {

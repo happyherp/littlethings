@@ -45,6 +45,8 @@ public class GuiServlet extends HttpServlet {
 	    	   
 	    resp.getWriter().write(context.getJsPipe().takeOutJS());;
 	}else if (data.has("guiId")){
+	    //TODO: What if a request overtakes another one? weird behaviour could apprear
+	    //if events are processed in the wrong order.
 	    GuiContext context = ContextContainer.getInstance().getContext(data.getInt("guiId"));
 	    try{
 		context.processEvent(data);

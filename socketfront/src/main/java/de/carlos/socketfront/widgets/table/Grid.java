@@ -1,5 +1,6 @@
 package de.carlos.socketfront.widgets.table;
 
+import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.Widget;
 import de.carlos.socketfront.widgets.WidgetBase;
 
@@ -14,7 +15,7 @@ public class Grid extends WidgetBase {
 	}
 
 	@Override
-	public void constructJSObject() {
+	public void constructJSObject(GuiContext context) {
 		this.jsPipe.addCall("new Grid", this.getId(), this.columns, this.rows);
 	}
 
@@ -24,7 +25,7 @@ public class Grid extends WidgetBase {
 			throw new RuntimeException("Dimensions out of bounds. Col: " + col
 					+ " Row: " + row);
 		}
-		this.callThisJS("setCell", widget.getId(), col, row);
+		this.callThisJS("setCell", this.getContext().getId(widget) , col, row);
 
 	}
 

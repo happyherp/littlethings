@@ -18,18 +18,12 @@ public class EntityTableDrawInstuctions<T> implements RowTableDrawInstructions<T
 
     List<String> methodexclusions = new ArrayList<>();
 
-    /**
-     * Needed to get type information, if the list is empty.
-     */
-    private Class<T> clazz;
-
     List<EntityField> fields;
 
     private GuiContext context;
 
     public EntityTableDrawInstuctions(GuiContext context, Class<T> clazz) {
 	this.context = context;
-	this.clazz = clazz;
 	methodexclusions.add("Class");
 	this.fields = EntityUtil.findFields(clazz);
 

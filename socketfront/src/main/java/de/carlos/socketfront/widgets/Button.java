@@ -3,6 +3,7 @@ package de.carlos.socketfront.widgets;
 import org.json.JSONObject;
 
 import de.carlos.observer.Observable;
+import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.events.ClickEvent;
 
 public class Button extends ControlWidget {
@@ -16,7 +17,7 @@ public class Button extends ControlWidget {
     }    
 
     @Override
-    public void constructJSObject() {
+    public void constructJSObject(GuiContext context) {
 	this.jsPipe.addCall("new Button", this.getId(), this.caption);
     }
     

@@ -2,12 +2,14 @@ package de.carlos.socketfront.widgets;
 
 import org.json.JSONObject;
 
+import de.carlos.socketfront.GuiContext;
+
 public abstract class Input<T> extends InputSourceWidgetBase<T> {
 
     String value = "";
 
     @Override
-    public void constructJSObject() {
+    public void constructJSObject(GuiContext context) {
 	this.jsPipe.addCall("new TextInput", this.getId(),
 		this.getStringValue());
 	this.setValueInner(this.getStringValue());// Needed so can react to

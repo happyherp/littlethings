@@ -23,12 +23,6 @@ public class RowTable<T> implements Widget {
 	this.instructions = instructions;
     }
 
-
-    @Override
-    public String getId() {
-	return grid.getId();
-    }
-
     @Override
     public void setContext(GuiContext context) {
 	this.context = context;
@@ -40,7 +34,7 @@ public class RowTable<T> implements Widget {
     }
 
     @Override
-    public void constructJSObject() {
+    public void constructJSObject(GuiContext context) {
 	this.grid = new Grid(0, 1);
 	this.context.addWidget(grid);
 

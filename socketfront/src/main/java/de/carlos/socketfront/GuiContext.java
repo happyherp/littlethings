@@ -31,11 +31,16 @@ public class GuiContext {
 
     public <T extends Widget> T addWidget(T widget) {
 	if (widget.getContext() != null) {
-	    throw new RuntimeException("Widget with id " + widget.getId()
+	    throw new RuntimeException("Widget with id " + this.getId(widget)
 		    + " already has a context.");
 	}
 	widget.setContext(this);
-	widget.constructJSObject();
+
+	if (!this.hasId(widget)) {
+	    generateId(widget);
+	}
+
+	widget.constructJSObject(this);
 	return widget;
     }
 
@@ -53,12 +58,27 @@ public class GuiContext {
 	this.jsPipe = jsPipe;
     }
 
+    public boolean hasId(Widget widget) {
+	return this.widgetToid.containsKey(widget);
+    }
+
     public String getId(Widget widget) {
-	return widgetToid.get(widget);
+	String id = widgetToid.get(widget);
+	if (id == null) {
+	    throw new RuntimeException("Id for Widget " + widget
+		    + " could not be found.");
+	}
+	return id;
     }
 
     public Widget getWidget(String id) {
-	return idToWidget.get(id);
+
+	Widget widget = idToWidget.get(id);
+	if (widget == null) {
+	    throw new RuntimeException("No widget with id " + id
+		    + " could be found.");
+	}
+	return widget;
     }
 
     public void setId(Widget widget, String id) {
@@ -85,9 +105,9 @@ public class GuiContext {
 	this.mainPane = mainPane;
     }
 
-    public void removeWidget(Widget widgetBase) {
-	this.idToWidget.remove(widgetBase.getId());
-	this.widgetToid.remove(widgetBase);
+    public void removeWidget(Widget widget) {
+	this.idToWidget.remove(this.getId(widget));
+	this.widgetToid.remove(widget);
     }
 
     public void showExceptionWindow(Exception e) {

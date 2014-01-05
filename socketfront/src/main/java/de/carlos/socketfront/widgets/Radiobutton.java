@@ -3,6 +3,7 @@ package de.carlos.socketfront.widgets;
 import org.json.JSONObject;
 
 import de.carlos.observer.Observable;
+import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 
 public class Radiobutton<T> extends InputSourceWidgetBase<Boolean> {
@@ -18,7 +19,7 @@ public class Radiobutton<T> extends InputSourceWidgetBase<Boolean> {
     }
 
     @Override
-    public void constructJSObject() {
+    public void constructJSObject(GuiContext context) {
 	this.jsPipe.addCall("new RadioButton", this.getId(), this.group.getName());
     }
 
