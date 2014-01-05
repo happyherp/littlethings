@@ -88,10 +88,10 @@ public class GuiContext {
 
     public void generateId(Widget widget) {
 
-	String id = String.format("generated:%d", this.idCount);
+	String id = String.format("generated/%s/%d", widget.getClass().getName(), this.idCount);
 	while (this.idToWidget.containsKey(id)) {
 	    this.idCount++;
-	    id = String.format("generated:%d", this.idCount);
+	    id = String.format("generated/%s/%d", widget.getClass().getName(), this.idCount);
 	}
 
 	setId(widget, id);
@@ -103,6 +103,7 @@ public class GuiContext {
 
     public void setMainPane(MainPane mainPane) {
 	this.mainPane = mainPane;
+	this.setId(mainPane, "mainpane");
     }
 
     public void removeWidget(Widget widget) {
@@ -136,12 +137,17 @@ public class GuiContext {
 	if (widget == null) {
 	    throw new RuntimeException("Could not find widget with id: " + id);
 	}
-	widget.receiveEvent(event);
+	widget.receiveEvent(this, event);
     }
 
     public String newRadioGroupName() {
 	radioCount++;
 	return "radiogroup#" + radioCount;
+    }
+
+    public void alert(String string) {
+	this.jsPipe.addCall("alert", string);
+	
     }
 
 }

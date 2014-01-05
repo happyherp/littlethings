@@ -12,7 +12,7 @@ public interface Widget {
     
     void constructJSObject(GuiContext context);
 
-    void receiveEvent(JSONObject event);
+    void receiveEvent(GuiContext context, JSONObject event);
         
 
 }

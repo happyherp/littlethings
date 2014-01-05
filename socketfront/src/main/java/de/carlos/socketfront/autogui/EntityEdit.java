@@ -14,20 +14,21 @@ import de.carlos.socketfront.autogui.EntityUtil.EntityField;
 import de.carlos.socketfront.util.OnAllValid;
 import de.carlos.socketfront.widgets.Button;
 import de.carlos.socketfront.widgets.Group;
+import de.carlos.socketfront.widgets.InputSource;
 import de.carlos.socketfront.widgets.InputSourceWidget;
 import de.carlos.socketfront.widgets.Text;
+import de.carlos.socketfront.widgets.Widget;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 import de.carlos.socketfront.widgets.events.ClickEvent;
+import de.carlos.socketfront.widgets.table.WidgetComposition;
 
-public class EntityEdit<T> implements InputSourceWidget<T> {
+public class EntityEdit<T> implements InputSource<T>, WidgetComposition {
     
     private static final Logger LOGGER = Logger.getLogger(EntityEdit.class);
 
     Group group;
 
     T object;
-
-    GuiContext context;
 
     List<EntityField> fields;
 
@@ -41,19 +42,19 @@ public class EntityEdit<T> implements InputSourceWidget<T> {
 	this.object = object;
 	this.excludedMethods.add("Class");
     }
-
+    
     @Override
-    public void constructJSObject(GuiContext context) {
+    public void create(GuiContext context) {
 
-	this.group = this.getContext().addWidget(new Group());
+	this.group = context.addWidget(new Group());
 
 	fields = EntityUtil.findFields(object.getClass());
 
 	for (EntityField field : fields) {
 	    if (!excludedMethods.contains(field.name)) {
-		this.getContext().addWidget(new Text(field.name), this.group);
+		context.addWidget(new Text(field.name), this.group);
 		InputSourceWidget inputsource = AutoGuiConfig.getInstance()
-			.buildInput(getContext(), field.type);
+			.buildInput(context, field.type);
 		
 		if (field.getter != null){
 		    try {
@@ -69,7 +70,7 @@ public class EntityEdit<T> implements InputSourceWidget<T> {
 	    }
 	}
 
-	Button savebutton = this.getContext().addWidget(new Button("save"),
+	Button savebutton = context.addWidget(new Button("save"),
 		this.group);
 	OnAllValid.enableButton(savebutton,
 		this.inputs.toArray(new InputSourceWidget[] {}));
@@ -80,8 +81,10 @@ public class EntityEdit<T> implements InputSourceWidget<T> {
 		saveToObject();
 	    }
 	});
-
+	
     }
+
+    
 
     protected void saveToObject() {
 	int i = 0;
@@ -104,19 +107,6 @@ public class EntityEdit<T> implements InputSourceWidget<T> {
 	
     }
 
-    @Override
-    public void setContext(GuiContext context) {
-	this.context = context;
-    }
-
-    @Override
-    public GuiContext getContext() {
-	return this.context;
-    }
-
-    @Override
-    public void receiveEvent(JSONObject event) {
-    }
 
     @Override
     public T getValue() {
@@ -137,5 +127,11 @@ public class EntityEdit<T> implements InputSourceWidget<T> {
     public Observable<ChangeEvent<EntityEdit<T>>> getOnChange() {
 	return this.onchange;
     }
+
+    @Override
+    public Widget getMainWidget() {
+	return this.group;
+    }
+
 
 }

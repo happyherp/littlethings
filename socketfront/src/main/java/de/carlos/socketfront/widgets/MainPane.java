@@ -5,11 +5,6 @@ import org.json.JSONObject;
 import de.carlos.socketfront.GuiContext;
 
 public class MainPane extends WidgetBase implements Parent {
-    
-    @Override
-    public String getId() {
-	return "mainpane";
-    }
 
     @Override
     public void add(Widget child) {

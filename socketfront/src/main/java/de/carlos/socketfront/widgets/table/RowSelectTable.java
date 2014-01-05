@@ -2,6 +2,7 @@ package de.carlos.socketfront.widgets.table;
 
 import java.util.List;
 
+import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.Widget;
 
 public class RowSelectTable<T> implements WidgetComposition{
@@ -15,7 +16,7 @@ public class RowSelectTable<T> implements WidgetComposition{
     //RadioGroup<T> radiogroup = new RadioGroup<T>();
     
     @Override
-    public void constructJSObject(){	
+    public void create(GuiContext context){	
 	
 	
 		

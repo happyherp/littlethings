@@ -4,7 +4,7 @@ import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.InputSourceWidget;
 import de.carlos.util.FactoryImpl;
 
-public class InputSourceFactoryImpl extends FactoryImpl<InputSourceWidget> implements InputSourceFactory<InputSourceWidget> {
+public class InputSourceFactoryImpl extends FactoryImpl<InputSourceWidget> implements InputSourceWidgetFactory<InputSourceWidget> {
 
     public InputSourceFactoryImpl(Class<? extends InputSourceWidget> clazz) {
 	super(clazz);

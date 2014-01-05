@@ -1,5 +1,6 @@
 package de.carlos.socketfront.widgets.table;
 
+import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.Widget;
 
 
@@ -18,7 +19,7 @@ public interface WidgetComposition {
      */
     Widget getMainWidget();
     
-   void constructJSObject();
+   void create(GuiContext context);
 
         
 

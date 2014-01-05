@@ -31,7 +31,7 @@ public class Button extends ControlWidget {
     }
 
     @Override
-    public void receiveEvent(JSONObject jsonevent) {
+    public void receiveEvent(GuiContext context, JSONObject jsonevent) {
 
 	String type = jsonevent.getString("type");
 

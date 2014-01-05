@@ -4,7 +4,7 @@ import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.InputSourceWidget;
 import de.carlos.socketfront.widgets.Select;
 
-public class EnumInputSourceFactory implements InputSourceFactory<Enum> {
+public class EnumInputSourceFactory implements InputSourceWidgetFactory<Enum> {
 
     @Override
     public InputSourceWidget<Enum> create(GuiContext context, Class<Enum> parameter) {

@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 import de.carlos.observer.Observable;
+import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 
 public abstract class InputSourceWidgetBase<T> extends ControlWidget implements InputSourceWidget<T> {
@@ -24,7 +25,7 @@ public abstract class InputSourceWidgetBase<T> extends ControlWidget implements 
      */
     abstract protected void reactToChange(JSONObject jsonevent);
 
-    public void receiveEvent(JSONObject jsonevent) {
+    public void receiveEvent(GuiContext context, JSONObject jsonevent) {
 	if (jsonevent.getString("type").equals("change")) {
 	    if (this.isDisabled()){
 		LOGGER.info("Got on change-Event but Widget was Disabled. Id: "+this.getId());

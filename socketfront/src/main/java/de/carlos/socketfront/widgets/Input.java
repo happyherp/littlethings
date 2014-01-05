@@ -14,7 +14,7 @@ public abstract class Input<T> extends InputSourceWidgetBase<T> {
 		this.getStringValue());
 	this.setValueInner(this.getStringValue());// Needed so can react to
 						  // invalid Input with messages
-						  // in FilteredInput
+						  // in FilteredInput from the start
     }
 
     public String getStringValue() {

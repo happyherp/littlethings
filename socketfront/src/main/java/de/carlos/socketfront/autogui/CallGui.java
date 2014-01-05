@@ -99,6 +99,7 @@ public class CallGui {
 	    this.output.setValue("");
 	    if (this.info != null){
 		this.info.remove();
+		this.info = null;
 	    }
 
 	    try {

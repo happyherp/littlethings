@@ -20,6 +20,7 @@ public class PersonGui implements SocketGUI {
 
 	List<Person> allpersons = PersonProvider.getInstance().getAll();
 
+	
 	Grid table = context.addWidget(new Grid(3, allpersons.size() + 1),
 		context.getMainPane());
 
@@ -39,20 +40,26 @@ public class PersonGui implements SocketGUI {
 	}
 	
 	context.addWidget(new Text("Automated"), context.getMainPane());
+	
 
 	final RowTable<Person> persontable = new RowTable<>(new EntityTableDrawInstuctions<>(context, Person.class));
 	persontable.setData(PersonProvider.getInstance().getAll());
-	context.addWidget(persontable, context.getMainPane());
+	persontable.create(context);
+	context.getMainPane().add(persontable.getMainWidget());
 
+	
 	EntityEdit<Person> personedit = new EntityEdit<PersonProvider.Person>(
 		allpersons.get(0));
-	context.addWidget(personedit, context.getMainPane());
+	personedit.create(context);
+	context.getMainPane().add(personedit.getMainWidget());
+
 	personedit.getOnChange().addObserver(new Observer<ChangeEvent<EntityEdit<Person>>>() {	    
 	    @Override
 	    public void update(ChangeEvent<EntityEdit<Person>> event) {
 		persontable.redrawData();
 	    }
 	});
+	
 
     }
 

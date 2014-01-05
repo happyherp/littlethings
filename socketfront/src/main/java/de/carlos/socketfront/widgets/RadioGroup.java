@@ -9,13 +9,13 @@ import de.carlos.socketfront.widgets.events.ChangeEvent;
 
 public class RadioGroup<T> implements InputSource<T>  {
     
-    Observable<ChangeEvent<Radiobutton<T>>> onchange = new Observable<>();
+    Observable<ChangeEvent<RadioButton<T>>> onchange = new Observable<>();
     
     String groupname;
     
-    List<Radiobutton<T>> radios = new ArrayList<>();
+    List<RadioButton<T>> radios = new ArrayList<>();
     
-    Radiobutton<T> activeRadio = null;
+    RadioButton<T> activeRadio = null;
     
     GuiContext context;
 
@@ -25,18 +25,28 @@ public class RadioGroup<T> implements InputSource<T>  {
     }
     
     
-    public Radiobutton<T> newRadio(T value){
-	Radiobutton<T> radio = new Radiobutton<T>(this, value);
+    public RadioButton<T> newRadio(T value){
+	RadioButton<T> radio = new RadioButton<T>(this, value);
 	this.context.addWidget(radio);
 	radios.add(radio);
 	return radio;
     }
     
-    protected void onButtonChange(Radiobutton<T> button, Boolean status){
+    protected void onButtonChange(RadioButton<T> button, Boolean status){
+	
+	RadioButton<T> oldRadio = activeRadio;
+	
 	if (status){
 	    activeRadio = button;
 	}
-	this.onchange.fire(new ChangeEvent<Radiobutton<T>>(button));
+	
+	if (oldRadio != null && oldRadio != activeRadio){
+	    oldRadio.getOnChange().fire(new ChangeEvent<RadioButton<T>>(oldRadio));
+	}
+	activeRadio.getOnChange().fire(new ChangeEvent<RadioButton<T>>(activeRadio));
+	
+	
+	this.onchange.fire(new ChangeEvent<RadioButton<T>>(button));
     }
 
 
@@ -53,7 +63,7 @@ public class RadioGroup<T> implements InputSource<T>  {
     @Override
     public void setValue(T value) {
 	
-	for (Radiobutton<T> button : this.radios){
+	for (RadioButton<T> button : this.radios){
 	    if (button.getObject().equals(value)){
 		if (activeRadio != null){
 		    activeRadio.setValue(false);
@@ -76,7 +86,7 @@ public class RadioGroup<T> implements InputSource<T>  {
 
 
     @Override
-    public Observable<ChangeEvent<Radiobutton<T>>> getOnChange() {
+    public Observable<ChangeEvent<RadioButton<T>>> getOnChange() {
 	return onchange;
     }
 

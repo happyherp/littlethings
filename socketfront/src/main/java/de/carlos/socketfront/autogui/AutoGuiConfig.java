@@ -17,7 +17,7 @@ public class AutoGuiConfig {
 	return instance;
     }
 
-    Map<Class<?>, InputSourceFactory> classmapping = new HashMap<>();
+    Map<Class<?>, InputSourceWidgetFactory> classmapping = new HashMap<>();
 
     public AutoGuiConfig() {
 	this.classmapping.put(String.class, new InputSourceFactoryImpl(TextInput.class));
@@ -32,7 +32,7 @@ public class AutoGuiConfig {
     public InputSourceWidget<?> buildInput(GuiContext context, Class<?> paramclass) {
 
 		
-	InputSourceFactory factory = this.classmapping.get(paramclass);
+	InputSourceWidgetFactory factory = this.classmapping.get(paramclass);
 	Class currentclass = paramclass;
 	while (factory == null && currentclass.getSuperclass() != null){
 	    currentclass = currentclass.getSuperclass();

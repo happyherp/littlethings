@@ -10,11 +10,12 @@ import de.carlos.socketfront.widgets.Checkbox;
 import de.carlos.socketfront.widgets.Group;
 import de.carlos.socketfront.widgets.NumberInput;
 import de.carlos.socketfront.widgets.RadioGroup;
-import de.carlos.socketfront.widgets.Radiobutton;
+import de.carlos.socketfront.widgets.RadioButton;
 import de.carlos.socketfront.widgets.Select;
 import de.carlos.socketfront.widgets.Text;
 import de.carlos.socketfront.widgets.TextInput;
 import de.carlos.socketfront.widgets.Window;
+import de.carlos.socketfront.widgets.events.ChangeEvent;
 import de.carlos.socketfront.widgets.events.ClickEvent;
 import de.carlos.socketfront.widgets.table.Grid;
 
@@ -214,8 +215,17 @@ public class TestGUI implements SocketGUI {
 	final RadioGroup<Integer> group = new RadioGroup<>(this.context);
 
 	for (int i = 0; i < 4; i++) {
-	    Radiobutton<Integer> radiobutton = group.newRadio(i);
+	    RadioButton<Integer> radiobutton = group.newRadio(i);
 	    context.getMainPane().add(radiobutton);
+	    radiobutton.getOnChange().addObserver(new Observer<ChangeEvent<RadioButton<Integer>>>(){
+
+		@Override
+		public void update(ChangeEvent<RadioButton<Integer>> event) {
+		    context.alert("Value of radiobutton with "+ event.getSource().getObject() + " changed to "+ event.getSource().getValue());
+		}
+
+	
+	    });
 	}
 	Button showRadio = context.addWidget(new Button("showResult."), this.context.getMainPane());
 	showRadio.getOnClick().addObserver(new Observer<ClickEvent<Button>>() {

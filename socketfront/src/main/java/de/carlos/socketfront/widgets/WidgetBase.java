@@ -27,7 +27,7 @@ public abstract class WidgetBase implements Widget {
     }
 
     @Override
-    public void receiveEvent(JSONObject event) {
+    public void receiveEvent(GuiContext context, JSONObject event) {
 	LOGGER.info("Unhandled Event received: " + event.toString(2));
     }
 

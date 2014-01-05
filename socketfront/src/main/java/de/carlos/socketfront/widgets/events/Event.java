@@ -1,10 +1,13 @@
 package de.carlos.socketfront.widgets.events;
 
-import de.carlos.socketfront.widgets.Widget;
+import de.carlos.socketfront.GuiContext;
 
-public class Event<T extends Widget> {
+
+public class Event<T> {
 
     private T source;
+    
+    private GuiContext context;
 
     public Event(T source) {
 	this.source = source;
@@ -16,6 +19,14 @@ public class Event<T extends Widget> {
 
     public void setSource(T source) {
 	this.source = source;
+    }
+
+    public GuiContext getContext() {
+        return context;
+    }
+
+    public void setContext(GuiContext context) {
+        this.context = context;
     }
 
 }

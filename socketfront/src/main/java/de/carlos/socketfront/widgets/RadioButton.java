@@ -3,16 +3,17 @@ package de.carlos.socketfront.widgets;
 import org.json.JSONObject;
 
 import de.carlos.observer.Observable;
+import de.carlos.observer.Observer;
 import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 
-public class Radiobutton<T> extends InputSourceWidgetBase<Boolean> {
+public class RadioButton<T> extends InputSourceWidgetBase<Boolean> {
     
     T object;
     
     RadioGroup<T> group;
-
-    public Radiobutton(RadioGroup<T> group, T value) {
+    
+    public RadioButton(RadioGroup<T> group, T value) {
 	this.group = group;
 	this.object = value;
 	
@@ -39,24 +40,21 @@ public class Radiobutton<T> extends InputSourceWidgetBase<Boolean> {
 
     @Override
     public void setValue(Boolean value) {
-	
+	this.group.setValue(this.getObject());
     }
 
     @Override
     public boolean hasValidInput() {
-	// TODO Auto-generated method stub
-	return false;
+	return true;
     }
 
     @Override
-    public Observable<? extends ChangeEvent> getOnChange() {
-	// TODO Auto-generated method stub
-	return null;
+    public Observable<ChangeEvent<RadioButton<T>>> getOnChange() {
+	return (Observable<ChangeEvent<RadioButton<T>>>) this.onchange;
     }
 
     @Override
     protected void fireOnChangeEvent(JSONObject jsonobject) {
-	// TODO Auto-generated method stub
 	
     }
 

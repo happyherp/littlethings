@@ -3,15 +3,11 @@ package de.carlos.socketfront.widgets.table;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONObject;
-
 import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.Text;
 import de.carlos.socketfront.widgets.Widget;
 
-public class RowTable<T> implements Widget {
-
-    GuiContext context;
+public class RowTable<T> implements WidgetComposition {
 
     Grid grid;
 
@@ -22,21 +18,11 @@ public class RowTable<T> implements Widget {
     public RowTable(RowTableDrawInstructions<T> instructions){
 	this.instructions = instructions;
     }
-
+    
     @Override
-    public void setContext(GuiContext context) {
-	this.context = context;
-    }
-
-    @Override
-    public GuiContext getContext() {
-	return this.context;
-    }
-
-    @Override
-    public void constructJSObject(GuiContext context) {
+    public void create(GuiContext context) {
 	this.grid = new Grid(0, 1);
-	this.context.addWidget(grid);
+	context.addWidget(grid);
 
 	// Draw headline.
 	int col = 0;
@@ -44,13 +30,13 @@ public class RowTable<T> implements Widget {
 	    if (this.grid.getColumns() <= col) {
 		this.grid.appendColumn();
 	    }
-	    this.grid.setCell(this.context.addWidget(new Text(label)), col, 0);
+	    this.grid.setCell(context.addWidget(new Text(label)), col, 0);
 	    col++;
 	}
 
 	this.redrawData();
-
     }
+    
 
     public void redrawData() {
 	int row = 1;
@@ -69,10 +55,6 @@ public class RowTable<T> implements Widget {
 	}
     }
 
-    @Override
-    public void receiveEvent(JSONObject event) {
-    }
-
     public List<T> getData() {
 	return data;
     }
@@ -80,5 +62,12 @@ public class RowTable<T> implements Widget {
     public void setData(List<T> data) {
 	this.data = data;
     }
+
+    @Override
+    public Widget getMainWidget() {
+	return this.grid;
+    }
+
+
 
 }
