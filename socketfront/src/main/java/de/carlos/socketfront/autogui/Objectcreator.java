@@ -55,7 +55,7 @@ public class Objectcreator<T> implements InputSource<T>, WidgetComposition {
 
 	try {
 	    this.setValue((T) constructor.newInstance(args.toArray()));
-	    this.getOnChange().fire(new ChangeEvent<Objectcreator<T>>(this));
+	    this.getOnChange().fire(new ChangeEvent<Objectcreator<T>>(this, guiContext));
 	} catch (InstantiationException | IllegalAccessException
 		| IllegalArgumentException e) {
 	    LOGGER.warn(e);

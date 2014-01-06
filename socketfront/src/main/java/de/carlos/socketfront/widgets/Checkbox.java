@@ -48,7 +48,7 @@ public class Checkbox extends InputSourceWidgetBase<Boolean> {
 
     @Override
     protected void fireOnChangeEvent(JSONObject jsonobject) {
-	this.getOnChange().fire(new ChangeEvent<Checkbox>(this));
+	this.getOnChange().fire(new ChangeEvent<Checkbox>(this, this.getContext()));
     }
 
 

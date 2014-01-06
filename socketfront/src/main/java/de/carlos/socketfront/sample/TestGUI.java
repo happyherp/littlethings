@@ -235,6 +235,10 @@ public class TestGUI implements SocketGUI {
 		context.getJsPipe().addCall("alert", group.getValue());
 	    }
 	});
+	
+	
+	
+	
 
 
     }

@@ -41,12 +41,12 @@ public class RadioGroup<T> implements InputSource<T>  {
 	}
 	
 	if (oldRadio != null && oldRadio != activeRadio){
-	    oldRadio.getOnChange().fire(new ChangeEvent<RadioButton<T>>(oldRadio));
+	    oldRadio.getOnChange().fire(new ChangeEvent<RadioButton<T>>(oldRadio, this.context));
 	}
-	activeRadio.getOnChange().fire(new ChangeEvent<RadioButton<T>>(activeRadio));
+	activeRadio.getOnChange().fire(new ChangeEvent<RadioButton<T>>(activeRadio, this.context));
 	
 	
-	this.onchange.fire(new ChangeEvent<RadioButton<T>>(button));
+	this.onchange.fire(new ChangeEvent<RadioButton<T>>(button, this.context));
     }
 
 
@@ -66,10 +66,8 @@ public class RadioGroup<T> implements InputSource<T>  {
 	for (RadioButton<T> button : this.radios){
 	    if (button.getObject().equals(value)){
 		if (activeRadio != null){
-		    activeRadio.setValue(false);
-		}
-		button.setValue(true);
-		
+		    activeRadio = button;
+		}		
 		return;
 	    }
 	}

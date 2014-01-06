@@ -87,7 +87,7 @@ public class Select<T> extends InputSourceWidgetBase<T> {
 
     @Override
     protected void fireOnChangeEvent(JSONObject jsonobject) {
-	this.getOnChange().fire(new ChangeEvent<Select<T>>(this));
+	this.getOnChange().fire(new ChangeEvent<Select<T>>(this, this.getContext()));
     }
 
     @Override

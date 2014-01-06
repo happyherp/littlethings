@@ -34,14 +34,14 @@ public class RowTable<T> implements WidgetComposition {
 	    col++;
 	}
 
-	this.redrawData();
+	this.redrawData(context);
     }
     
 
-    public void redrawData() {
+    public void redrawData(GuiContext context) {
 	int row = 1;
 	for (T object : this.data) {
-	    List<Widget> rowdata = this.instructions.createRow(object);
+	    List<Widget> rowdata = this.instructions.createRow(context, object);
 	    int col = 0;
 	    this.grid.appendRow();
 	    for (Widget widget : rowdata) {
@@ -64,7 +64,7 @@ public class RowTable<T> implements WidgetComposition {
     }
 
     @Override
-    public Widget getMainWidget() {
+    public Grid getMainWidget() {
 	return this.grid;
     }
 

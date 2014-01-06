@@ -31,7 +31,7 @@ public class NumberInput extends FilterInput<Integer> {
 
     @Override
     protected void fireOnChangeEvent(JSONObject jsonobject) {
-	this.getOnChange().fire(new ChangeEvent<NumberInput>(this));
+	this.getOnChange().fire(new ChangeEvent<NumberInput>(this, this.getContext()));
     }
 
 }

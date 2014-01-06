@@ -37,7 +37,7 @@ public class Button extends ControlWidget {
 
 	if (type.equals("click") && !this.isDisabled()) {
 
-	    ClickEvent<Button> event = new ClickEvent<Button>(this);
+	    ClickEvent<Button> event = new ClickEvent<Button>(this, context);
 	    this.onclick.fire(event);
 	} else {
 	    throw new RuntimeException("Unknown event type: " + type);

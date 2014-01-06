@@ -25,7 +25,7 @@ public class TextInput extends Input<String> implements InputSourceWidget<String
 
     @Override
     protected void fireOnChangeEvent(JSONObject jsonobject) {
-	this.getOnChange().fire(new ChangeEvent<TextInput>(this));
+	this.getOnChange().fire(new ChangeEvent<TextInput>(this, this.getContext()));
     }
 
     @Override

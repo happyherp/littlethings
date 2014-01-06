@@ -20,10 +20,8 @@ public class EntityTableDrawInstuctions<T> implements RowTableDrawInstructions<T
 
     List<EntityField> fields;
 
-    private GuiContext context;
 
-    public EntityTableDrawInstuctions(GuiContext context, Class<T> clazz) {
-	this.context = context;
+    public EntityTableDrawInstuctions( Class<T> clazz) {
 	methodexclusions.add("Class");
 	this.fields = EntityUtil.findFields(clazz);
 
@@ -50,7 +48,7 @@ public class EntityTableDrawInstuctions<T> implements RowTableDrawInstructions<T
     }
 
     @Override
-    public  List<Widget> createRow(T entity) {
+    public  List<Widget> createRow(GuiContext context, T entity) {
 
 	List<Widget> widgets = new ArrayList<>();
 	for (EntityField field : fields) {
@@ -68,7 +66,7 @@ public class EntityTableDrawInstuctions<T> implements RowTableDrawInstructions<T
 		LOGGER.warn(e);
 		strResult = "Error while Calling";
 	    }
-	    widgets.add(this.context.addWidget(new Text(strResult)));
+	    widgets.add(context.addWidget(new Text(strResult)));
 	}
 	return widgets;
     }

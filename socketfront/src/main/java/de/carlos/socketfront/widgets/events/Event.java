@@ -9,8 +9,11 @@ public class Event<T> {
     
     private GuiContext context;
 
-    public Event(T source) {
+    public Event(T source, GuiContext context) {
 	this.source = source;
+	this.context = context;
+	assert(context != null);
+	assert(source != null);
     }
 
     public T getSource() {

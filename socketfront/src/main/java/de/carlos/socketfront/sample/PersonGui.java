@@ -11,6 +11,7 @@ import de.carlos.socketfront.sample.PersonProvider.Person;
 import de.carlos.socketfront.widgets.Text;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 import de.carlos.socketfront.widgets.table.Grid;
+import de.carlos.socketfront.widgets.table.RowSelectTable;
 import de.carlos.socketfront.widgets.table.RowTable;
 
 public class PersonGui implements SocketGUI {
@@ -42,7 +43,7 @@ public class PersonGui implements SocketGUI {
 	context.addWidget(new Text("Automated"), context.getMainPane());
 	
 
-	final RowTable<Person> persontable = new RowTable<>(new EntityTableDrawInstuctions<>(context, Person.class));
+	final RowTable<Person> persontable = new RowTable<>(new EntityTableDrawInstuctions<>(Person.class));
 	persontable.setData(PersonProvider.getInstance().getAll());
 	persontable.create(context);
 	context.getMainPane().add(persontable.getMainWidget());
@@ -56,7 +57,23 @@ public class PersonGui implements SocketGUI {
 	personedit.getOnChange().addObserver(new Observer<ChangeEvent<EntityEdit<Person>>>() {	    
 	    @Override
 	    public void update(ChangeEvent<EntityEdit<Person>> event) {
-		persontable.redrawData();
+		persontable.redrawData(event.getContext());
+	    }
+	});
+	
+	
+	final RowSelectTable<Person> selecttable = new RowSelectTable<PersonProvider.Person>();
+	selecttable.setDrawInstructions(new EntityTableDrawInstuctions<PersonProvider.Person>(Person.class));
+	selecttable.setData(allpersons);
+	selecttable.setValue(allpersons.get(2));	
+	selecttable.create(context);
+	context.getMainPane().add(selecttable.getMainWidget());
+	
+	selecttable.getOnChange().addObserver(new Observer<ChangeEvent<RowSelectTable<Person>>>() {
+
+	    @Override
+	    public void update(ChangeEvent<RowSelectTable<Person>> event) {
+		event.getContext().alert("You selected "+event.getSource().getValue().getFirstName());		
 	    }
 	});
 	

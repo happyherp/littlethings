@@ -103,7 +103,7 @@ public class EntityEdit<T> implements InputSource<T>, WidgetComposition {
 	    i++;
 	}
 	
-	this.getOnChange().fire(new ChangeEvent(this));
+	this.getOnChange().fire(new ChangeEvent(this, this.getMainWidget().getContext()));
 	
     }
 
