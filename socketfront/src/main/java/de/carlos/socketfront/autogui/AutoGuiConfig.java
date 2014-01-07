@@ -79,7 +79,7 @@ public class AutoGuiConfig {
 	@Override
 	public InputSourceWidget<T> create(GuiContext context,
 		Class<T> parameter) {
-	    return this.create();
+	    return (InputSourceWidget<T>) this.create().createJSWidget(context);
 	}
 	
     }
