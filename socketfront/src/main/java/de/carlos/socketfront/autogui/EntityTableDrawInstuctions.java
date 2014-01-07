@@ -8,8 +8,8 @@ import org.apache.log4j.Logger;
 
 import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.autogui.EntityUtil.EntityField;
+import de.carlos.socketfront.widgets.JSWidget;
 import de.carlos.socketfront.widgets.Text;
-import de.carlos.socketfront.widgets.Widget;
 import de.carlos.socketfront.widgets.table.RowTableDrawInstructions;
 
 public class EntityTableDrawInstuctions<T> implements RowTableDrawInstructions<T> {
@@ -48,9 +48,9 @@ public class EntityTableDrawInstuctions<T> implements RowTableDrawInstructions<T
     }
 
     @Override
-    public  List<Widget> createRow(GuiContext context, T entity) {
+    public  List<JSWidget> createRow(GuiContext context, T entity) {
 
-	List<Widget> widgets = new ArrayList<>();
+	List<JSWidget> widgets = new ArrayList<>();
 	for (EntityField field : fields) {
 	    String strResult;
 	    try {

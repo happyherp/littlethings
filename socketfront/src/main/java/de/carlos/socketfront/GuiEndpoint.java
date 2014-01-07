@@ -32,8 +32,6 @@ public class GuiEndpoint {
 	SocketGUI gui = GuiMapping.getInstance().createGUI(guiname);
 	// Setup
 	context = new GuiContext();
-	context.setJsPipe(new JSPipe());
-	context.setMainPane(context.addWidget(new MainPane()));
 
 	try {
 	    gui.onCreate(context);

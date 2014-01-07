@@ -6,23 +6,45 @@ import org.json.JSONObject;
 import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.JSPipe;
 
-public abstract class WidgetBase implements Widget {
+public abstract class WidgetBase implements JSWidget {
 
     private static Logger LOGGER = Logger.getLogger(WidgetBase.class);
 
-    protected JSPipe jsPipe;
-    private GuiContext context;
+    protected GuiContext context;
     
-    public void setContext(GuiContext context){
+    protected JSPipe jsPipe;
+    
+    @Override
+    public JSWidget createJSWidget(GuiContext context) {
+	this.context = context;
 	this.jsPipe = context.getJsPipe();
-	this.context = context;	
+	
+	if (context.hasId(this)){
+	    throw new RuntimeException("Widget already had an id."+context.getId(this));
+	}
+	
+	this.registerToContext(context);
+	
+	return this;
     }
     
-    public GuiContext getContext(){
-	return this.context;
+    /**
+     * Tell the context under which id this widget should be saved.
+     * 
+     * @param context
+     */
+    protected void registerToContext(GuiContext context) {
+	context.generateId(this);
+	
     }
 
-    public String getId() {
+    @Override
+    public JSWidget getMainJSWidget(){
+	return this;
+    }
+	
+
+    public JSWidgetID getId() {
 	return this.context.getId(this);
     }
 
@@ -32,7 +54,7 @@ public abstract class WidgetBase implements Widget {
     }
 
     protected String getJSObject() {
-	return String.format("GuiInfo.idToWidget[%s]", JSONObject.quote(this.getId()));
+	return String.format("GuiInfo.idToWidget[%s]", JSONObject.quote(this.getId().getString()));
     }
 
     protected void callThisJS(String method, Object... args) {
@@ -58,6 +80,10 @@ public abstract class WidgetBase implements Widget {
     
     public void addInfoText(InfoText infotext){
 	this.callThisJS("addInfoText", infotext.getId());
+    }
+    
+    protected GuiContext getContext(){
+	return this.context;
     }
     
 

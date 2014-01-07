@@ -14,16 +14,14 @@ import de.carlos.socketfront.util.OnAllValid;
 import de.carlos.socketfront.widgets.Button;
 import de.carlos.socketfront.widgets.Group;
 import de.carlos.socketfront.widgets.InfoText;
-import de.carlos.socketfront.widgets.InputSource;
 import de.carlos.socketfront.widgets.InputSourceWidget;
+import de.carlos.socketfront.widgets.JSWidget;
 import de.carlos.socketfront.widgets.Text;
 import de.carlos.socketfront.widgets.TextInput;
-import de.carlos.socketfront.widgets.Widget;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 import de.carlos.socketfront.widgets.events.ClickEvent;
-import de.carlos.socketfront.widgets.table.WidgetComposition;
 
-public class Objectcreator<T> implements InputSource<T>, WidgetComposition {
+public class Objectcreator<T> implements InputSourceWidget<T> {
 
     private static final Logger LOGGER = Logger
 	    .getLogger(ObjectInputSourceFactory.class);
@@ -40,6 +38,7 @@ public class Objectcreator<T> implements InputSource<T>, WidgetComposition {
 	this.clazz = clazz;
     }
 
+    @SuppressWarnings("unchecked")
     protected void callConstructor(GuiContext guiContext, Constructor<?> constructor,
 	    List<InputSourceWidget<?>> parameters) {
 	List<Object> args = new ArrayList<>();
@@ -60,8 +59,7 @@ public class Objectcreator<T> implements InputSource<T>, WidgetComposition {
 		| IllegalArgumentException e) {
 	    LOGGER.warn(e);
 	} catch (InvocationTargetException e) {
-	    this.exception = guiContext.addWidget(
-		    new InfoText(e.getCause().getMessage()), this.group);
+	    this.exception =  this.group.add(new InfoText(e.getCause().getMessage()).createJSWidget(guiContext));
 	}
     }
 
@@ -94,39 +92,33 @@ public class Objectcreator<T> implements InputSource<T>, WidgetComposition {
 	return onchange;
     }
 
-    @Override
-    public Widget getMainWidget() {
-	return this.group;
-    }
 
     @Override
-    public void create(GuiContext context) {
+    public Group createJSWidget(GuiContext context) {
 
 	if (clazz.getConstructors().length == 0) {
 	    throw new RuntimeException(clazz
 		    + " does not have any constructors.");
 	}
 	
-	this.group = new Group();
-	context.addWidget(this.group);
+	this.group = new Group().createJSWidget(context);
 
-	this.group.add(context.addWidget(new Text("Create new " + clazz.getName())));;
+	this.group.add(new Text("Create new " + clazz.getName()).createJSWidget(context));;
 	
 
 	for (final Constructor<?> constructor : clazz.getConstructors()) {
 
-	    this.group.add(context.addWidget(new Text("Constructor")));
+	    this.group.add(new Text("Constructor").createJSWidget(context));
 
 	    final List<InputSourceWidget<?>> parameterssources = new ArrayList<>();
 	    for (Class<?> parameter : constructor.getParameterTypes()) {
 		InputSourceWidget<?> parameterInput = AutoGuiConfig.getInstance()
 			.buildInput(context, parameter);
-		this.group.add(context.addWidget(parameterInput));
+		this.group.add(parameterInput);
 		parameterssources.add(parameterInput);
 	    }
 
-	    final Button createButton = context.addWidget(
-		    new Button("create"), this.group);
+	    final Button createButton = this.group.add( new Button("create").createJSWidget(context));
 	    InputSourceWidget<?>[] inputsource_array = parameterssources
 		    .toArray(new InputSourceWidget[] {});
 	    OnAllValid.enableButton(createButton, inputsource_array);
@@ -141,9 +133,15 @@ public class Objectcreator<T> implements InputSource<T>, WidgetComposition {
 		    });
 	}
 
-	context.addWidget(new Text("Result: "), this.group);
-	result = context.addWidget(new TextInput(), this.group);
-	
+	this.group.add(new Text("Result: ").createJSWidget(context));
+	result = new TextInput();
+	this.group.add(result.createJSWidget(context));
+	return group;
+    }
+
+    @Override
+    public JSWidget getMainJSWidget() {
+	return this.group;
     }
 
 }

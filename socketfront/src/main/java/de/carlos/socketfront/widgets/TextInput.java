@@ -5,7 +5,7 @@ import org.json.JSONObject;
 import de.carlos.observer.Observable;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 
-public class TextInput extends Input<String> implements InputSourceWidget<String> {
+public class TextInput extends Input<String> implements InputSource<String> {
 
     @Override
     public String getValue() {
@@ -28,6 +28,7 @@ public class TextInput extends Input<String> implements InputSourceWidget<String
 	this.getOnChange().fire(new ChangeEvent<TextInput>(this, this.getContext()));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Observable<ChangeEvent<TextInput>> getOnChange() {
 	return (Observable<ChangeEvent<TextInput>>) onchange;

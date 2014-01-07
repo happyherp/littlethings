@@ -5,13 +5,16 @@ import de.carlos.socketfront.GuiContext;
 public class Group extends WidgetBase implements Parent {
 
     @Override
-    public void constructJSObject(GuiContext context) {
+    public Group createJSWidget(GuiContext context) {
+	super.createJSWidget(context);
 	jsPipe.addCall("new Group", this.getId());
+	return this;
     }
 
     @Override
-    public void add(Widget child) {
-	this.callThisJS("addChild", this.getContext().getId(child));
+    public <T extends Widget>  T add(T child) {
+	this.callThisJS("addChild", this.context.getId(child.getMainJSWidget()));
+	return child;
     }
 
 }

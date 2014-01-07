@@ -11,8 +11,10 @@ public class Text extends WidgetBase {
     }
 
     @Override
-    public void constructJSObject(GuiContext context) {
+    public Text createJSWidget(GuiContext context) {
+	super.createJSWidget(context);
 	this.jsPipe.addCall("new Text", this.getId(), this.getText());
+	return this;
     }
 
     public String getText() {

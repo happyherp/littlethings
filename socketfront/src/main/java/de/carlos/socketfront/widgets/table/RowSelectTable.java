@@ -9,9 +9,10 @@ import de.carlos.socketfront.widgets.InputSource;
 import de.carlos.socketfront.widgets.RadioButton;
 import de.carlos.socketfront.widgets.RadioGroup;
 import de.carlos.socketfront.widgets.Widget;
+import de.carlos.socketfront.widgets.JSWidget;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 
-public class RowSelectTable<T> implements WidgetComposition, InputSource<T> {
+public class RowSelectTable<T> implements Widget, InputSource<T> {
 
     RowTable<T> table;
 
@@ -26,7 +27,7 @@ public class RowSelectTable<T> implements WidgetComposition, InputSource<T> {
     private T value;
 
     @Override
-    public void create(GuiContext context) {
+    public Grid createJSWidget(GuiContext context) {
 	radiogroup = new RadioGroup<T>(context);
 	radiogroup.getOnChange().addObserver(new Observer<ChangeEvent<RadioButton<T>>>() {
 
@@ -41,9 +42,10 @@ public class RowSelectTable<T> implements WidgetComposition, InputSource<T> {
 	
 	table = new RowTable<T>(withselection);
 	table.setData(this.getData());
-	table.create(context);
+	Grid grid = table.createJSWidget(context);
 	
 	radiogroup.setValue(this.getValue());
+	return grid;
 
     }
 
@@ -61,8 +63,8 @@ public class RowSelectTable<T> implements WidgetComposition, InputSource<T> {
 	    }
 
 	    @Override
-	    public List<Widget> createRow(GuiContext context, T data) {
-		List<Widget> widgets = RowSelectTable.this.drawInstructions
+	    public List<JSWidget> createRow(GuiContext context, T data) {
+		List<JSWidget> widgets = RowSelectTable.this.drawInstructions
 			.createRow(context, data);
 
 		RadioButton<T> button = RowSelectTable.this.radiogroup
@@ -80,11 +82,6 @@ public class RowSelectTable<T> implements WidgetComposition, InputSource<T> {
     public void setDrawInstructions(
 	    final RowTableDrawInstructions<T> drawInstructions) {
 	this.drawInstructions = drawInstructions;
-    }
-
-    @Override
-    public Grid getMainWidget() {
-	return this.table.getMainWidget();
     }
 
     @Override
@@ -116,6 +113,11 @@ public class RowSelectTable<T> implements WidgetComposition, InputSource<T> {
 
     public void setData(List<T> data) {
 	this.data = data;
+    }
+
+    @Override
+    public JSWidget getMainJSWidget() {
+	return this.table.getMainJSWidget();
     }
 
 }

@@ -12,8 +12,6 @@ import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import de.carlos.socketfront.widgets.MainPane;
-
 @WebServlet("/guiservlet")
 public class GuiServlet extends HttpServlet {
     
@@ -31,8 +29,6 @@ public class GuiServlet extends HttpServlet {
 	    SocketGUI gui = GuiMapping.getInstance().createGUI(guiname);
 
 	    GuiContext context = new GuiContext();
-	    context.setJsPipe(new JSPipe());
-	    context.setMainPane(context.addWidget(new MainPane()));
 	    
 	    Integer guiId = ContextContainer.getInstance().addContext(context);	
 	    context.getJsPipe().addStatement("GuiInfo.guiId="+guiId);

@@ -1,18 +1,19 @@
 package de.carlos.socketfront.autogui;
 
 import de.carlos.socketfront.GuiContext;
+import de.carlos.socketfront.autogui.AutoGuiConfig.InputSourceWidgetFactory;
 import de.carlos.socketfront.widgets.InputSourceWidget;
 import de.carlos.socketfront.widgets.Select;
 
-public class EnumInputSourceFactory implements InputSourceWidgetFactory<Enum> {
+public class EnumInputSourceFactory implements InputSourceWidgetFactory<Enum<?>> {
 
     @Override
-    public InputSourceWidget<Enum> create(GuiContext context, Class<Enum> parameter) {
+    public InputSourceWidget<Enum<?>> create(GuiContext context, Class<Enum<?>> parameter) {
 	
-	Select select = context.addWidget(new Select());
+	Select<Enum<?>> select = new Select<Enum<?>>().createJSWidget(context);
 	
 	
-	for (Enum enumm:  parameter.getEnumConstants()){	    
+	for (Enum<?> enumm:  parameter.getEnumConstants()){	    
 	    select.addOption(enumm.toString(), enumm);
 	}
 	

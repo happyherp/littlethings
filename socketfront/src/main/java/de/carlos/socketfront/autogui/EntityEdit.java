@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.json.JSONObject;
 
 import de.carlos.observer.Observable;
 import de.carlos.observer.Observer;
@@ -14,15 +13,13 @@ import de.carlos.socketfront.autogui.EntityUtil.EntityField;
 import de.carlos.socketfront.util.OnAllValid;
 import de.carlos.socketfront.widgets.Button;
 import de.carlos.socketfront.widgets.Group;
-import de.carlos.socketfront.widgets.InputSource;
 import de.carlos.socketfront.widgets.InputSourceWidget;
+import de.carlos.socketfront.widgets.JSWidget;
 import de.carlos.socketfront.widgets.Text;
-import de.carlos.socketfront.widgets.Widget;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 import de.carlos.socketfront.widgets.events.ClickEvent;
-import de.carlos.socketfront.widgets.table.WidgetComposition;
 
-public class EntityEdit<T> implements InputSource<T>, WidgetComposition {
+public class EntityEdit<T> implements InputSourceWidget<T> {
     
     private static final Logger LOGGER = Logger.getLogger(EntityEdit.class);
 
@@ -32,7 +29,7 @@ public class EntityEdit<T> implements InputSource<T>, WidgetComposition {
 
     List<EntityField> fields;
 
-    List<InputSourceWidget> inputs = new ArrayList<InputSourceWidget>();;
+    List<InputSourceWidget<?>> inputs = new ArrayList<InputSourceWidget<?>>();;
 
     List<String> excludedMethods = new ArrayList<String>();
     
@@ -44,15 +41,15 @@ public class EntityEdit<T> implements InputSource<T>, WidgetComposition {
     }
     
     @Override
-    public void create(GuiContext context) {
+    public Group createJSWidget(GuiContext context) {
 
-	this.group = context.addWidget(new Group());
+	this.group = new Group().createJSWidget(context);
 
 	fields = EntityUtil.findFields(object.getClass());
 
 	for (EntityField field : fields) {
 	    if (!excludedMethods.contains(field.name)) {
-		context.addWidget(new Text(field.name), this.group);
+		this.group.add(new Text(field.name).createJSWidget(context));
 		InputSourceWidget inputsource = AutoGuiConfig.getInstance()
 			.buildInput(context, field.type);
 		
@@ -78,15 +75,16 @@ public class EntityEdit<T> implements InputSource<T>, WidgetComposition {
 
 	    @Override
 	    public void update(ClickEvent<Button> event) {
-		saveToObject();
+		saveToObject(event.getContext());
 	    }
 	});
+	return this.group;
 	
     }
 
     
 
-    protected void saveToObject() {
+    protected void saveToObject(GuiContext guiContext) {
 	int i = 0;
 	for (InputSourceWidget inputsource : this.inputs){
 	    EntityField field = this.fields.get(i);
@@ -103,7 +101,7 @@ public class EntityEdit<T> implements InputSource<T>, WidgetComposition {
 	    i++;
 	}
 	
-	this.getOnChange().fire(new ChangeEvent(this, this.getMainWidget().getContext()));
+	this.getOnChange().fire(new ChangeEvent(this, guiContext));
 	
     }
 
@@ -128,8 +126,9 @@ public class EntityEdit<T> implements InputSource<T>, WidgetComposition {
 	return this.onchange;
     }
 
+
     @Override
-    public Widget getMainWidget() {
+    public JSWidget getMainJSWidget() {
 	return this.group;
     }
 

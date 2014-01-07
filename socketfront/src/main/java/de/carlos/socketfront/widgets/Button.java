@@ -17,8 +17,10 @@ public class Button extends ControlWidget {
     }    
 
     @Override
-    public void constructJSObject(GuiContext context) {
+    public Button createJSWidget(GuiContext context) {
+	super.createJSWidget(context);
 	this.jsPipe.addCall("new Button", this.getId(), this.caption);
+	return this;
     }
     
 

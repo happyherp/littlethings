@@ -18,8 +18,10 @@ public class Select<T> extends InputSourceWidgetBase<T> {
     int idcount = 0;
 
     @Override
-    public void constructJSObject(GuiContext context) {
+    public Select<T> createJSWidget(GuiContext context) {
+	super.createJSWidget(context);
 	this.jsPipe.addCall("new Select", this.getId());
+	return this;
     }
 
     public void addOption(String label, T obj) {
@@ -87,7 +89,7 @@ public class Select<T> extends InputSourceWidgetBase<T> {
 
     @Override
     protected void fireOnChangeEvent(JSONObject jsonobject) {
-	this.getOnChange().fire(new ChangeEvent<Select<T>>(this, this.getContext()));
+	this.getOnChange().fire(new ChangeEvent<Select<T>>(this, this.context));
     }
 
     @Override

@@ -22,37 +22,36 @@ public class PersonGui implements SocketGUI {
 	List<Person> allpersons = PersonProvider.getInstance().getAll();
 
 	
-	Grid table = context.addWidget(new Grid(3, allpersons.size() + 1),
-		context.getMainPane());
+	Grid table = new Grid(3, allpersons.size() + 1).createJSWidget(context);
+	context.getMainPane().add(table);
 
-	table.setCell(context.addWidget(new Text("ID")), 0, 0);
-	table.setCell(context.addWidget(new Text("Firstname")), 1, 0);
-	table.setCell(context.addWidget(new Text("Last name")), 2, 0);
+	table.setCell(new Text("ID").createJSWidget(context), 0, 0);
+	table.setCell(new Text("Firstname").createJSWidget(context), 1, 0);
+	table.setCell(new Text("Last name").createJSWidget(context), 2, 0);
 
 	int row = 1;
 	for (Person person : allpersons) {
-	    table.setCell(context.addWidget(new Text("" + person.getId())), 0,
+	    table.setCell(new Text("" + person.getId()).createJSWidget(context), 0,
 		    row);
-	    table.setCell(context.addWidget(new Text(person.getFirstName())),
+	    table.setCell(new Text(person.getFirstName()).createJSWidget(context),
 		    1, row);
-	    table.setCell(context.addWidget(new Text(person.getLastName())), 2,
+	    table.setCell(new Text(person.getLastName()).createJSWidget(context), 2,
 		    row);
 	    row++;
 	}
 	
-	context.addWidget(new Text("Automated"), context.getMainPane());
+	context.getMainPane().add(new Text("Automated").createJSWidget(context));
 	
 
 	final RowTable<Person> persontable = new RowTable<>(new EntityTableDrawInstuctions<>(Person.class));
 	persontable.setData(PersonProvider.getInstance().getAll());
-	persontable.create(context);
-	context.getMainPane().add(persontable.getMainWidget());
+	context.getMainPane().add(persontable.createJSWidget(context));
 
 	
 	EntityEdit<Person> personedit = new EntityEdit<PersonProvider.Person>(
 		allpersons.get(0));
-	personedit.create(context);
-	context.getMainPane().add(personedit.getMainWidget());
+	personedit.createJSWidget(context);
+	context.getMainPane().add(personedit);
 
 	personedit.getOnChange().addObserver(new Observer<ChangeEvent<EntityEdit<Person>>>() {	    
 	    @Override
@@ -66,8 +65,7 @@ public class PersonGui implements SocketGUI {
 	selecttable.setDrawInstructions(new EntityTableDrawInstuctions<PersonProvider.Person>(Person.class));
 	selecttable.setData(allpersons);
 	selecttable.setValue(allpersons.get(2));	
-	selecttable.create(context);
-	context.getMainPane().add(selecttable.getMainWidget());
+	context.getMainPane().add(selecttable.createJSWidget(context));
 	
 	selecttable.getOnChange().addObserver(new Observer<ChangeEvent<RowSelectTable<Person>>>() {
 
@@ -76,6 +74,8 @@ public class PersonGui implements SocketGUI {
 		event.getContext().alert("You selected "+event.getSource().getValue().getFirstName());		
 	    }
 	});
+	
+	context.getMainPane().add(new Text("CRUD").createJSWidget(context));
 	
 
     }

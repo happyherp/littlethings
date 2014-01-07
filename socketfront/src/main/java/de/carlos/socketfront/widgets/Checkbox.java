@@ -12,8 +12,10 @@ public class Checkbox extends InputSourceWidgetBase<Boolean> {
     private Observable<ChangeEvent<Checkbox>> onchange = new Observable<>();
     
     @Override
-    public void constructJSObject(GuiContext context) {
+    public Checkbox createJSWidget(GuiContext context) {
+	super.createJSWidget(context);
 	this.jsPipe.addCall("new Checkbox", this.getId());
+	return this;
     }
     
 
@@ -48,7 +50,7 @@ public class Checkbox extends InputSourceWidgetBase<Boolean> {
 
     @Override
     protected void fireOnChangeEvent(JSONObject jsonobject) {
-	this.getOnChange().fire(new ChangeEvent<Checkbox>(this, this.getContext()));
+	this.getOnChange().fire(new ChangeEvent<Checkbox>(this, this.context));
     }
 
 

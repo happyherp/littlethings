@@ -3,7 +3,6 @@ package de.carlos.socketfront.widgets;
 import org.json.JSONObject;
 
 import de.carlos.observer.Observable;
-import de.carlos.observer.Observer;
 import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 
@@ -20,8 +19,10 @@ public class RadioButton<T> extends InputSourceWidgetBase<Boolean> {
     }
 
     @Override
-    public void constructJSObject(GuiContext context) {
+    public RadioButton<T> createJSWidget(GuiContext context) {
+	super.createJSWidget(context);
 	this.jsPipe.addCall("new RadioButton", this.getId(), this.group.getName());
+	return this;
     }
 
     public T getObject() {
@@ -48,6 +49,7 @@ public class RadioButton<T> extends InputSourceWidgetBase<Boolean> {
 	return true;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Observable<ChangeEvent<RadioButton<T>>> getOnChange() {
 	return (Observable<ChangeEvent<RadioButton<T>>>) this.onchange;

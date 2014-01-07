@@ -8,6 +8,7 @@ import de.carlos.socketfront.widgets.Checkbox;
 import de.carlos.socketfront.widgets.InputSourceWidget;
 import de.carlos.socketfront.widgets.NumberInput;
 import de.carlos.socketfront.widgets.TextInput;
+import de.carlos.util.FactoryImpl;
 
 public class AutoGuiConfig {
     
@@ -17,23 +18,25 @@ public class AutoGuiConfig {
 	return instance;
     }
 
-    Map<Class<?>, InputSourceWidgetFactory> classmapping = new HashMap<>();
+    Map<Class<?>, InputSourceWidgetFactory<?>> classmapping = new HashMap<>();
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public AutoGuiConfig() {
-	this.classmapping.put(String.class, new InputSourceFactoryImpl(TextInput.class));
-	this.classmapping.put(Integer.class, new InputSourceFactoryImpl(NumberInput.class));
-	this.classmapping.put(int.class, new InputSourceFactoryImpl(NumberInput.class));	
-	this.classmapping.put(Boolean.class, new InputSourceFactoryImpl(Checkbox.class));
-	this.classmapping.put(boolean.class, new InputSourceFactoryImpl(Checkbox.class));
+	this.classmapping.put(String.class, new InputSourceWidgetFactoryImpl(TextInput.class));
+	this.classmapping.put(Integer.class, new InputSourceWidgetFactoryImpl(NumberInput.class));
+	this.classmapping.put(int.class, new InputSourceWidgetFactoryImpl(NumberInput.class));	
+	this.classmapping.put(Boolean.class, new InputSourceWidgetFactoryImpl(Checkbox.class));
+	this.classmapping.put(boolean.class, new InputSourceWidgetFactoryImpl(Checkbox.class));
 	this.classmapping.put(Enum.class, new EnumInputSourceFactory());
 	this.classmapping.put(Object.class, new ObjectInputSourceFactory());
     }
 
-    public InputSourceWidget<?> buildInput(GuiContext context, Class<?> paramclass) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public <U> InputSourceWidget<U> buildInput(GuiContext context, Class<U> paramclass) {
 
 		
 	InputSourceWidgetFactory factory = this.classmapping.get(paramclass);
-	Class currentclass = paramclass;
+	Class<?> currentclass = paramclass;
 	while (factory == null && currentclass.getSuperclass() != null){
 	    currentclass = currentclass.getSuperclass();
 	    factory = this.classmapping.get(currentclass);
@@ -44,6 +47,42 @@ public class AutoGuiConfig {
 	} else {
 	    throw new RuntimeException("Cant handle type: " + paramclass);
 	}
-    }      
+    }  
+    
+    /**
+     * Factory that creates the a Widget able of displaying and changing/creating an instance of the needed class.
+     * 
+     * @author Carlos
+     *
+     * @param <T>
+     */
+    public static interface InputSourceWidgetFactory<T> {
+
+	    public InputSourceWidget<T> create(GuiContext context, Class<T> parameter);
+
+	}
+    
+    /**
+     * Always creates an instance of the given Widget.
+     * 
+     * @author Carlos
+     *
+     * @param <T>
+     */
+    public static class InputSourceWidgetFactoryImpl<T> extends FactoryImpl<InputSourceWidget<T>> implements InputSourceWidgetFactory<T> {
+
+	
+	public InputSourceWidgetFactoryImpl(Class<? extends InputSourceWidget<T>> widgetclazz){
+	    super(widgetclazz);
+	}
+	
+	@Override
+	public InputSourceWidget<T> create(GuiContext context,
+		Class<T> parameter) {
+	    return this.create();
+	}
+	
+    }
+
 
 }

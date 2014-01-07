@@ -2,6 +2,6 @@ package de.carlos.socketfront.widgets;
 
 public interface Parent{
     
-    public void add(Widget child);
+    public <T extends Widget> T add(T child);
 
 }

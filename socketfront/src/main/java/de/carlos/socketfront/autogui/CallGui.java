@@ -13,9 +13,9 @@ import de.carlos.socketfront.widgets.Button;
 import de.carlos.socketfront.widgets.Group;
 import de.carlos.socketfront.widgets.InfoText;
 import de.carlos.socketfront.widgets.InputSourceWidget;
+import de.carlos.socketfront.widgets.JSWidget;
 import de.carlos.socketfront.widgets.Text;
 import de.carlos.socketfront.widgets.TextInput;
-import de.carlos.socketfront.widgets.Widget;
 import de.carlos.socketfront.widgets.events.ClickEvent;
 
 public class CallGui {
@@ -121,7 +121,7 @@ public class CallGui {
 
     }
 
-    public Widget getGroup() {
+    public JSWidget getGroup() {
 	return this.group;
     }
 

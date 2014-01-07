@@ -12,7 +12,7 @@ public abstract class InputSourceWidgetBase<T> extends ControlWidget implements 
     
     private static Logger LOGGER = Logger.getLogger(InputSourceWidgetBase.class);  
     
-    protected Observable<? extends ChangeEvent> onchange = new Observable<>();
+    protected Observable<? extends ChangeEvent<?>> onchange = new Observable<>();
         
     abstract protected void fireOnChangeEvent(JSONObject jsonobject);
         

@@ -1,18 +1,24 @@
 package de.carlos.socketfront.widgets;
 
-import org.json.JSONObject;
-
 import de.carlos.socketfront.GuiContext;
 
 public interface Widget {
         
-    void setContext(GuiContext context);
+    /**
+     * Build this Widget by creating the Client-Side representation.
+     * 
+     * Return the Main-Widget that is used to append this Widget to other Widgets.
+     * 
+     * @param context
+     * @return
+     */
+    JSWidget createJSWidget(GuiContext context);
     
-    GuiContext getContext();
-    
-    void constructJSObject(GuiContext context);
-
-    void receiveEvent(GuiContext context, JSONObject event);
-        
+    /**
+     * Return the JSWidget that was returned be the create-Method.
+     * 
+     * @return
+     */
+    JSWidget getMainJSWidget();
 
 }

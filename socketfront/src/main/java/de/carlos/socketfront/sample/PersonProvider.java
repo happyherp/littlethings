@@ -3,70 +3,71 @@ package de.carlos.socketfront.sample;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PersonProvider {
-    
+import de.carlos.socketfront.autogui.Provider;
+import de.carlos.socketfront.sample.PersonProvider.Person;
+
+public class PersonProvider implements Provider<Person> {
+
     private static PersonProvider instance = new PersonProvider();
-            
+
     private List<Person> persons = new ArrayList<>();
 
-    private Integer currentId = 1;
-    
-    private PersonProvider(){
+    private Integer nextId = 1;
+
+    private PersonProvider() {
 	this.addPerson("Hans", "Hart");
 	this.addPerson("Carlos", "Freund");
 	this.addPerson("Enric", "Freund");
     }
-    
-    public Person findById(int id){
-	for (Person p: this.persons){
-	    if(p.getId().equals(id)){
+
+    @Override
+    public Person findById(int id) {
+	for (Person p : this.persons) {
+	    if (p.getId().equals(id)) {
 		return p;
 	    }
 	}
 	return null;
     }
-    
-    public List<Person> findByLastName(String lastName){
+
+    public List<Person> findByLastName(String lastName) {
 	List<Person> found = new ArrayList<>();
-	
-	for (Person p: this.persons){
-	    if(p.getId().equals(lastName)){
+
+	for (Person p : this.persons) {
+	    if (p.getId().equals(lastName)) {
 		found.add(p);
 	    }
 	}
 	return found;
     }
-    
-    public void remove(Person p){
+
+    @Override
+    public void remove(Person p) {
 	this.persons.remove(p);
     }
-    
-    
-    private void addPerson(String firstName, String lastName) {
+
+    public void addPerson(String firstName, String lastName) {
 	Person p = new Person();
-	p.setId(this.currentId );
-	this.currentId++;
+	p.setId(this.nextId);
+	this.nextId++;
 	p.setFirstName(firstName);
 	p.setLastName(lastName);
 	this.persons.add(p);
     }
 
-
-    public static PersonProvider getInstance(){
+    public static PersonProvider getInstance() {
 	return instance;
     }
-    
-    public List<Person> getAll(){
+
+    @Override
+    public List<Person> getAll() {
 	return new ArrayList<Person>(this.persons);
     }
-    
-    
-    public static class Person{
-	
-	private Integer id; 
-	
+
+    public static class Person extends EntityBase {
+
 	private String lastName;
-	
+
 	private String firstName;
 
 	public String getLastName() {
@@ -85,14 +86,22 @@ public class PersonProvider {
 	    this.firstName = firstName;
 	}
 
-	public Integer getId() {
-	    return id;
-	}
+    }
 
-	public void setId(Integer id) {
-	    this.id = id;
+    @Override
+    public void create(Person person) {
+
+	if (person.getId() == null) {
+	    person.setId(this.nextId);
+	    this.nextId++;
 	}
 	
-	
+	this.persons.add(person);
+
+    }
+
+    @Override
+    public Class<Person> getEntityClass() {
+	return Person.class;
     }
 }

@@ -9,12 +9,14 @@ public abstract class Input<T> extends InputSourceWidgetBase<T> {
     String value = "";
 
     @Override
-    public void constructJSObject(GuiContext context) {
+    public Input<T> createJSWidget(GuiContext context) {
+	super.createJSWidget(context);
 	this.jsPipe.addCall("new TextInput", this.getId(),
 		this.getStringValue());
 	this.setValueInner(this.getStringValue());// Needed so can react to
 						  // invalid Input with messages
 						  // in FilteredInput from the start
+	return this;
     }
 
     public String getStringValue() {

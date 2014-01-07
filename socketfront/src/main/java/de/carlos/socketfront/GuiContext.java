@@ -13,38 +13,46 @@ import de.carlos.socketfront.widgets.MainPane;
 import de.carlos.socketfront.widgets.Parent;
 import de.carlos.socketfront.widgets.Text;
 import de.carlos.socketfront.widgets.Widget;
+import de.carlos.socketfront.widgets.JSWidget;
+import de.carlos.socketfront.widgets.JSWidgetID;
 import de.carlos.socketfront.widgets.Window;
 import de.carlos.socketfront.widgets.events.ClickEvent;
 
+
+/**
+ * 
+ * Manages Ids between the client and the server. This Object is supposed to stay intact for the duration
+ * of the session on a single GUI.
+ * 
+ * 
+ * @author Carlos
+ *
+ */
 public class GuiContext {
 
-    private JSPipe jsPipe;
+    private JSPipe jsPipe = new JSPipe();
 
-    private Map<String, Widget> idToWidget = new HashMap<String, Widget>();
-    private Map<Widget, String> widgetToid = new HashMap<Widget, String>();
+    private Map<JSWidgetID, JSWidget> idToWidget = new HashMap<JSWidgetID, JSWidget>();
+    private Map<JSWidget, JSWidgetID> widgetToid = new HashMap<JSWidget, JSWidgetID>();
 
     private MainPane mainPane;
 
     int idCount = 0;
 
     int radioCount = 0;
+    
+    public GuiContext(){
+	this.mainPane = new MainPane().createJSWidget(this);
+    }
 
+    @Deprecated
     public <T extends Widget> T addWidget(T widget) {
-	if (widget.getContext() != null) {
-	    throw new RuntimeException("Widget with id " + this.getId(widget)
-		    + " already has a context.");
-	}
-	widget.setContext(this);
-
-	if (!this.hasId(widget)) {
-	    generateId(widget);
-	}
-
-	widget.constructJSObject(this);
+	widget.createJSWidget(this);
 	return widget;
     }
 
-    public <T extends Widget> T addWidget(T widget, Parent parent) {
+    @Deprecated
+    public <T extends JSWidget> T addWidget(T widget, Parent parent) {
 	addWidget(widget);
 	parent.add(widget);
 	return widget;
@@ -54,16 +62,13 @@ public class GuiContext {
 	return jsPipe;
     }
 
-    public void setJsPipe(JSPipe jsPipe) {
-	this.jsPipe = jsPipe;
-    }
 
-    public boolean hasId(Widget widget) {
+    public boolean hasId(JSWidget widget) {
 	return this.widgetToid.containsKey(widget);
     }
 
-    public String getId(Widget widget) {
-	String id = widgetToid.get(widget);
+    public JSWidgetID getId(JSWidget widget) {
+	JSWidgetID id = widgetToid.get(widget);
 	if (id == null) {
 	    throw new RuntimeException("Id for Widget " + widget
 		    + " could not be found.");
@@ -71,9 +76,9 @@ public class GuiContext {
 	return id;
     }
 
-    public Widget getWidget(String id) {
+    public JSWidget getWidget(String id) {
 
-	Widget widget = idToWidget.get(id);
+	JSWidget widget = idToWidget.get(new JSWidgetID(id));
 	if (widget == null) {
 	    throw new RuntimeException("No widget with id " + id
 		    + " could be found.");
@@ -81,38 +86,35 @@ public class GuiContext {
 	return widget;
     }
 
-    public void setId(Widget widget, String id) {
+    public void setId(JSWidget widget, JSWidgetID id) {
 	idToWidget.put(id, widget);
 	widgetToid.put(widget, id);
     }
 
-    public void generateId(Widget widget) {
+    public void generateId(JSWidget widget) {
 
-	String id = String.format("generated/%s/%d", widget.getClass().getName(), this.idCount);
-	while (this.idToWidget.containsKey(id)) {
+	String idstring = String.format("generated/%s/%d", widget.getClass().getName(), this.idCount);
+	while (this.idToWidget.containsKey(new JSWidgetID(idstring))) {
 	    this.idCount++;
-	    id = String.format("generated/%s/%d", widget.getClass().getName(), this.idCount);
+	    idstring = String.format("generated/%s/%d", widget.getClass().getName(), this.idCount);
 	}
 
-	setId(widget, id);
+	setId(widget, new JSWidgetID(idstring));
     }
 
     public MainPane getMainPane() {
 	return mainPane;
     }
 
-    public void setMainPane(MainPane mainPane) {
-	this.mainPane = mainPane;
-	this.setId(mainPane, "mainpane");
-    }
 
-    public void removeWidget(Widget widget) {
+    public void removeWidget(JSWidget widget) {
 	this.idToWidget.remove(this.getId(widget));
 	this.widgetToid.remove(widget);
     }
 
     public void showExceptionWindow(Exception e) {
-	final Window window = this.addWidget(new Window(), this.getMainPane());
+	final Window window = new Window().createJSWidget(this);
+	this.getMainPane().add(window);
 
 	StringWriter writer = new StringWriter();
 	writer.write("An Excpetion occurred. ");
@@ -133,7 +135,7 @@ public class GuiContext {
     public void processEvent(JSONObject event) {
 	String id = event.getString("id");
 
-	Widget widget = this.getWidget(id);
+	JSWidget widget = this.getWidget(id);
 	if (widget == null) {
 	    throw new RuntimeException("Could not find widget with id: " + id);
 	}
