@@ -116,4 +116,9 @@ public class PersonProvider implements Provider<Person> {
 	}
 	throw new RuntimeException("Person could not be found.");
     }
+
+    @Override
+    public Person newEntity() {
+	return new Person();
+    }
 }

@@ -19,6 +19,14 @@ public class PersonGui implements SocketGUI {
 
     @Override
     public void onCreate(GuiContext context) {
+	
+	context.getMainPane().add(new Text("CRUD").createJSWidget(context));
+	
+	CRUD<Person> personCRUD = new CRUD<Person>(PersonProvider.getInstance());
+	context.getMainPane().add(personCRUD.createJSWidget(context));
+	
+	context.getMainPane().add(new Text("Other stuff").createJSWidget(context));
+
 
 	List<Person> allpersons = PersonProvider.getInstance().getAll();
 
@@ -75,11 +83,6 @@ public class PersonGui implements SocketGUI {
 		event.getContext().alert("You selected "+event.getSource().getValue().getFirstName());		
 	    }
 	});
-	
-	context.getMainPane().add(new Text("CRUD").createJSWidget(context));
-	
-	CRUD<Person> personCRUD = new CRUD<Person>(PersonProvider.getInstance());
-	context.getMainPane().add(personCRUD.createJSWidget(context));
 	
 
     }

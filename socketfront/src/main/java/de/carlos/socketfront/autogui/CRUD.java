@@ -60,8 +60,16 @@ public class CRUD<T> implements Widget {
 		CRUD.this.editSelected();
 	    }
 	});
-
 	this.group.add(editButton);
+	
+	Button createButton = new Button("New").createJSWidget(context);
+	createButton.getOnClick().addObserver(new Observer<ClickEvent<Button>>() {
+	    @Override
+	    public void update(ClickEvent<Button> event) {
+		CRUD.this.createNew();
+	    }
+	});
+	this.group.add(createButton);
 
 	return this.group;
     }
@@ -94,6 +102,25 @@ public class CRUD<T> implements Widget {
 	    editWindow.add(editor);
 	    context.getMainPane().add(editWindow);
 	}
+    }
+    
+    protected void createNew() {
+	    final Window createWindow = new Window();
+	    createWindow.createJSWidget(context);	    
+	    
+	    final EntityEdit<T> editor = new EntityEdit<T>(this.provider.newEntity());
+	    editor.createJSWidget(context);
+	    editor.getOnChange().addObserver(new Observer<ChangeEvent<EntityEdit<T>>>() {
+		@Override
+		public void update(ChangeEvent<EntityEdit<T>> event){
+		    CRUD.this.provider.create(editor.getValue());
+		    createWindow.remove();
+		    CRUD.this.refresh();
+		}
+	    });	    
+	    
+	    createWindow.add(editor);
+	    context.getMainPane().add(createWindow);	
     }
 
     public void refresh() {

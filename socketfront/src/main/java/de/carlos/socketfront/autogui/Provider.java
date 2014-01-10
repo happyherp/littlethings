@@ -16,4 +16,6 @@ public interface Provider<T> {
     
     void save(T entity);
     
+    T newEntity();
+    
 }
