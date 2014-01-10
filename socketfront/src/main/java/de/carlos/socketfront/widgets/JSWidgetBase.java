@@ -6,9 +6,9 @@ import org.json.JSONObject;
 import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.JSPipe;
 
-public abstract class WidgetBase implements JSWidget {
+public abstract class JSWidgetBase implements JSWidget {
 
-    private static Logger LOGGER = Logger.getLogger(WidgetBase.class);
+    private static Logger LOGGER = Logger.getLogger(JSWidgetBase.class);
 
     protected GuiContext context;
     

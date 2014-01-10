@@ -5,6 +5,7 @@ import java.util.List;
 import de.carlos.observer.Observer;
 import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.SocketGUI;
+import de.carlos.socketfront.autogui.CRUD;
 import de.carlos.socketfront.autogui.EntityEdit;
 import de.carlos.socketfront.autogui.EntityTableDrawInstuctions;
 import de.carlos.socketfront.sample.PersonProvider.Person;
@@ -56,7 +57,7 @@ public class PersonGui implements SocketGUI {
 	personedit.getOnChange().addObserver(new Observer<ChangeEvent<EntityEdit<Person>>>() {	    
 	    @Override
 	    public void update(ChangeEvent<EntityEdit<Person>> event) {
-		persontable.redrawData(event.getContext());
+		persontable.redrawData();
 	    }
 	});
 	
@@ -76,6 +77,9 @@ public class PersonGui implements SocketGUI {
 	});
 	
 	context.getMainPane().add(new Text("CRUD").createJSWidget(context));
+	
+	CRUD<Person> personCRUD = new CRUD<Person>(PersonProvider.getInstance());
+	context.getMainPane().add(personCRUD.createJSWidget(context));
 	
 
     }

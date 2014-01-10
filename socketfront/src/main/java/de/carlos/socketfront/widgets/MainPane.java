@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 import de.carlos.socketfront.GuiContext;
 
-public class MainPane extends WidgetBase implements Parent {
+public class MainPane extends JSWidgetBase implements Parent {
     
     public static JSWidgetID MAINPANEID = new JSWidgetID("mainpane"); 
 

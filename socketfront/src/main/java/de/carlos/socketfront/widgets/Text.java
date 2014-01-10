@@ -2,7 +2,7 @@ package de.carlos.socketfront.widgets;
 
 import de.carlos.socketfront.GuiContext;
 
-public class Text extends WidgetBase {
+public class Text extends JSWidgetBase {
 
     String text;
 

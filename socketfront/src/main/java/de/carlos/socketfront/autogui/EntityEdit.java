@@ -66,9 +66,7 @@ public class EntityEdit<T> implements InputSourceWidget<T> {
 		this.inputs.add(inputsource);
 	    }
 	}
-
-	Button savebutton = context.addWidget(new Button("save"),
-		this.group);
+	Button savebutton = this.group.add(new Button("save").createJSWidget(context));
 	OnAllValid.enableButton(savebutton,
 		this.inputs.toArray(new InputSourceWidget[] {}));
 	savebutton.getOnClick().addObserver(new Observer<ClickEvent<Button>>() {

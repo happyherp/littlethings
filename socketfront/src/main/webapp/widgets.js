@@ -213,17 +213,15 @@ Text.prototype.setText = function(text){
 
 Grid = function(id, cols, rows){
 	Widget.call(this, id);
-	this.cols = cols;
-	this.rows = rows;
+
 	
 	this.table = document.createElement("table");
 	this.table.border = "1px";
 	
-	this.posToTd=[];
-	this.trs=[];
-	
+	this.cols = cols;
+	this.rows = 0
 	for (var row = 0; row < rows; row++){
-		this.__appendRow(row);
+		this.addRow(0);
 	}
 	
 	this.contentDiv.appendChild(this.table);
@@ -231,20 +229,8 @@ Grid = function(id, cols, rows){
 
 extend(Widget, Grid);
 
-Grid.prototype.__appendRow = function(row){
-	this.posToTd.push([]);
-	var tr = document.createElement("tr");
-	for (var col = 0; col<this.cols;col++){
-		var td = document.createElement("td");
-		this.posToTd[row].push(td);
-		tr.appendChild(td);
-	}
-	this.table.appendChild(tr);
-	this.trs.push(tr);	
-}
-
 Grid.prototype.setCell = function(widgetId, col, row){
-	var td = this.posToTd[row][col];
+	var td = this.table.childNodes[row].childNodes[col];
 	while (td.hasChildNodes()) {
 		td.removeChild(td.lastChild);
 	}
@@ -254,37 +240,49 @@ Grid.prototype.setCell = function(widgetId, col, row){
 }
 
 Grid.prototype.addRow = function(rowindex){
-	if (this.trs.length > rowindex){
-		var row = []
-		var tr = document.createElement("tr");		
-		for (var col = 0; col<this.cols;col++){
-			var td = document.createElement("td");
-			row.push(td);
-			tr.appendChild(td);
-		}	
-		var oldrow = this.trs[rowindex]
-		this.table.insertBefore(tr, oldrow);
-		this.trs.splice(rowindex, 0, tr);
-		this.posToTd.splice(rowindex, 0, row);
+	
+	var tr = document.createElement("tr");		
+	for (var col = 0; col<this.cols;col++){
+		var td = document.createElement("td");
+		tr.appendChild(td);
+	}		
+	
+	var rowToMove =this.table.childNodes[rowindex]; 
+	if (rowToMove){
+		this.table.insertBefore(tr, rowToMove)
 	}else{
-		this.__appendRow(this.trs.length)
-	}	
+		this.table.appendChild(tr);
+	}
+	
+	this.rows++;
 }
 
 Grid.prototype.removeRow = function(rowindex){
-	this.table.removeChild(this.trs[rowindex]);
-	this.trs.splice(rowindex, 1);
-	this.posToTd.splice(rowindex, 1);
+	this.table.removeChild(this.table.childNodes[rowindex]);
+	this.rows--;
 }
 
-Grid.prototype.appendColumn = function(){
-	this.cols++;
+Grid.prototype.addColumn = function(colindex){
 	for (var row = 0; row<this.rows;row++){
-		var tr = this.trs[row];
 		var td = document.createElement("td");
-		tr.appendChild(td);
-		this.posToTd[row][this.cols - 1] = td;
+		var tr = this.table.childNodes[row];
+		
+		var tdToMove = tr.childNodes[colindex];
+		if (tdToMove){
+			tr.insertBefore(td, tdToMove);
+		}else{
+			tr.appendChild(td);
+		}
 	}
+	this.cols++;
+}
+
+Grid.prototype.clear = function(){
+	while (this.table.childNodes.length > 0){
+		this.table.removeChild(this.table.childNodes[0]);
+	}
+	this.cols = 0;
+	this.rows = 0;	
 }
 
 Window = function(id){

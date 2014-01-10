@@ -58,6 +58,22 @@ public class RadioGroup<T> implements InputSource<T>  {
 	}
 	return activeRadio.getObject();
     }
+    
+    /**
+     * Checks if the given value is associated with a Radiobutton of this group.
+     * If this returns true, setValue can safely be called.
+     * 
+     * @param value
+     * @return
+     */
+    public boolean canBeUsedAsValue(T value){
+	for (RadioButton<T> button : this.radios){
+	    if (button.getObject().equals(value)){		
+		return true;
+	    }
+	}	
+	return false;
+    }
 
 
     @Override
@@ -65,9 +81,7 @@ public class RadioGroup<T> implements InputSource<T>  {
 	
 	for (RadioButton<T> button : this.radios){
 	    if (button.getObject().equals(value)){
-		if (activeRadio != null){
-		    activeRadio = button;
-		}		
+		activeRadio = button;
 		return;
 	    }
 	}

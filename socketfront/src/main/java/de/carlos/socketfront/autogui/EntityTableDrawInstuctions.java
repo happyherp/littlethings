@@ -66,7 +66,7 @@ public class EntityTableDrawInstuctions<T> implements RowTableDrawInstructions<T
 		LOGGER.warn(e);
 		strResult = "Error while Calling";
 	    }
-	    widgets.add(context.addWidget(new Text(strResult)));
+	    widgets.add(new Text(strResult).createJSWidget(context));
 	}
 	return widgets;
     }

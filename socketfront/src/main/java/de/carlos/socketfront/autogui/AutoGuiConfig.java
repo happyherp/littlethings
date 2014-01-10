@@ -76,6 +76,7 @@ public class AutoGuiConfig {
 	    super(widgetclazz);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public InputSourceWidget<T> create(GuiContext context,
 		Class<T> parameter) {

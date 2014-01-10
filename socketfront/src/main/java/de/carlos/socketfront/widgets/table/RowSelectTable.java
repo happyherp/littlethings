@@ -19,33 +19,26 @@ public class RowSelectTable<T> implements Widget, InputSource<T> {
     RowTableDrawInstructions<T> drawInstructions;
 
     RadioGroup<T> radiogroup;
-    
+
     Observable<ChangeEvent<RowSelectTable<T>>> onchange = new Observable<ChangeEvent<RowSelectTable<T>>>();
 
     private List<T> data;
 
     private T value;
 
+    private GuiContext context;
+
     @Override
     public Grid createJSWidget(GuiContext context) {
-	radiogroup = new RadioGroup<T>(context);
-	radiogroup.getOnChange().addObserver(new Observer<ChangeEvent<RadioButton<T>>>() {
-
-	    @Override
-	    public void update(ChangeEvent<RadioButton<T>> event) {
-		RowSelectTable.this.value = event.getSource().getObject();
-		RowSelectTable.this.getOnChange().fire(new ChangeEvent<RowSelectTable<T>>(RowSelectTable.this, event.getContext()));
-	    }
-	});
+	this.context = context;
 
 	RowTableDrawInstructions<T> withselection = addSelectionToDrawInstructions();
-	
 	table = new RowTable<T>(withselection);
-	table.setData(this.getData());
-	Grid grid = table.createJSWidget(context);
-	
-	radiogroup.setValue(this.getValue());
-	return grid;
+	table.createJSWidget(context);
+
+	this.refresh();
+
+	return table.getMainJSWidget();
 
     }
 
@@ -92,8 +85,8 @@ public class RowSelectTable<T> implements Widget, InputSource<T> {
     @Override
     public void setValue(T value) {
 	this.value = value;
-	if (this.radiogroup != null){
-	    this.radiogroup.setValue(value);	
+	if (this.radiogroup != null) {
+	    this.radiogroup.setValue(value);
 	}
     }
 
@@ -103,11 +96,11 @@ public class RowSelectTable<T> implements Widget, InputSource<T> {
     }
 
     @Override
-    public  Observable<ChangeEvent<RowSelectTable<T>>> getOnChange() {
+    public Observable<ChangeEvent<RowSelectTable<T>>> getOnChange() {
 	return this.onchange;
     }
-    
-    public List<T> getData(){
+
+    public List<T> getData() {
 	return this.data;
     }
 
@@ -118,6 +111,33 @@ public class RowSelectTable<T> implements Widget, InputSource<T> {
     @Override
     public JSWidget getMainJSWidget() {
 	return this.table.getMainJSWidget();
+    }
+
+    public void refresh() {
+
+	radiogroup = new RadioGroup<T>(context);
+	radiogroup.getOnChange().addObserver(
+		new Observer<ChangeEvent<RadioButton<T>>>() {
+
+		    @Override
+		    public void update(ChangeEvent<RadioButton<T>> event) {
+			RowSelectTable.this.value = event.getSource()
+				.getObject();
+			RowSelectTable.this
+				.getOnChange()
+				.fire(new ChangeEvent<RowSelectTable<T>>(
+					RowSelectTable.this, event.getContext()));
+		    }
+		});
+	table.setData(this.getData());
+
+	table.redrawData();
+
+	if (this.radiogroup.canBeUsedAsValue(this.getValue())) {
+	    radiogroup.setValue(this.getValue());
+	}else{
+	    this.value = null;
+	}
     }
 
 }

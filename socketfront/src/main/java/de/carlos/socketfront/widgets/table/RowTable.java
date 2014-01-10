@@ -10,6 +10,8 @@ import de.carlos.socketfront.widgets.JSWidget;
 
 public class RowTable<T> implements Widget {
 
+    GuiContext context;
+    
     Grid grid;
 
     List<T> data = new ArrayList<>();
@@ -20,12 +22,24 @@ public class RowTable<T> implements Widget {
 	this.instructions = instructions;
     }
     
+    
+    
     @Override
     public Grid createJSWidget(GuiContext context) {
-	this.grid = new Grid(0, 1).createJSWidget(context);
+	this.context = context;
+	this.grid = new Grid(0, 0).createJSWidget(context);
 
+	this.redrawData();
+	return this.grid;
+    }
+    
+
+    public void redrawData() {
+	this.grid.clear();
+	
 	// Draw headline.
 	int col = 0;
+	grid.appendRow();
 	for (String label : this.instructions.createHeader()) {
 	    if (this.grid.getColumns() <= col) {
 		this.grid.appendColumn();
@@ -33,17 +47,12 @@ public class RowTable<T> implements Widget {
 	    this.grid.setCell(new Text(label).createJSWidget(context), col, 0);
 	    col++;
 	}
-
-	this.redrawData(context);
-	return this.grid;
-    }
-    
-
-    public void redrawData(GuiContext context) {
+	
+	
 	int row = 1;
 	for (T object : this.data) {
 	    List<JSWidget> rowdata = this.instructions.createRow(context, object);
-	    int col = 0;
+	    col = 0;
 	    this.grid.appendRow();
 	    for (JSWidget widget : rowdata) {
 		if (this.grid.getColumns() < col) {
@@ -65,7 +74,7 @@ public class RowTable<T> implements Widget {
     }
 
     @Override
-    public JSWidget getMainJSWidget() {
+    public Grid getMainJSWidget() {
 	return this.grid;
     }
 

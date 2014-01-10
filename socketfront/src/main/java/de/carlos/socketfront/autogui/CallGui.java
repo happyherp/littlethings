@@ -42,7 +42,7 @@ public class CallGui {
 
 	this.context = context;
 
-	group = context.addWidget(new Group());
+	group = new Group().createJSWidget(context);
 
 	for (Method m : clazz.getMethods()) {
 	    if (m.getName().equals(methodname)) {
@@ -62,7 +62,7 @@ public class CallGui {
 	    this.group.add(inputsource);
 	}
 
-	this.button = context.addWidget(new Button(methodname), this.group);
+	this.button = this.group.add(new Button(methodname).createJSWidget(context));
 	this.button.getOnClick().addObserver(new Observer<ClickEvent<Button>>() {
 	    @Override
 	    public void update(ClickEvent<Button> event) {
@@ -70,8 +70,8 @@ public class CallGui {
 	    }
 	});
 
-	context.addWidget(new Text("Result:"), this.group);
-	this.output = context.addWidget(new TextInput(), this.group);
+	this.group.add((new Text("Result:").createJSWidget(context)));
+	this.group.add(new TextInput().createJSWidget(context));
     }
     
     public void createMember(GuiContext context, AutoGuiConfig autoguiconfig,
@@ -111,7 +111,7 @@ public class CallGui {
 	    } catch (InvocationTargetException e) {
 		StringWriter writer = new StringWriter();
 		e.getCause().printStackTrace(new PrintWriter(writer));
-		this.info = this.context.addWidget(new InfoText(writer.toString()));
+		this.info = new InfoText(writer.toString()).createJSWidget(context);
 		this.group.addInfoText(this.info);
 	    }
 	} else {

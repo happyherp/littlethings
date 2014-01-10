@@ -120,8 +120,8 @@ public class GuiContext {
 	writer.write("An Excpetion occurred. ");
 	e.printStackTrace(new PrintWriter(writer));
 
-	window.add(this.addWidget(new Text(writer.toString())));
-	Button closebutton = this.addWidget(new Button("OK"), window);
+	window.add(new Text(writer.toString()).createJSWidget(this));
+	Button closebutton = window.add(new Button("OK").createJSWidget(this));
 	closebutton.getOnClick().addObserver(
 		new Observer<ClickEvent<Button>>() {
 

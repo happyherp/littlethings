@@ -2,7 +2,7 @@ package de.carlos.socketfront.widgets;
 
 import de.carlos.socketfront.GuiContext;
 
-public class Window extends WidgetBase implements Parent  {
+public class Window extends JSWidgetBase implements Parent  {
 
     @Override
     public Window createJSWidget(GuiContext context) {

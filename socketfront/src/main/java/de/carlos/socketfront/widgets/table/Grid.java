@@ -2,9 +2,9 @@ package de.carlos.socketfront.widgets.table;
 
 import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.JSWidget;
-import de.carlos.socketfront.widgets.WidgetBase;
+import de.carlos.socketfront.widgets.JSWidgetBase;
 
-public class Grid extends WidgetBase {
+public class Grid extends JSWidgetBase {
 
     protected int columns;
     protected int rows;
@@ -57,8 +57,18 @@ public class Grid extends WidgetBase {
     }
 
     public void appendColumn() {
+	this.addColumn(this.columns);
+    }
+    
+    public void addColumn(int colindex){
 	this.columns++;
-	this.callThisJS("appendColumn");
+	this.callThisJS("addColumn", colindex);
+    }
+    
+    public void clear(){
+	this.columns = 0;
+	this.rows = 0;
+	this.callThisJS("clear");
     }
 
 }

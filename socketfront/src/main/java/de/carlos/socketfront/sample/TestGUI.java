@@ -109,7 +109,7 @@ public class TestGUI implements SocketGUI {
 
 	selectgroup.add(selectButton);
 
-	table = ctx.addWidget(new Grid(4, 7));
+	table = new Grid(4, 7).createJSWidget(ctx);
 
 	for (int x = 1; x <= table.getColumns(); x++) {
 	    for (int y = 1; y <= table.getRows(); y++) {
@@ -137,6 +137,15 @@ public class TestGUI implements SocketGUI {
 	    @Override
 	    public void update(ClickEvent<Button> event) {
 		table.appendColumn();
+	    }
+	});
+	
+	Button clear = context.getMainPane().add(new Button("clear").createJSWidget(ctx));
+	clear.getOnClick().addObserver(new Observer<ClickEvent<Button>> () {
+
+	    @Override
+	    public void update(ClickEvent<Button> event) {
+		table.clear();
 	    }
 	});
 
@@ -237,7 +246,13 @@ public class TestGUI implements SocketGUI {
 	});
 	
 	
+	Grid fromempty = new Grid(10, 10).createJSWidget(ctx);
+	context.getMainPane().add(fromempty);
 	
+	fromempty.clear();
+	fromempty.appendRow();
+	fromempty.appendColumn();
+	fromempty.setCell(new Text("Hello").createJSWidget(ctx), 0, 0);
 	
 
 
