@@ -14,4 +14,6 @@ public interface Provider<T> {
     
     Class<T> getEntityClass();
     
+    void save(T entity);
+    
 }

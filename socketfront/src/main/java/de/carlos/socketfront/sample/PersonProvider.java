@@ -104,4 +104,16 @@ public class PersonProvider implements Provider<Person> {
     public Class<Person> getEntityClass() {
 	return Person.class;
     }
+
+    @Override
+    public void save(Person entity) {
+	for (Person p : new ArrayList<Person> (this.persons)){
+	    if (p == entity){
+		this.persons.remove(p);
+		this.persons.add(entity);
+		return;
+	    }
+	}
+	throw new RuntimeException("Person could not be found.");
+    }
 }

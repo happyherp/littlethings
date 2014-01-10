@@ -27,7 +27,7 @@ public class RadioGroup<T> implements InputSource<T>  {
     
     public RadioButton<T> newRadio(T value){
 	RadioButton<T> radio = new RadioButton<T>(this, value);
-	this.context.addWidget(radio);
+	radio.createJSWidget(this.context);
 	radios.add(radio);
 	return radio;
     }
