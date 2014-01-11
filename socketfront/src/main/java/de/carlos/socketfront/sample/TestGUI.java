@@ -1,5 +1,9 @@
 package de.carlos.socketfront.sample;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import de.carlos.observer.Observer;
 import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.SocketGUI;
@@ -8,9 +12,10 @@ import de.carlos.socketfront.util.OnAllValidHandler;
 import de.carlos.socketfront.widgets.Button;
 import de.carlos.socketfront.widgets.Checkbox;
 import de.carlos.socketfront.widgets.Group;
+import de.carlos.socketfront.widgets.JSWidget;
 import de.carlos.socketfront.widgets.NumberInput;
-import de.carlos.socketfront.widgets.RadioGroup;
 import de.carlos.socketfront.widgets.RadioButton;
+import de.carlos.socketfront.widgets.RadioGroup;
 import de.carlos.socketfront.widgets.Select;
 import de.carlos.socketfront.widgets.Text;
 import de.carlos.socketfront.widgets.TextInput;
@@ -18,6 +23,8 @@ import de.carlos.socketfront.widgets.Window;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 import de.carlos.socketfront.widgets.events.ClickEvent;
 import de.carlos.socketfront.widgets.table.Grid;
+import de.carlos.socketfront.widgets.table.RowMultiSelectTable;
+import de.carlos.socketfront.widgets.table.RowTableDrawInstructions;
 
 public class TestGUI implements SocketGUI {
 
@@ -254,7 +261,31 @@ public class TestGUI implements SocketGUI {
 	fromempty.appendColumn();
 	fromempty.setCell(new Text("Hello").createJSWidget(ctx), 0, 0);
 	
+	
+	final RowMultiSelectTable<String> multiSelectTable = new RowMultiSelectTable<String>(new RowTableDrawInstructions<String>() {
 
+	    @Override
+	    public List<String> createHeader() {
+		return new ArrayList<>(Arrays.asList(new String[]{"Value"}));
+	    }
+
+	    @Override
+	    public List<JSWidget> createRow(GuiContext context, String data) {
+		return new ArrayList<>(Arrays.asList(new JSWidget[]{new Text(data).createJSWidget(context)}));
+	    }
+	});
+	multiSelectTable.setData(new ArrayList<>(Arrays.asList(new String[]{"Hello", "World", "you", "are", "beautifil!", null})));
+	multiSelectTable.setValue(new ArrayList<>(Arrays.asList(new String[]{"World","are", "beautiful!"})));
+	context.getMainPane().add(multiSelectTable.createJSWidget(context));
+
+	Button multiSelectTableButton = new Button("show selected").createJSWidget(context);
+	context.getMainPane().add(multiSelectTableButton);
+	multiSelectTableButton.getOnClick().addObserver(new Observer<ClickEvent<Button>>() {	  
+	    @Override
+	    public void update(ClickEvent<Button> event) {
+		context.alert("You selected: "+multiSelectTable.getValue());
+	    }
+	});
 
     }
 
