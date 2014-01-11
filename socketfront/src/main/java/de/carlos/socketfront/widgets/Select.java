@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import de.carlos.observer.Observable;
 import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
+import de.carlos.util.Utils;
 
 public class Select<T> extends InputSourceWidgetBase<T> {
 
@@ -50,7 +51,7 @@ public class Select<T> extends InputSourceWidgetBase<T> {
 
 	Option newSelectedOption = null;
 	for (Option option : options) {
-	    if (option.object.equals(obj)) {
+	    if (Utils.equals(obj, option.object)) {
 		newSelectedOption = option;
 	    }
 	}
@@ -96,6 +97,8 @@ public class Select<T> extends InputSourceWidgetBase<T> {
     public Observable<ChangeEvent<Select<T>>> getOnChange() {
 	return (Observable<ChangeEvent<Select<T>>>) this.onchange;
     }
+
+
 
 
 }

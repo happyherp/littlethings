@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.carlos.socketfront.GuiContext;
+import de.carlos.socketfront.sample.HobbyProvider;
+import de.carlos.socketfront.sample.HobbyProvider.Hobby;
 import de.carlos.socketfront.widgets.Checkbox;
 import de.carlos.socketfront.widgets.InputSourceWidget;
 import de.carlos.socketfront.widgets.NumberInput;
@@ -22,13 +24,20 @@ public class AutoGuiConfig {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public AutoGuiConfig() {
+	//Basic Types
 	this.classmapping.put(String.class, new InputSourceWidgetFactoryImpl(TextInput.class));
 	this.classmapping.put(Integer.class, new InputSourceWidgetFactoryImpl(NumberInput.class));
 	this.classmapping.put(int.class, new InputSourceWidgetFactoryImpl(NumberInput.class));	
 	this.classmapping.put(Boolean.class, new InputSourceWidgetFactoryImpl(Checkbox.class));
 	this.classmapping.put(boolean.class, new InputSourceWidgetFactoryImpl(Checkbox.class));
-	this.classmapping.put(Enum.class, new EnumInputSourceFactory());
-	this.classmapping.put(Object.class, new ObjectInputSourceFactory());
+	
+	//Composite general Types
+	this.classmapping.put(Enum.class, new EnumSelectFactory());
+	this.classmapping.put(Object.class, new ObjectCreatorFactory());
+	
+	//Custom Objects
+	this.classmapping.put(Hobby.class, new EntitySelectFactory(HobbyProvider.getInstance()));
+	
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

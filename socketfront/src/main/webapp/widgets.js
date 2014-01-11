@@ -77,6 +77,7 @@ TextInput = function(id, value){
 	this.contentDiv.appendChild(this.input);
 
 	this.input.onchange = this.changeHandler.bind(this);	
+	this.input.onkeydown = this.changeHandler.bind(this);
 }
 
 extend(Widget, TextInput);

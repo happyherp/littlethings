@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.carlos.socketfront.autogui.Provider;
+import de.carlos.socketfront.sample.HobbyProvider.Hobby;
 import de.carlos.socketfront.sample.PersonProvider.Person;
 
 public class PersonProvider implements Provider<Person> {
@@ -20,7 +21,6 @@ public class PersonProvider implements Provider<Person> {
 	this.addPerson("Enric", "Freund");
     }
 
-    @Override
     public Person findById(int id) {
 	for (Person p : this.persons) {
 	    if (p.getId().equals(id)) {
@@ -64,11 +64,61 @@ public class PersonProvider implements Provider<Person> {
 	return new ArrayList<Person>(this.persons);
     }
 
-    public static class Person extends EntityBase {
+    @Override
+    public void insert(Person person) {
+
+	if (person.getId() == null) {
+	    person.setId(this.nextId);
+	    this.nextId++;
+	}
+
+	this.persons.add(person);
+
+    }
+
+    @Override
+    public Class<Person> getEntityClass() {
+	return Person.class;
+    }
+
+    @Override
+    public void save(Person entity) {
+	for (Person p : new ArrayList<Person>(this.persons)) {
+	    if (p == entity) {
+		this.persons.remove(p);
+		this.persons.add(entity);
+		return;
+	    }
+	}
+	throw new RuntimeException("Person could not be found.");
+    }
+
+    @Override
+    public Person newEntity() {
+	return new Person();
+    }
+
+    public static class Person {
 
 	private String lastName;
 
 	private String firstName;
+
+	private Integer age;
+
+	private MaritalStatus maritalstatus;
+
+	private Integer id;
+	
+	private Hobby favouriteHobby;
+
+	public Integer getId() {
+	    return id;
+	}
+
+	public void setId(Integer id) {
+	    this.id = id;
+	}
 
 	public String getLastName() {
 	    return lastName;
@@ -86,39 +136,36 @@ public class PersonProvider implements Provider<Person> {
 	    this.firstName = firstName;
 	}
 
-    }
-
-    @Override
-    public void create(Person person) {
-
-	if (person.getId() == null) {
-	    person.setId(this.nextId);
-	    this.nextId++;
+	public Integer getAge() {
+	    return age;
 	}
-	
-	this.persons.add(person);
 
-    }
-
-    @Override
-    public Class<Person> getEntityClass() {
-	return Person.class;
-    }
-
-    @Override
-    public void save(Person entity) {
-	for (Person p : new ArrayList<Person> (this.persons)){
-	    if (p == entity){
-		this.persons.remove(p);
-		this.persons.add(entity);
-		return;
-	    }
+	public void setAge(Integer age) {
+	    this.age = age;
 	}
-	throw new RuntimeException("Person could not be found.");
+
+	public MaritalStatus getMaritalstatus() {
+	    return maritalstatus;
+	}
+
+	public void setMaritalstatus(MaritalStatus maritalstatus) {
+	    this.maritalstatus = maritalstatus;
+	}
+
+	public Hobby getFavouriteHobby() {
+	    return favouriteHobby;
+	}
+
+	public void setFavouriteHobby(Hobby favouriteHobby) {
+	    this.favouriteHobby = favouriteHobby;
+	}
+
     }
 
-    @Override
-    public Person newEntity() {
-	return new Person();
+    public static enum MaritalStatus {
+
+	SINGLE, MARRIED, WIDOWED;
+
     }
+
 }

@@ -5,7 +5,7 @@ import de.carlos.socketfront.autogui.AutoGuiConfig.InputSourceWidgetFactory;
 import de.carlos.socketfront.widgets.InputSourceWidget;
 import de.carlos.socketfront.widgets.JSWidget;
 
-public class ObjectInputSourceFactory<T> implements InputSourceWidgetFactory<T> {
+public class ObjectCreatorFactory<T> implements InputSourceWidgetFactory<T> {
 
 
     @Override

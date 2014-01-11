@@ -24,7 +24,7 @@ import de.carlos.socketfront.widgets.events.ClickEvent;
 public class Objectcreator<T> implements InputSourceWidget<T> {
 
     private static final Logger LOGGER = Logger
-	    .getLogger(ObjectInputSourceFactory.class);
+	    .getLogger(ObjectCreatorFactory.class);
 
     InfoText exception = null;
 

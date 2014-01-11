@@ -113,7 +113,7 @@ public class CRUD<T> implements Widget {
 	    editor.getOnChange().addObserver(new Observer<ChangeEvent<EntityEdit<T>>>() {
 		@Override
 		public void update(ChangeEvent<EntityEdit<T>> event){
-		    CRUD.this.provider.create(editor.getValue());
+		    CRUD.this.provider.insert(editor.getValue());
 		    createWindow.remove();
 		    CRUD.this.refresh();
 		}
