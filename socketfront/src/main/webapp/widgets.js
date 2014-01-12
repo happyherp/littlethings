@@ -77,7 +77,7 @@ TextInput = function(id, value){
 	this.contentDiv.appendChild(this.input);
 
 	this.input.onchange = this.changeHandler.bind(this);	
-	this.input.onkeydown = this.changeHandler.bind(this);
+	this.input.onkeyup = this.changeHandler.bind(this);
 }
 
 extend(Widget, TextInput);
@@ -307,6 +307,28 @@ extend(Widget, Group);
 
 Group.prototype.addChild = function(childId){
 	this.contentDiv.appendChild(GuiInfo.idToWidget[childId].mainDiv);
+}
+
+VGroup = function(id){
+	Widget.call(this, id);
+	this.mainDiv.style.border = "1px solid grey";
+	
+	var clearDiv = document.createElement("div");
+	clearDiv.style.clear="both";
+	this.mainDiv.appendChild(clearDiv);
+}
+
+extend(Widget, VGroup);
+
+VGroup.prototype.addChild = function(childId){
+	var child = GuiInfo.idToWidget[childId].mainDiv
+	
+	var subdiv = document.createElement("div");
+	subdiv.style.float="left";
+	subdiv.style.cssFloat="left";
+	subdiv.appendChild(child);
+	
+	this.contentDiv.appendChild(subdiv);
 }
 
 

@@ -8,6 +8,7 @@ import de.carlos.socketfront.SocketGUI;
 import de.carlos.socketfront.autogui.CRUD;
 import de.carlos.socketfront.autogui.EntityEdit;
 import de.carlos.socketfront.autogui.EntityTableDrawInstuctions;
+import de.carlos.socketfront.sample.HobbyProvider.Hobby;
 import de.carlos.socketfront.sample.PersonProvider.Person;
 import de.carlos.socketfront.widgets.Text;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
@@ -24,6 +25,9 @@ public class PersonGui implements SocketGUI {
 	
 	CRUD<Person> personCRUD = new CRUD<Person>(PersonProvider.getInstance());
 	context.getMainPane().add(personCRUD.createJSWidget(context));
+	
+	CRUD<Hobby> hobbyCRUD = new CRUD<>(HobbyProvider.getInstance());
+	context.getMainPane().add(hobbyCRUD.createJSWidget(context));
 	
 	context.getMainPane().add(new Text("Other stuff").createJSWidget(context));
 

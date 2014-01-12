@@ -26,7 +26,7 @@ public class AutoGuiConfig {
     public AutoGuiConfig() {
 	//Basic Types
 	this.classmapping.put(String.class, new InputSourceWidgetFactoryImpl(TextInput.class));
-	this.classmapping.put(Integer.class, new InputSourceWidgetFactoryImpl(NumberInput.class));
+	this.classmapping.put(Integer.class, new NumberInputWithNullFactory());
 	this.classmapping.put(int.class, new InputSourceWidgetFactoryImpl(NumberInput.class));	
 	this.classmapping.put(Boolean.class, new InputSourceWidgetFactoryImpl(Checkbox.class));
 	this.classmapping.put(boolean.class, new InputSourceWidgetFactoryImpl(Checkbox.class));
@@ -35,7 +35,7 @@ public class AutoGuiConfig {
 	this.classmapping.put(Enum.class, new EnumSelectFactory());
 	this.classmapping.put(Object.class, new ObjectCreatorFactory());
 	
-	//Custom Objects
+	//Entity Objects
 	this.classmapping.put(Hobby.class, new EntitySelectFactory(HobbyProvider.getInstance()));
 	
     }
@@ -90,6 +90,19 @@ public class AutoGuiConfig {
 	public InputSourceWidget<T> create(GuiContext context,
 		Class<T> parameter) {
 	    return (InputSourceWidget<T>) this.create().createJSWidget(context);
+	}
+	
+    }
+    
+    public static class NumberInputWithNullFactory implements InputSourceWidgetFactory<Integer>{
+
+	@Override
+	public InputSourceWidget<Integer> create(GuiContext context,
+		Class<Integer> parameter) {
+	    NumberInput input = new NumberInput(true);
+	    input.createJSWidget(context);
+	    
+	    return input;
 	}
 	
     }

@@ -5,6 +5,7 @@ import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.Button;
 import de.carlos.socketfront.widgets.Group;
 import de.carlos.socketfront.widgets.JSWidget;
+import de.carlos.socketfront.widgets.VGroup;
 import de.carlos.socketfront.widgets.Widget;
 import de.carlos.socketfront.widgets.Window;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
@@ -34,7 +35,7 @@ public class CRUD<T> implements Widget {
     public Group createJSWidget(GuiContext context) {
 	this.context = context;
 
-	this.group = new Group().createJSWidget(context);
+	this.group = new VGroup().createJSWidget(context);
 
 	table = new RowSelectTable<T>();
 	table.setData(this.provider.getAll());
@@ -42,6 +43,10 @@ public class CRUD<T> implements Widget {
 		this.provider.getEntityClass()));
 	table.createJSWidget(context);
 	this.group.add(table.getMainJSWidget());
+	
+	
+	Group buttongrGroup = new Group();
+	this.group.add(buttongrGroup.createJSWidget(context));
 
 	Button deleteButton = new Button("Delete").createJSWidget(context);
 	deleteButton.getOnClick().addObserver(
@@ -51,7 +56,7 @@ public class CRUD<T> implements Widget {
 			CRUD.this.deleteSelected();
 		    }
 		});
-	this.group.add(deleteButton);
+	buttongrGroup.add(deleteButton);
 
 	Button editButton = new Button("Edit").createJSWidget(context);
 	editButton.getOnClick().addObserver(new Observer<ClickEvent<Button>>() {
@@ -60,7 +65,7 @@ public class CRUD<T> implements Widget {
 		CRUD.this.editSelected();
 	    }
 	});
-	this.group.add(editButton);
+	buttongrGroup.add(editButton);
 	
 	Button createButton = new Button("New").createJSWidget(context);
 	createButton.getOnClick().addObserver(new Observer<ClickEvent<Button>>() {
@@ -69,7 +74,7 @@ public class CRUD<T> implements Widget {
 		CRUD.this.createNew();
 	    }
 	});
-	this.group.add(createButton);
+	buttongrGroup.add(createButton);
 
 	return this.group;
     }
