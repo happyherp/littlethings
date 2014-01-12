@@ -1,5 +1,6 @@
 package de.carlos.socketfront.widgets.table;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.carlos.observer.Observable;
@@ -22,7 +23,7 @@ public class RowSelectTable<T> implements Widget, InputSource<T> {
 
     Observable<ChangeEvent<RowSelectTable<T>>> onchange = new Observable<ChangeEvent<RowSelectTable<T>>>();
 
-    private List<T> data;
+    private List<T> data = new ArrayList<>();
 
     private T value;
 

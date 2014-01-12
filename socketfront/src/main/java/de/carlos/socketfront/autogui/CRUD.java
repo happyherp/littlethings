@@ -1,10 +1,14 @@
 package de.carlos.socketfront.autogui;
 
+import java.util.List;
+
 import de.carlos.observer.Observer;
 import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.Button;
 import de.carlos.socketfront.widgets.Group;
 import de.carlos.socketfront.widgets.JSWidget;
+import de.carlos.socketfront.widgets.TablePagination;
+import de.carlos.socketfront.widgets.TablePagination.Range;
 import de.carlos.socketfront.widgets.VGroup;
 import de.carlos.socketfront.widgets.Widget;
 import de.carlos.socketfront.widgets.Window;
@@ -22,6 +26,8 @@ public class CRUD<T> implements Widget {
 
     private GuiContext context;
 
+    private TablePagination pagination;
+
     public CRUD(Provider<T> provider) {
 	this.provider = provider;
     }
@@ -36,13 +42,29 @@ public class CRUD<T> implements Widget {
 	this.context = context;
 
 	this.group = new VGroup().createJSWidget(context);
+	
+	Group tablegroup = new Group();
+	tablegroup.createJSWidget(context);
+	
 
 	table = new RowSelectTable<T>();
-	table.setData(this.provider.getAll());
 	table.setDrawInstructions(new EntityTableDrawInstuctions<T>(
 		this.provider.getEntityClass()));
 	table.createJSWidget(context);
-	this.group.add(table.getMainJSWidget());
+	tablegroup.add(table.getMainJSWidget());
+	
+	this.pagination = new TablePagination();
+	this.pagination.setPagesize(3);
+	this.pagination.getOnChange().addObserver(new Observer<ChangeEvent<TablePagination>>() {
+
+	    @Override
+	    public void update(ChangeEvent<TablePagination> event) {
+		CRUD.this.refresh();
+	    };
+	});
+	tablegroup.add(this.pagination.createJSWidget(context));
+	
+	this.group.add(tablegroup);
 	
 	
 	Group buttongrGroup = new Group();
@@ -75,6 +97,8 @@ public class CRUD<T> implements Widget {
 	    }
 	});
 	buttongrGroup.add(createButton);
+	
+	this.refresh();
 
 	return this.group;
     }
@@ -129,7 +153,12 @@ public class CRUD<T> implements Widget {
     }
 
     public void refresh() {
-	this.table.setData(this.provider.getAll());
+	
+	List<T> alldata = this.provider.getAll();
+	
+	this.pagination.setTotalrows(alldata.size());
+	Range range = this.pagination.getCurrentRange();
+	this.table.setData(alldata.subList(range.getFromIndex(), range.getToIndex()));
 	this.table.refresh();
     }
 

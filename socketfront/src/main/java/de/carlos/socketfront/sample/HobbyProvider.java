@@ -16,6 +16,7 @@ public class HobbyProvider implements Provider<Hobby> {
 	addHobby("Volleyball");
 	addHobby("Programming");
 	addHobby("Playing drums");
+	addHobby("Chilling");
 	
     }
     

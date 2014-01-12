@@ -14,6 +14,7 @@ import de.carlos.socketfront.widgets.Checkbox;
 import de.carlos.socketfront.widgets.Group;
 import de.carlos.socketfront.widgets.JSWidget;
 import de.carlos.socketfront.widgets.NumberInput;
+import de.carlos.socketfront.widgets.Pagination;
 import de.carlos.socketfront.widgets.RadioButton;
 import de.carlos.socketfront.widgets.RadioGroup;
 import de.carlos.socketfront.widgets.Select;
@@ -286,6 +287,22 @@ public class TestGUI implements SocketGUI {
 		context.alert("You selected: "+multiSelectTable.getValue());
 	    }
 	});
+	
+
+	final Text pageinationtext = new Text("I AM going to be changed by the pagination!");
+	context.getMainPane().add(pageinationtext.createJSWidget(ctx));		
+	
+	Pagination pagination = new Pagination();
+	pagination.setMaxPage(5);
+	pagination.setCurrentPage(2);
+	pagination.getOnChange().addObserver(new Observer<ChangeEvent<Pagination>>() {
+	    @Override
+	    public void update(ChangeEvent<Pagination> event) {
+		pageinationtext.setText("Were on page "+ event.getSource().getCurrentPage() + " now.");
+		
+	    }
+	});
+	context.getMainPane().add(pagination.createJSWidget(ctx));
 
     }
 
