@@ -13,17 +13,18 @@ import de.carlos.socketfront.autogui.EntityUtil.EntityField;
 import de.carlos.socketfront.util.OnAllValid;
 import de.carlos.socketfront.widgets.Button;
 import de.carlos.socketfront.widgets.Group;
+import de.carlos.socketfront.widgets.GroupComposition;
 import de.carlos.socketfront.widgets.InputSourceWidget;
 import de.carlos.socketfront.widgets.JSWidget;
 import de.carlos.socketfront.widgets.Text;
+import de.carlos.socketfront.widgets.Widget;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 import de.carlos.socketfront.widgets.events.ClickEvent;
 
-public class EntityEdit<T> implements InputSourceWidget<T> {
+public class EntityEdit<T> extends GroupComposition implements InputSourceWidget<T> {
     
     private static final Logger LOGGER = Logger.getLogger(EntityEdit.class);
 
-    Group group;
 
     T object;
 
@@ -43,7 +44,7 @@ public class EntityEdit<T> implements InputSourceWidget<T> {
     @Override
     public Group createJSWidget(GuiContext context) {
 
-	this.group = new Group().createJSWidget(context);
+	super.createJSWidget(context);
 
 	fields = EntityUtil.findFields(object.getClass());
 
@@ -122,12 +123,6 @@ public class EntityEdit<T> implements InputSourceWidget<T> {
     @Override
     public Observable<ChangeEvent<EntityEdit<T>>> getOnChange() {
 	return this.onchange;
-    }
-
-
-    @Override
-    public JSWidget getMainJSWidget() {
-	return this.group;
     }
 
 

@@ -71,7 +71,8 @@ public class CallGui {
 	});
 
 	this.group.add((new Text("Result:").createJSWidget(context)));
-	this.group.add(new TextInput().createJSWidget(context));
+	this.output = new TextInput();
+	this.group.add(this.output.createJSWidget(context));
     }
     
     public void createMember(GuiContext context, AutoGuiConfig autoguiconfig,
@@ -112,7 +113,7 @@ public class CallGui {
 		StringWriter writer = new StringWriter();
 		e.getCause().printStackTrace(new PrintWriter(writer));
 		this.info = new InfoText(writer.toString()).createJSWidget(context);
-		this.group.addInfoText(this.info);
+		this.group.addInfo(this.info);
 	    }
 	} else {
 	    this.context.getJsPipe()

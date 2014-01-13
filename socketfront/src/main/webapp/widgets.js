@@ -33,7 +33,7 @@ Widget.prototype.remove = function(){
 	}
 }
 
-Widget.prototype.addInfoText = function(widgetId){
+Widget.prototype.addInfo = function(widgetId){
 	this.infoDiv.appendChild(GuiInfo.idToWidget[widgetId].mainDiv);
 }
 

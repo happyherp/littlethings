@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 import de.carlos.socketfront.GuiContext;
 
-public class MainPane extends JSWidgetBase implements Parent {
+public class MainPane extends ParentWidget  {
     
     public static JSWidgetID MAINPANEID = new JSWidgetID("mainpane"); 
 
@@ -15,6 +15,7 @@ public class MainPane extends JSWidgetBase implements Parent {
 			JSONObject.quote(this.getId().toString()),
 			JSONObject.quote(this.context.getId(
 				child.getMainJSWidget()).toString())));
+	this.children.add(child);
 	return child;
     }
 
@@ -30,5 +31,16 @@ public class MainPane extends JSWidgetBase implements Parent {
     public void registerToContext(GuiContext context){
 	context.setId(this, MAINPANEID);
     }
+    
+
+    @Override
+    public void remove(){
+	for (Widget child: this.children ){
+	    child.remove();
+	}
+	//super.remove();
+	//Do not call super. The Mainpane can't be deleted by the framework, as it did not create it.
+    }
+    
 
 }

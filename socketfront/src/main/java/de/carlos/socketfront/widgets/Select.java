@@ -10,7 +10,7 @@ import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 import de.carlos.util.Utils;
 
-public class Select<T> extends InputSourceWidgetBase<T> {
+public class Select<T> extends JSInputSourceWidget<T> {
 
     List<Option> options = new ArrayList<Option>();
 
@@ -93,6 +93,7 @@ public class Select<T> extends InputSourceWidgetBase<T> {
 	this.getOnChange().fire(new ChangeEvent<Select<T>>(this, this.context));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Observable<ChangeEvent<Select<T>>> getOnChange() {
 	return (Observable<ChangeEvent<Select<T>>>) this.onchange;

@@ -50,11 +50,6 @@ public class TablePagination implements
 	return this.pagination.getMainJSWidget();
     }
 
-    @Override
-    public JSWidget getMainJSWidget() {
-	return this.pagination.getMainJSWidget();
-    }
-
     public int getPagesize() {
 	return pagesize;
     }
@@ -114,5 +109,21 @@ public class TablePagination implements
     public Observable<ChangeEvent<TablePagination>> getOnChange() {
 	return this.onchange;
     }
+
+    @Override
+    public JSWidget getMainJSWidget() {
+	return pagination.getMainJSWidget();
+    }
+
+    @Override   
+    public void addInfo(Widget info) {
+	pagination.addInfo(info);
+    }
+
+    @Override    
+    public void remove() {
+	pagination.remove();
+    }
+
 
 }

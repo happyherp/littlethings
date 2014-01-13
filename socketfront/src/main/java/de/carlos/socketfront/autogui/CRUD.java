@@ -6,6 +6,7 @@ import de.carlos.observer.Observer;
 import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.Button;
 import de.carlos.socketfront.widgets.Group;
+import de.carlos.socketfront.widgets.GroupComposition;
 import de.carlos.socketfront.widgets.JSWidget;
 import de.carlos.socketfront.widgets.TablePagination;
 import de.carlos.socketfront.widgets.TablePagination.Range;
@@ -16,32 +17,22 @@ import de.carlos.socketfront.widgets.events.ChangeEvent;
 import de.carlos.socketfront.widgets.events.ClickEvent;
 import de.carlos.socketfront.widgets.table.RowSelectTable;
 
-public class CRUD<T> implements Widget {
-
-    Group group;
+public class CRUD<T> extends GroupComposition {
 
     private Provider<T> provider;
 
     RowSelectTable<T> table;
 
-    private GuiContext context;
-
     private TablePagination pagination;
 
     public CRUD(Provider<T> provider) {
+	super(true);
 	this.provider = provider;
     }
 
     @Override
-    public JSWidget getMainJSWidget() {
-	return this.group;
-    }
-
-    @Override
     public Group createJSWidget(GuiContext context) {
-	this.context = context;
-
-	this.group = new VGroup().createJSWidget(context);
+	super.createJSWidget(context);
 	
 	Group tablegroup = new Group();
 	tablegroup.createJSWidget(context);
@@ -122,6 +113,7 @@ public class CRUD<T> implements Widget {
 		@Override
 		public void update(ChangeEvent<EntityEdit<T>> event){
 		    CRUD.this.provider.save(editor.getValue());
+		    editor.remove();
 		    editWindow.remove();
 		    CRUD.this.refresh();
 		}
@@ -143,6 +135,7 @@ public class CRUD<T> implements Widget {
 		@Override
 		public void update(ChangeEvent<EntityEdit<T>> event){
 		    CRUD.this.provider.insert(editor.getValue());
+		    editor.remove();
 		    createWindow.remove();
 		    CRUD.this.refresh();
 		}

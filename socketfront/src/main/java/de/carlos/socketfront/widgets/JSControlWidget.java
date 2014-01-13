@@ -1,6 +1,6 @@
 package de.carlos.socketfront.widgets;
 
-public abstract class ControlWidget extends JSWidgetBase {
+public abstract class JSControlWidget extends JSWidgetBase {
     
     protected boolean disabled = false;
 

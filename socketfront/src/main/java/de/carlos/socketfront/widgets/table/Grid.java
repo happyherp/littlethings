@@ -70,5 +70,11 @@ public class Grid extends JSWidgetBase {
 	this.rows = 0;
 	this.callThisJS("clear");
     }
+    
+    @Override
+    public void remove(){
+	//TODO: Also remove everything we added to the table.
+	super.remove();
+    }
 
 }

@@ -9,6 +9,7 @@ import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.Checkbox;
 import de.carlos.socketfront.widgets.InputSourceWidget;
 import de.carlos.socketfront.widgets.JSWidget;
+import de.carlos.socketfront.widgets.Widget;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 
 public class RowMultiSelectTable<T> implements InputSourceWidget<List<T>> {
@@ -133,6 +134,16 @@ public class RowMultiSelectTable<T> implements InputSourceWidget<List<T>> {
 	    this.table.setData(this.getData());
 	    this.table.redrawData();
 	}
+    }
+
+    @Override
+    public void addInfo(Widget info) {
+	this.table.addInfo(info);
+    }
+
+    @Override
+    public void remove() {
+	this.table.remove();
     }
 
 }

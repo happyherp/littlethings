@@ -6,7 +6,7 @@ import de.carlos.observer.Observable;
 import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 
-public class Checkbox extends InputSourceWidgetBase<Boolean> {
+public class Checkbox extends JSInputSourceWidget<Boolean> {
 
     Boolean value = false;
     private Observable<ChangeEvent<Checkbox>> onchange = new Observable<>();

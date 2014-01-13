@@ -12,7 +12,7 @@ public class ObjectCreatorFactory<T> implements InputSourceWidgetFactory<T> {
     public InputSourceWidget<T> create(GuiContext context, Class<T> parameter) {
 
 	Objectcreator<T> creator = new Objectcreator<T>(parameter);
-	JSWidget widget = creator.createJSWidget(context);
+	creator.createJSWidget(context);
 	return creator;
     }
 

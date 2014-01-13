@@ -4,9 +4,9 @@ import org.json.JSONObject;
 
 import de.carlos.socketfront.GuiContext;
 
-public abstract class Input<T> extends InputSourceWidgetBase<T> {
+public abstract class Input<T> extends JSInputSourceWidget<T> {
 
-    String value = "";
+    String stringvalue = "";
 
     @Override
     public Input<T> createJSWidget(GuiContext context) {
@@ -20,7 +20,7 @@ public abstract class Input<T> extends InputSourceWidgetBase<T> {
     }
 
     public String getStringValue() {
-	return value;
+	return stringvalue;
     }
 
     /**
@@ -34,7 +34,7 @@ public abstract class Input<T> extends InputSourceWidgetBase<T> {
     }
 
     protected void setValueInner(String value) {
-	this.value = value;
+	this.stringvalue = value;
     }
 
     protected void reactToChange(JSONObject jsonevent) {

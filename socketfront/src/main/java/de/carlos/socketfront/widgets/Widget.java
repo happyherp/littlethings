@@ -20,5 +20,20 @@ public interface Widget {
      * @return
      */
     JSWidget getMainJSWidget();
+    
+    /**
+     * Add Information about this Widgets state.
+     * 
+     * 
+     * @param info
+     */
+    void addInfo(Widget info);
+    
+    /**
+     * Remove this Widget, and all Widgets created by it from the Client and the Context.
+     * Must be called to free Memory.
+     * 
+     */
+    void remove();
 
 }

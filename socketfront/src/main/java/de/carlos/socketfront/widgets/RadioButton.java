@@ -6,7 +6,7 @@ import de.carlos.observer.Observable;
 import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 
-public class RadioButton<T> extends InputSourceWidgetBase<Boolean> {
+public class RadioButton<T> extends JSInputSourceWidget<Boolean> {
     
     T object;
     

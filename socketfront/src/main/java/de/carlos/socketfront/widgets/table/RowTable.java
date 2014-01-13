@@ -80,5 +80,19 @@ public class RowTable<T> implements Widget {
 
 
 
+    @Override
+    public void addInfo(Widget info) {
+	this.grid.addInfo(info);
+    }
+
+
+
+    @Override
+    public void remove() {
+	this.grid.remove();
+    }
+
+
+
 
 }

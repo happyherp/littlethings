@@ -6,7 +6,7 @@ import de.carlos.observer.Observable;
 import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.events.ClickEvent;
 
-public class Button extends ControlWidget {
+public class Button extends JSControlWidget {
 
     private String caption;
 

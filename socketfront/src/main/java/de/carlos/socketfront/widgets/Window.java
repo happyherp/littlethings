@@ -1,8 +1,13 @@
 package de.carlos.socketfront.widgets;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.carlos.socketfront.GuiContext;
 
-public class Window extends JSWidgetBase implements Parent  {
+public class Window extends ParentWidget implements Parent  {
+
+    private List<Widget> children = new ArrayList<>();
 
     @Override
     public Window createJSWidget(GuiContext context) {
@@ -15,6 +20,7 @@ public class Window extends JSWidgetBase implements Parent  {
     @Override
     public <T extends Widget>  T add(T child) {
 	this.callThisJS("addChild", this.getContext().getId(child.getMainJSWidget()));
+	this.children.add(child);
 	return child;
 	
     }
@@ -22,5 +28,6 @@ public class Window extends JSWidgetBase implements Parent  {
     public void close() {
 	this.remove();
     }
+    
 
 }

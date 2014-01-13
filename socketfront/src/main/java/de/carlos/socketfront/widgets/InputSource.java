@@ -11,5 +11,5 @@ public interface InputSource<T> {
     
     public boolean hasValidInput(); 
     
-    public Observable<? extends ChangeEvent> getOnChange();
+    public Observable<? extends ChangeEvent<?>> getOnChange();
 }

@@ -73,13 +73,15 @@ public abstract class JSWidgetBase implements JSWidget {
      * its javascript representation in the browser.
      * 
      */
+    @Override
     public void remove(){
 	this.callThisJS("remove");
 	this.context.removeWidget(this);
     }
     
-    public void addInfoText(InfoText infotext){
-	this.callThisJS("addInfoText", infotext.getId());
+    @Override
+    public void addInfo(Widget info){
+	this.callThisJS("addInfo", info.getMainJSWidget().getId().getString());
     }
     
     protected GuiContext getContext(){

@@ -6,14 +6,12 @@ import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 import de.carlos.socketfront.widgets.events.ClickEvent;
 
-public class Pagination implements InputSourceWidget<Integer> {
+public class Pagination extends GroupComposition implements InputSourceWidget<Integer> {
 
     public static int FIRSTPAGE = 1;
 
     protected int currentPage = FIRSTPAGE;
     protected int maxPage = FIRSTPAGE;
-
-    Group group;
 
     Button goFirst;
     Button goLeft;
@@ -27,10 +25,10 @@ public class Pagination implements InputSourceWidget<Integer> {
 
     private Observable<ChangeEvent<Pagination>> onchange = new Observable<ChangeEvent<Pagination>>();
 
-    private GuiContext context;
 
     @Override
     public JSWidget createJSWidget(GuiContext context) {
+	super.createJSWidget(context);
 	this.context = context;
 
 	this.group = new VGroup();
@@ -124,11 +122,6 @@ public class Pagination implements InputSourceWidget<Integer> {
 	    this.goLast.setDisabled(this.getCurrentPage() == this.getMaxPage());
 
 	}
-    }
-
-    @Override
-    public JSWidget getMainJSWidget() {
-	return this.group;
     }
 
     public int getCurrentPage() {

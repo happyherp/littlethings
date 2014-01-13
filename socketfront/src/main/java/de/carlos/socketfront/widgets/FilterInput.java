@@ -14,7 +14,7 @@ public abstract class FilterInput<T> extends Input<T> {
 	    this.invalidmarker = this.context.getMainPane().add(
 		    new InfoText("Please enter a number. ")
 			    .createJSWidget(context));
-	    this.addInfoText(this.invalidmarker);	    
+	    this.addInfo(this.invalidmarker);	    
 	}
     }
 

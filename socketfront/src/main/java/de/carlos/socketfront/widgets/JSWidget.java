@@ -7,6 +7,8 @@ import de.carlos.socketfront.GuiContext;
 public interface JSWidget extends Widget {
                 
     void receiveEvent(GuiContext context, JSONObject event);
+    
+    JSWidgetID getId();
         
 
 }

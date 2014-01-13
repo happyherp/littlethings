@@ -141,4 +141,14 @@ public class RowSelectTable<T> implements Widget, InputSource<T> {
 	}
     }
 
+    @Override
+    public void addInfo(Widget info) {
+	this.table.addInfo(info);
+    }
+
+    @Override
+    public void remove() {
+	this.table.remove();
+    }
+
 }

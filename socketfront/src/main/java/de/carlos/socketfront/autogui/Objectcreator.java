@@ -13,15 +13,24 @@ import de.carlos.socketfront.GuiContext;
 import de.carlos.socketfront.util.OnAllValid;
 import de.carlos.socketfront.widgets.Button;
 import de.carlos.socketfront.widgets.Group;
+import de.carlos.socketfront.widgets.GroupComposition;
 import de.carlos.socketfront.widgets.InfoText;
 import de.carlos.socketfront.widgets.InputSourceWidget;
 import de.carlos.socketfront.widgets.JSWidget;
 import de.carlos.socketfront.widgets.Text;
 import de.carlos.socketfront.widgets.TextInput;
+import de.carlos.socketfront.widgets.Widget;
 import de.carlos.socketfront.widgets.events.ChangeEvent;
 import de.carlos.socketfront.widgets.events.ClickEvent;
 
-public class Objectcreator<T> implements InputSourceWidget<T> {
+/**
+ * Creates a GUI that creates an Object by calling its constructor.
+ * 
+ * @author Carlos
+ *
+ * @param <T>
+ */
+public class Objectcreator<T> extends GroupComposition implements InputSourceWidget<T> {
 
     private static final Logger LOGGER = Logger
 	    .getLogger(ObjectCreatorFactory.class);
@@ -33,6 +42,9 @@ public class Objectcreator<T> implements InputSourceWidget<T> {
     T object = null;
 
     TextInput result;
+    
+    protected Observable<ChangeEvent<Objectcreator<T>>> onchange = new Observable<>();
+
     
     public Objectcreator(Class<T> clazz){
 	this.clazz = clazz;
@@ -83,9 +95,6 @@ public class Objectcreator<T> implements InputSourceWidget<T> {
 	return this.object != null;
     }
 
-    protected Observable<ChangeEvent<Objectcreator<T>>> onchange = new Observable<>();
-
-    private Group group;
 
     @Override
     public Observable<ChangeEvent<Objectcreator<T>>> getOnChange() {
@@ -95,6 +104,7 @@ public class Objectcreator<T> implements InputSourceWidget<T> {
 
     @Override
     public Group createJSWidget(GuiContext context) {
+	super.createJSWidget(context);
 
 	if (clazz.getConstructors().length == 0) {
 	    throw new RuntimeException(clazz
@@ -138,10 +148,4 @@ public class Objectcreator<T> implements InputSourceWidget<T> {
 	this.group.add(result.createJSWidget(context));
 	return group;
     }
-
-    @Override
-    public JSWidget getMainJSWidget() {
-	return this.group;
-    }
-
 }
