@@ -44,7 +44,7 @@ public class TestGUI implements SocketGUI {
 	this.context = ctx;
 
 	// Create a button that makes more buttons.
-	Button first = ctx.addWidget(new Button("More buttons"));
+	Button first = new Button("More buttons").createJSWidget(ctx);
 
 	this.context.getMainPane().add(first);
 

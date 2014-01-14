@@ -12,27 +12,22 @@ public class TestAutoGui implements SocketGUI {
 
 	AutoGuiConfig autoguiconfig = new AutoGuiConfig();
 
-	CallGui callgui = new CallGui();
-	callgui.createStatic(context, autoguiconfig, TestAutoGui.class,
+	CallGui callgui = new CallGui(TestAutoGui.class,
 		"myMethod");
-	context.getMainPane().add(callgui.getGroup());
-
-	CallGui callgui2 = new CallGui();
-	callgui2.createStatic(context, autoguiconfig, TestAutoGui.class,
+	context.getMainPane().add(callgui.createJSWidget(context));
+	
+	CallGui callgui2 = new CallGui(TestAutoGui.class,
 		"parseInt");
-	context.getMainPane().add(callgui2.getGroup());
+	context.getMainPane().add(callgui2.createJSWidget(context));
 
-	CallGui callgui3 = new CallGui();
-	callgui3.createMember(context, autoguiconfig, new TestClass(), "greet");
-	context.getMainPane().add(callgui3.getGroup());
+	CallGui callgui3 = new CallGui( new TestClass(), "greet");
+	context.getMainPane().add(callgui3.createJSWidget(context));
 	
-	CallGui callgui4 = new CallGui();
-	callgui4.createStatic(context, autoguiconfig, Integer.class, "parseInt");
-	context.getMainPane().add(callgui4.getGroup());
+	CallGui callgui4 = new CallGui(Integer.class, "parseInt");
+	context.getMainPane().add(callgui4.createJSWidget(context));
 	
-	CallGui callgui5 = new CallGui();
-	callgui5.createMember(context, autoguiconfig, new TestClass(), "describeRGB");
-	context.getMainPane().add(callgui5.getGroup());
+	CallGui callgui5 = new CallGui(new TestClass(), "describeRGB");
+	context.getMainPane().add(callgui5.createJSWidget(context));
 
     }
 
