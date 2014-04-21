@@ -12,14 +12,18 @@ executable myleksahpackage
     buildable: True
     cpp-options: -DMAIN_FUNCTION=testMain
     hs-source-dirs: src
-    other-modules: MyNewModule
+    other-modules: 
+                   MyNewModule,
+                   Patrica
  
 executable testpackage
     build-depends: QuickCheck -any, base -any
     main-is: Main.hs
     buildable: True
     hs-source-dirs: src
-    other-modules: MyNewModule
+    other-modules: 
+                   MyNewModule,
+                   Patrica
  
 test-suite test-testpackage
     build-depends: QuickCheck -any, base -any
@@ -28,3 +32,4 @@ test-suite test-testpackage
     buildable: True
     cpp-options: -DMAIN_FUNCTION=testMain
     hs-source-dirs: src
+    other-modules: Patrica
