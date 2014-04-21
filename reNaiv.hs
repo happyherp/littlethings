@@ -16,20 +16,22 @@ matches r s =  member [] (matchPart r s)
 matchPart ::  Ord a => (RegExp a) -> [a] -> Set [a]
 matchPart (Terminal t) (x:xs) | t == x = singleton xs
 matchPart (Terminal _) _ = empty
-matchPart (Sequence r1 r2) xs = unions $ map (matchPart r2) 
-                                             (Set.toList (matchPart r1 xs))
+matchPart (Sequence r1 r2) xs = unionMap (matchPart r2) (matchPart r1 xs)
 matchPart (Alternative r1 r2) xs = union (matchPart r1 xs) (matchPart r2 xs)
---matchPart (Repetition r) xs = insert xs (matchPart (Sequence r (Repetition r)) xs)
 matchPart (Repetition r) xs = 
   let firstMatch = matchPart r xs
-      sequent =  unions $ map (matchPart (Repetition r))
-                              (Set.toList (delete xs firstMatch))
+      sequent =  unionMap (matchPart (Repetition r)) (delete xs firstMatch)
   in insert xs (union firstMatch sequent)
+  
+  
+unionMap :: Ord a => Ord b => (a -> Set b) -> Set a -> Set b
+unionMap f s = unions $ map f (Set.toList s)
+  
+  
 r1 = Sequence (Terminal '1') (Repetition (Terminal '0'))
 r2 = Repetition (Alternative (Terminal '0') (Terminal '1'))
 rhard = Repetition r2
-
-
+rhard2 = Sequence (Repetition (Terminal '1')) (Repetition (Terminal '1'))
 
 
 --- TESTS ---
