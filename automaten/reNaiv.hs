@@ -1,14 +1,8 @@
 
+import Re 
 import Data.Set (Set, singleton, empty, union, unions, member, insert, delete)
 import qualified Data.Set as Set
 import Test.HUnit
-
-
-data RegExp a = Terminal a 
-               | Sequence (RegExp a) (RegExp a)
-               | Alternative (RegExp a) (RegExp a)
-               | Repetition (RegExp a) 
-   deriving Show
    
 matches :: Ord a => (RegExp a) -> [a] -> Bool
 matches r s =  member [] (matchPart r s)
