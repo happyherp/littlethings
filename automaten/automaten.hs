@@ -16,6 +16,10 @@ type Wort b = [b]
 
 type EA a b = (Q a,Z b, S a b, I a, F a) --Automat
 
+--Transition access helper
+source (q,_,_) = q
+input  (_,a,_) = a
+dest   (_,_,q) = q
 
 isValidAutomat :: Ord a => Ord b => EA a b -> Bool
 isValidAutomat (q,z,s,i,f) = 
@@ -79,7 +83,51 @@ toSpelling (q,e,s,i,f) =
       fNew = if r `elem` f then (p:f) else f
   in toSpelling (q,e,sNew,i,fNew)
    
+-- Takes a statemachine that is already spelling and has a single start state and 
+-- transforms it, such that there is at most one way to go from each state. 
+toDEA :: Enum a => Ord a => Ord b => EA a b -> EA a b   
+toDEA ea | not (isValidAutomat ea) = error "Invalid state machine"
+toDEA ea | not (isSpelling ea)     = error "state machine must be spelling"
+toDEA ea | not (hasSingleStart ea) = error "state machine must have a single start state"
+toDEA (q,e,s,i,f) = mergeStates $ completeDEA (q,e,s,i,f) ([i],e,fromStart,[i],map (:[]) f)
+  where fromStart = joinStates s i
 
+-- Builds a DEA from a NEA by following the missing transitions 
+-- of the incomplete DEA thats passed in.
+completeDEA :: Eq a => Eq b => EA a b -> EA [a] b -> EA [a] b
+completeDEA (qo, eo, so, io, fo) 
+            (qt, et, st, it, ft) | all (\(_,_,p)->p `elem` qt) st = (qt, et, st, it, ft)
+                                 | otherwise = 
+  let missingStates = filter (\p -> not $ p `elem` qt) $ map dest st 
+      newQ = qt ++ missingStates
+      newS = st ++ (concatMap (joinStates so) missingStates) 
+      newF = filter (\p -> p `intersect` fo /= []) newQ
+  in completeDEA (qo, eo, so, io, fo) (newQ, et, newS, it, newF)  
+
+-- uses a list of transitions of a to a and matches them with a state that is 
+-- a set of as.
+joinStates :: Eq a => Eq b => [(a,b,a)] -> [a] -> [([a],b,[a])]
+joinStates s sourcestate = 
+    let outbound = filter ((`elem` sourcestate) . source) s
+        inputGroups = groupBy (\a b -> input a == input b) outbound
+        newS = map (\t -> (sourcestate, input $ head t, nub $ map dest t)) inputGroups
+    in newS
+    
+    
+mergeStates :: Enum a => Ord a => Ord b => EA [a] b -> EA a b
+mergeStates ea | not (isValidAutomat ea) = error "Invalid state machine"
+mergeStates (q,e,s,i,f) = let mapping = zip q [(minimum (concat q))..]
+                              convert s = case lookup s mapping of 
+                                           Nothing -> error "mergeStates did not find state in mapping"
+                                           Just s -> s
+                          in (map convert q, e, 
+                              map(\(p,a,q) -> (convert p,a,convert q)) s, 
+                              map convert i, map convert f) 
+
+                              
+toDEAFull ::  Enum a => Ord a => Ord b => EA a b -> EA a b    
+toDEAFull = toDEA . toSpelling . removeLongWords . removeRedundantTransitions . unifyStartState                          
+                              
 sX = [('a',[2],'c'),('b',[1],'b'),('b',[3],'e'),('e',[2],'c'),
       ('b',[2],'c'),('a',[1],'f'),('f',[2],'c'),('f',[1],'b'),('f',[3],'e'),('f',[2],'c'),
       ('e',[1],'g'),('g',[2],'c'),('g',[1],'b'),('g',[3],'e'),('g',[2],'c'),('g',[1],'f'),
