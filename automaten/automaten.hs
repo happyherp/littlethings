@@ -33,42 +33,52 @@ isSpelling (q, e, s, i, f) =  all (\(_, a, _) -> length a == 1) s
 isAlphabetical :: Ord a => Ord b => EA a b -> Bool
 isAlphabetical (q, e, s, i, f) =  all (\(_, a, _) -> length a <= 1) s   
 
-hasLongTransitions :: Ord a => Ord b => EA a b -> Bool
-hasLongTransitions (q, e, s, i, f) =  all (\(_, a, _) -> length a > 1) s   
+hasLongWords :: Ord a => Ord b => EA a b -> Bool
+hasLongWords (q, e, s, i, f) =  any (\(_, a, _) -> length a > 1) s   
 
 hasMultipaths :: Ord a => Ord b => EA a b -> Bool
-hasMultipaths (q, e, s, i, f) =  any (\(p,a,q) -> any (\(p2,a2,q2)->(p,a) == (p2,a2) && q /= q2) s) s             
+hasMultipaths (q, e, s, i, f) =  any (\(p,a,q) -> any (\(p2,a2,q2)->(p,a) == (p2,a2) && q /= q2) s) s   
 
---Transform a NEA to a DEA. Does not do remove transitions with words > 1 
--- or multiple start states                        
-toDEA :: Show a => Show b => Enum a => Ord a => Ord b => EA a b -> EA a b
-toDEA ea | trace ("toDEA " ++ show ea) False = undefined
-toDEA ea | isDEA ea = ea
-toDEA ea | not (isValidAutomat ea) = error "Invalid state machine"
-toDEA ea | length i /= 1 = error "Got a state machine with more than one startstate."
-  where (q,e,s,i,f) = ea 
-toDEA ea | hasLongTransitions ea= error "Got a state machine with transitions of length greater one."
-toDEA ea | any (\(q,a,p)-> q == p && a == []) s = toDEA (q,e,sNew,i,f)
-  where (q,e,s,i,f) = ea 
-        sNew = filter (\(q,a,p)-> q /= p && a /= []) s
-toDEA ea | not (isSpelling ea) = 
-  let (q,e,s,i,f) = ea
-      (p,_,r) = fromJust $ find (\(_,a,_) -> a == []) s
+hasSingleStart :: EA a b -> Bool
+hasSingleStart (_,_,_,i,_) = length i == 1
+
+--Transform a State Machine so that it has a single start state.
+unifyStartState :: Enum a => Ord a => Ord b => EA a b -> EA a b
+unifyStartState ea | not (isValidAutomat ea) = error "Invalid state machine"
+unifyStartState (q,e,s,i,f) | length i == 1 = (q,e,s,i,f)
+unifyStartState (q,e,s,i,f)  = ((newstart:q),e,newtrans, [newstart], f)
+   where newstart = succ $ maximum q
+         newtrans = s ++ (map (\i -> (newstart,[],i)) i)
+
+--Removes Transitions that return to the same state with the empty word.
+removeRedundantTransitions :: Ord a => Ord b => EA a b -> EA a b
+removeRedundantTransitions ea | not (isValidAutomat ea) = error "Invalid state machine"
+removeRedundantTransitions (q,e,s,i,f) = (q,e,sNew,i,f)
+  where sNew = filter (\(q,a,p)-> q /= p && a /= []) s  
+
+--Transforms the state machine such that no transition has a word with a length 
+-- larger than one.
+removeLongWords :: Enum a => Ord a => Ord b => EA a b -> EA a b
+removeLongWords ea | not (isValidAutomat ea) = error "Invalid state machine" 
+removeLongWords ea | not $ hasLongWords ea = ea
+removeLongWords (q,e,s,i,f) = 
+  let (p,(a:word),r) = fromJust $ find (\(_,a,_) -> length a > 1) s
+      newState = succ $ maximum q
+      sNew = [(p,[a],newState),(newState,word,r)] ++ (delete (p,(a:word),r) s)
+      qNew = (newState:q)
+  in removeLongWords (qNew,e,sNew,i,f)
+
+-- Transform such that there are no Transitions with an empty word.
+toSpelling :: Ord a => Ord b => EA a b -> EA a b  
+toSpelling ea | not (isValidAutomat ea) = error "Invalid state machine"
+toSpelling ea | isSpelling ea = ea
+toSpelling (q,e,s,i,f) = 
+  let (p,_,r) = fromJust $ find (\(_,a,_) -> a == []) s
       newTrans = map (\(_,a,t)->(p,a,t)) $ filter (\(t,_,u) -> t == r ) s
       sNew = nub $ newTrans ++ (delete (p, [], r) s)
       fNew = if r `elem` f then (p:f) else f
-  in toDEA (q,e,sNew,i,fNew)
-toDEA ea | hasMultipaths ea = 
-  let (q,e,s,i,f) = ea
-      trans = head $ filter (\xs -> length xs > 1) (groupBy (\(q,a,_) (r,b,_) -> (q,a) == (r,b)) (sort s))
-      transStates = map (\(_,_,q)-> q) trans
-      newstate = succ $ maximum q
-      (p, a, _) = head trans
-      newtrans = map (\(_,a,r) -> (newstate, a, r)) $filter (\(p,_,_) -> elem p transStates) s
-      sNew = nub $ (s \\ trans) ++ [(p,a,newstate)] ++ newtrans
-      fNew = if any (\p -> elem p f) transStates then (newstate:f) else f
-  in toDEA ((newstate:q), e, sNew, i, fNew)
-        
+  in toSpelling (q,e,sNew,i,fNew)
+   
 
 sX = [('a',[2],'c'),('b',[1],'b'),('b',[3],'e'),('e',[2],'c'),
       ('b',[2],'c'),('a',[1],'f'),('f',[2],'c'),('f',[1],'b'),('f',[3],'e'),('f',[2],'c'),
@@ -120,6 +130,10 @@ a8 = ("abcde", [1..3], [('a', [1], 'b'),
                         ('a', [], 'e'),
                         ('b', [1], 'b'),
                         ('e', [1], 'a')], "a", "be")      
+   
+a9 :: EA Char Int
+a9 = ( "abc", [1,2,3],[('a', [], 'b'), ('b', [1,2,3], 'c')], "a", "c")  
+   
    
 --helpers
 isSubsetOf a b = (Set.fromList a) `Set.isSubsetOf` (Set.fromList b)
