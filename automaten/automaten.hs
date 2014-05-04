@@ -61,12 +61,6 @@ unifyStartState (q,e,s,i,f)  = ((newstart:q),e,newtrans, [newstart], f)
    where newstart = succ $ maximum q
          newtrans = s ++ (map (\i -> (newstart,[],i)) i)
 
---Removes Transitions that return to the same state with the empty word.
-removeRedundantTransitions :: Ord a => Ord b => EA a b -> EA a b
-removeRedundantTransitions ea | not (isValidAutomat ea) = error "removeRedundantTransitions: Invalid state machine"
-removeRedundantTransitions (q,e,s,i,f) = (q,e,sNew,i,f)
-  where sNew = filter (\(q,a,p)-> q /= p || a /= []) s  
-
 --Transforms the state machine such that no transition has a word with a length 
 -- larger than one.
 removeLongWords :: Enum a => Ord a => Ord b => EA a b -> EA a b
@@ -82,13 +76,22 @@ removeLongWords (q,e,s,i,f) =
 -- Transform such that there are no Transitions with an empty word.
 toSpelling :: Ord a => Ord b => EA a b -> EA a b  
 toSpelling ea | not (isValidAutomat ea) = error "toSpelling: Invalid state machine"
-toSpelling ea | isSpelling ea = ea
-toSpelling (q,e,s,i,f) = 
-  let (p,_,r) = fromJust $ find (\(_,a,_) -> a == []) s
-      newTrans = map (\(_,a,t)->(p,a,t)) $ filter (\(t,_,u) -> t == r ) s
-      sNew = nub $ newTrans ++ (delete (p, [], r) s)
-      fNew = if r `elem` f then (p:f) else f
-  in toSpelling (q,e,sNew,i,fNew)
+toSpelling (q,e,s,i,f) = (q,e,newS,i,newF)
+  where emptyTransitions = filter ( (==0) . length . input) s
+        emptyPaths = concatMap (followPath emptyTransitions) (map (:[]) q)
+        emptyConnections = map (\p->(head p, last p)) emptyPaths
+        newS = filter ((1<=).length.input) (s ++ concatMap connectToNeighbours emptyConnections)
+        connectToNeighbours (p,q) = map (\(_,a,r)->(p,a,r)) (filter ((q==).source) s)
+        newF = f ++ map fst (filter (\(_,q)-> q `elem` f) emptyConnections)
+        
+--Continue the given path by following every transition that goes to state that is not yet part
+-- of the path.        
+followPath :: Eq a => S a b -> [a] -> [[a]]
+followPath s [] = error "path must have at least one element"
+followPath s path = newPaths ++ recursedPaths
+  where nextStates = map dest $ filter (\(p,_,q) -> p == last path && not (q `elem` path) ) s
+        newPaths = map (\s -> path ++ [s]) nextStates 
+        recursedPaths = concatMap (followPath s) newPaths
    
 -- Takes a statemachine that is already spelling and has a single start state and 
 -- transforms it, such that there is at most one way to go from each state. 
@@ -106,8 +109,7 @@ toDEA (q,e,s,i,f) = renameStates $ completeDEA (q,e,s,i,f) ([i],e,fromStart,[i],
 -- those missing states are also not in the transition-table.
 completeDEA :: (Show a, Show b) => Ord a => Ord b => EA a b -> EA [a] b -> EA [a] b
 completeDEA (qo, eo, so, io, fo) 
-            (qt, et, st, it, ft) | trace ("completeDEA:" ++ show (qt, et, st, it, ft)) False = undefined
-                                 | not $ all (\(p,_,_)->p `elem` qt) st = error "Got a source state in a transition that was not in the state-set. "
+            (qt, et, st, it, ft) | not $ all (\(p,_,_)->p `elem` qt) st = error "Got a source state in a transition that was not in the state-set. "
                                  | not $ isIncompleteDEA (qt, et, st, it, ft) = error "Second FSM must already be a deterministic."
                                  | not $ it `isSubsetOf` qt = error "start states must be in state-set."
                                  | not $ ft `isSubsetOf` qt = error "final states must be in state-set."
@@ -142,7 +144,7 @@ renameStates (q,e,s,i,f) = let mapping = zip q [(minimum (concat q))..]
 
                               
 toDEAFull :: (Show a, Show b) =>  Enum a => Ord a => Ord b => EA a b -> EA a b    
-toDEAFull = toDEA . toSpelling . removeLongWords . removeRedundantTransitions . unifyStartState  
+toDEAFull = toDEA . toSpelling . removeLongWords . unifyStartState  
 
 
 isIncompleteDEA ea = hasSingleStart ea && isSpelling ea && not (hasMultipaths ea)
@@ -230,7 +232,7 @@ testTransformation = TestList [
       
    (("ab", [], [], "a", "ab")  :: EA Char Int)
       ~=? normalize (toSpelling ("ab", [], [('a', [], 'b')], "a", "b")),   
-   (("abcd", [1], [('a', [1], 'b')], "a", "ab")  :: EA Char Int)
+   (("abcd", [1], [('a', [1], 'b')], "a", "b")  :: EA Char Int)
       ~=? normalize (toSpelling ("abcd", [1], [('a', [1], 'b'), ('c',[],'d'), ('d',[],'c')], "a", "b")),   
             
    ("ab", [1],[('a',[1], 'b'), ('b', [1], 'b')], "a", "b")   

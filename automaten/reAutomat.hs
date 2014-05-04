@@ -87,6 +87,7 @@ tests = TestList [
     False ~=? matchRE anySeq "baacab",
     False ~=? matchRE anySeq "cbaaab",
     False ~=? matchRE anySeq "baaabc",
+    True  ~=? matchRE anySeq (replicate 10000 'a'),
 
     True  ~=? matchRE anyAlt "",
     True  ~=? matchRE anyAlt "a",
@@ -95,6 +96,7 @@ tests = TestList [
     True  ~=? matchRE anyAlt "baaab",
     False ~=? matchRE anyAlt "baacab",
     False ~=? matchRE anyAlt "cbaaab",
-    False ~=? matchRE anyAlt "baaabc"      
+    False ~=? matchRE anyAlt "baaabc",      
+    True  ~=? matchRE anyAlt (replicate 10000 'a')
     
                   ]      

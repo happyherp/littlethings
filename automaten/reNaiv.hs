@@ -28,6 +28,7 @@ rhard = Repetition r2
 rhard2 = Sequence (Repetition (Terminal '1')) (Repetition (Terminal '1'))
 
 
+
 --- TESTS ---
 tests = TestList [
    Set.fromList [""] ~=? matchPart (Terminal '1') "1",   
