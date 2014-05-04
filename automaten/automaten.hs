@@ -211,7 +211,14 @@ a8 = ("abcde", [1..3], [('a', [1], 'b'),
    
 a9 :: EA Char Int
 a9 = ( "abc", [1,2,3],[('a', [], 'b'), ('b', [1,2,3], 'c')], "a", "c")  
-   
+
+a10 = toDEAFull ("abc",[1,2],[('a', [1,1], 'b'),('b', [2,2], 'b'),('b', [1,1,1], 'c')], "a", "c")
+
+a11 = ([1,2,3,4,5,6,7],"ab",[(1,"a",2),(3,"b",4),(5,"",1),
+                                       (5,"",3),(2,"",6),(4,"",6),
+                                       (5,"",7),(6,"",7),(7,"",5)
+                            ],[5],[7])
+                                      
    
 --helpers
 isSubsetOf a b = (Set.fromList a) `Set.isSubsetOf` (Set.fromList b)
@@ -220,8 +227,12 @@ isSubsetOf a b = (Set.fromList a) `Set.isSubsetOf` (Set.fromList b)
 testTransformation = TestList [
    ("abcd", [1,2,3], [('a', [1], 'c'),('c', [2], 'd'),('d', [3], 'b')], "a", "b")
       ~=? normalize (removeLongWords ("ab", [1,2,3], [('a', [1,2,3], 'b')], "a", "b")),
+      
    (("ab", [], [], "a", "ab")  :: EA Char Int)
       ~=? normalize (toSpelling ("ab", [], [('a', [], 'b')], "a", "b")),   
+   (("abcd", [1], [('a', [1], 'b')], "a", "ab")  :: EA Char Int)
+      ~=? normalize (toSpelling ("abcd", [1], [('a', [1], 'b'), ('c',[],'d'), ('d',[],'c')], "a", "b")),   
+            
    ("ab", [1],[('a',[1], 'b'), ('b', [1], 'b')], "a", "b")   
       ~=? normalize (toDEA ("ab", [1],[('a',[1], 'b'), ('a', [1], 'a')], "a", "b"))
                  ]
@@ -229,7 +240,7 @@ testTransformation = TestList [
 acceptSingle =  toDEAFull ("ab", [1,2], [('a', [1], 'b')], "a", "b")  
 acceptSome =    toDEAFull ("ab", [1,2], [('a', [1], 'b'), ('b',[],'a')], "a", "b")  
 acceptAny =     toDEAFull ("a", [1], [('a', [1], 'a')], "a", "a")  
-a10 = toDEAFull ("abc",[1,2],[('a', [1,1], 'b'),('b', [2,2], 'b'),('b', [1,1,1], 'c')], "a", "c")
+
   
 testMatch = TestList [
     False ~=? matchDEA acceptSingle [],
