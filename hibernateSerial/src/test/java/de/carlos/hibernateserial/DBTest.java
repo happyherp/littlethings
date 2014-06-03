@@ -1,7 +1,5 @@
 package de.carlos.hibernateserial;
 
-import static org.junit.Assert.fail;
-
 import org.hibernate.Session;
 import org.junit.Assert;
 import org.junit.Test;
