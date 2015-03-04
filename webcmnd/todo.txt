@@ -18,3 +18,23 @@ Things i could add:
 -add functionality for ending a flow?
 
 -implement something that avoid the error that comes when the url is reentered.
+
+
+Database integration.
+-allow interaction with an SQL database.
+-global connection (pool)
+-only one thread per connection at a time, lock
+-After each request has been handled, free up all database related resources.
+--connection
+--session if using rom mapper
+--commit changes(or rollback?)
+-allow transaction to span multiple requests?
+--as far as I can tell there can be at most one transaction per request
+--so keeping it open would cause the database to have too many connections
+--check this.
+-separation of objects that live longer than one request(domain objects, etc) and those that do not.(strongly coped to database, hog resources)
+-automatically disconnect and reconnect objects for which this makes sense. Db connection, orm-entities. 
+
+
+
+
