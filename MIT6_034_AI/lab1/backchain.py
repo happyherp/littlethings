@@ -15,15 +15,17 @@ from zookeeper import ZOOKEEPER_RULES
 
 
 def backchain_to_goal_tree(rules, hypothesis):
-
-
+    print "backchain_to_goal_tree", hypothesis
     possible = [hypothesis]
 
     for rule in rules:
+        print "rule", rule
         for consequence in rule.consequent():
             bindings = match(consequence, hypothesis)
             if bindings != None:
+                print "bindings", bindings
                 sub_hypothesis = populate(rule.antecedent(), bindings)
+                print "sub_hypothesis", sub_hypothesis
                 sub_hypothesis_extended = extendGoalTree(rules, sub_hypothesis)
                 possible.append(sub_hypothesis_extended)
     

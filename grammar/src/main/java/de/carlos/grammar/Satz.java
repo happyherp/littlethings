@@ -50,5 +50,16 @@ public class Satz implements LanguageElement {
     public Verb getVerb() {
         return verb;
     }
+    
+    
+    
+    public static void main(String[] args){
+	
+	Satz s = new HauptSatz(Nomen.EBER, Verbs.KAUFEN, Time.PRETERITUM, Nomen.HAUS);
+	System.out.println(s.spell());
+	
+	
+    }
+    
 
 }

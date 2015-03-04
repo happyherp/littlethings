@@ -179,7 +179,7 @@ black_family_cousins = [
     if "cousin" in x ]
 
 # To see if you found them all, uncomment this line:
-print black_family_cousins
+#print black_family_cousins
 
 # To debug what happened in your rules, you can set verbose=True
 # in the function call above.

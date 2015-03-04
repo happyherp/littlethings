@@ -42,10 +42,25 @@ class NoClobberDict(DictMixin):
         return self._dict.keys()
 
 # A regular expression for finding variables.
-AIRegex = re.compile(r'\(\?(\S+)\)')
+#Using \w instead of \S so successant groups can be used.
+# like "(?a)(?b)
+AIRegex = re.compile(r'\(\?(\w+)\)')
 
 def AIStringToRegex(AIStr):
-    return AIRegex.sub( r'(?P<\1>\S+)', AIStr )+'$'
+
+    used_groups = []
+
+    def replace(m):
+        groupname = m.group(1)
+        if groupname in used_groups:
+            return r'(?P=%s)' %(groupname)
+        else:
+            used_groups.append(groupname)
+            return r'(?P<%s>\S+)' %(groupname) 
+
+    re_template = AIRegex.sub(replace , AIStr )+'$'
+    return re_template
+
 
 def AIStringToPyTemplate(AIStr):
     return AIRegex.sub( r'%(\1)s', AIStr )

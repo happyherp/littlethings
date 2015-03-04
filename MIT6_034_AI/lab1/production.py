@@ -59,6 +59,13 @@ def instantiate(template, values_dict):
         return template.__class__(*[populate(x, values_dict) 
                                     for x in template])
     elif isinstance(template, basestring):
+        #add missing variables as placeholders
+        #print "variables", variables(template)
+        if variables(template) != None:           
+            for var in variables(template):
+                if not values_dict.has_key(var):
+                    values_dict[var] = "(?%s)"%(var)
+        #print template, values_dict
         return AIStringToPyTemplate(template) % values_dict
     else: raise ValueError, "Don't know how to populate a %s" % \
       type(template)
@@ -90,14 +97,10 @@ def is_variable(str):
 
 def variables(exp):
     """
-    Return a dictionary containing the names of all variables in
+    Return a List containing the names of all variables in
     'exp' as keys, or None if there are no such variables.
     """
-    try:
-        return re.search( AIStringToRegex(exp).groupdict() )
-    except AttributeError: # The re.match() expression probably
-                           # just returned None
-        return None
+    return  AIRegex.findall(exp)
         
 class IF(object):
     """
@@ -145,8 +148,8 @@ class IF(object):
         old_rules_count = len(new_rules)
         bindings = RuleExpression().test_term_matches(
             self._conditional, new_rules)
-
         for k in bindings:
+            #print "binding", k
             for a in self._action:
                 new_rules.add( populate(a, k) )
                 if len(new_rules) != old_rules_count:
