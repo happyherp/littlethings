@@ -1,5 +1,6 @@
 from constants import *
 import random
+from player import Player
 
 class Action():
   def __init__(self, source):
@@ -37,8 +38,9 @@ class CreateChild(Action):
          raise Exception("Do not have enough money to create child")
        else:
          self.source.money -= self.startmoney + CREATE_CHILD_COST
-         child = random.choice(self.source.playersources
-                               )(self.startmoney * TRANSFER_COST_FACTOR, self.source.playersources)
+         child = Player(self.startmoney * TRANSFER_COST_FACTOR,
+                        self.source.strategysource(), 
+                        self.source.strategysource)
          self.source.children.append(child)
          
     

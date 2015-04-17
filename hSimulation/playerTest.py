@@ -1,19 +1,9 @@
-from players import *
+from player import *
 from actions import *
+from strategy import *
 import unittest
 
 
-
-def makePlayerSource(players):
-    '''Creates a playersource that returns the given players. The last one will be used repeatedly'''
-    
-    def source(*args):
-       nonlocal players
-       player = players[0](*args)
-       if len(players) > 1:
-         del players[0]
-       return player
-    return source
 
 
 class PlayerTest(unittest.TestCase):
@@ -39,8 +29,8 @@ class AltruistTest(PlayerTest):
 
     def testReward(self):
     
-        p1 = Altruist(10, [])
-        p2 = Altruist(10, [])
+        p1 = Player(10, Altruist())
+        p2 = Player(10, Altruist())
         self.assertTrue(p2.canReceiveReward())
         
         action = GiveReward(p1,p2)
@@ -59,7 +49,7 @@ class CooperatorTest(PlayerTest):
             
             
     def test_CooperatorDefect(self):        
-        coop = Cooperator(20, [Defector])               
+        coop = Player(20, Cooperator(), strategySourceFromList([Defector]))               
         self.assertNextAction(coop, CreateChild)
         self.assertNextAction(coop, WaitForChild)               
         action=self.waitForChild(coop)
@@ -67,23 +57,22 @@ class CooperatorTest(PlayerTest):
         
 
     def test_CooperatorCooperate(self):        
-        coop = Cooperator(20, [Altruist])        
+        coop = Player(20, Cooperator(), strategySourceFromList([Altruist]))               
         self.assertNextAction(coop, CreateChild)
-        action=self.waitForChild(coop)
+        action = self.waitForChild(coop)
         self.assertAction(action, GiveReward)
 
     def test_RetryAfterDefector(self):
     
-        playersource = makePlayerSource([Defector, Altruist])        
-        coop = Cooperator(40, [playersource])   
+        coop = Player(40, Cooperator(), strategySourceFromList([Defector, Altruist]))  
         #Reclaim the defector
         self.assertNextAction(coop, CreateChild)
         self.assertNextAction(coop, WaitForChild)                       
-        action=self.waitForChild(coop)
+        action = self.waitForChild(coop)
         self.assertAction(action, Reclaim)
         #Reward the altruist
         self.assertNextAction(coop, CreateChild)
-        action=self.waitForChild(coop)
+        action = self.waitForChild(coop)
         self.assertAction(action, GiveReward)
 
         
@@ -91,17 +80,15 @@ class CooperatorTest(PlayerTest):
 class SelfCooperatorTest(PlayerTest):
 
     def testDefectToAltruist(self):
-        playersource = makePlayerSource([Altruist])        
-        player = SelfCooperator(40, [playersource])   
+        player = Player(40, SelfCooperator(), strategySourceFromList([Altruist]))  
         self.assertNextAction(player, CreateChild)
-        action=self.waitForChild(player)                       
+        action = self.waitForChild(player)                       
         self.assertAction(action, Reclaim)
 
     def testDefectToDefector(self):
-        playersource = makePlayerSource([Defector])        
-        player = SelfCooperator(40, [playersource])   
+        player = Player(40, SelfCooperator(), strategySourceFromList([Defector]))  
         self.assertNextAction(player, CreateChild)
-        action=self.waitForChild(player)                       
+        action = self.waitForChild(player)                       
         self.assertAction(action, Reclaim)        
         
 if __name__ == "__main__":
