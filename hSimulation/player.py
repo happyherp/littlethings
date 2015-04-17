@@ -4,12 +4,13 @@ class Player:
 
     count = 1
 
-    def __init__(self, money, strategy, strategysource = None):
+    def __init__(self, money, strategy, strategysource = None, parent = None):
         self.id = Player.count    
         Player.count += 1
         self.cookies = 0
         self.money = money
         self.strategy = strategy
+        self.parent = parent
         self.startmoney = money
         self.strategysource = strategysource
         self.actions = []
@@ -24,7 +25,7 @@ class Player:
         return self.reward < self.rewardMax
         
     def __str__(self):
-        return "<%s::%d> "%(self.__class__.__name__, self.id)
+        return "<%s::%d> "%(self.strategy.__class__.__name__, self.id)
         
     def dispose(self, parent):
       for child in self.children:

@@ -7,6 +7,16 @@ class Action():
     self.source = source
     
   def execute(self):
+  
+    #check if anyone wants to intercept this action.
+    parent = self.source.parent
+    if parent:
+        interception = parent.strategy.interruptChild(parent, self.source, self)
+        if interception:
+           print(parent, "interrupted", self.source, "when doing", self)        
+           interception.execute()
+           return 
+  
     self.source.actions.append(self)
     self.doAction()
           
@@ -40,7 +50,8 @@ class CreateChild(Action):
          self.source.money -= self.startmoney + CREATE_CHILD_COST
          child = Player(self.startmoney * TRANSFER_COST_FACTOR,
                         self.source.strategysource(), 
-                        self.source.strategysource)
+                        self.source.strategysource,
+                        self.source)
          self.source.children.append(child)
          
     

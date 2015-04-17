@@ -21,8 +21,8 @@ class PlayerTest(unittest.TestCase):
         self.assertAction(action, actiontype)
         
     def assertAction(self, action, actiontype):
-        self.assertEqual(type(action), actiontype)
         action.execute()        
+        self.assertEqual(type(action), actiontype)
 
 
 class AltruistTest(PlayerTest):
@@ -79,17 +79,25 @@ class CooperatorTest(PlayerTest):
         
 class SelfCooperatorTest(PlayerTest):
 
-    def testDefectToAltruist(self):
-        player = Player(40, SelfCooperator(), strategySourceFromList([Altruist]))  
-        self.assertNextAction(player, CreateChild)
-        action = self.waitForChild(player)                       
-        self.assertAction(action, Reclaim)
 
     def testDefectToDefector(self):
         player = Player(40, SelfCooperator(), strategySourceFromList([Defector]))  
         self.assertNextAction(player, CreateChild)
         action = self.waitForChild(player)                       
-        self.assertAction(action, Reclaim)        
+        self.assertAction(action, Reclaim)     
+
+    def testDefectToAltruist(self):
+        player = Player(80, SelfCooperator(), strategySourceFromList([Altruist, Defector]))  
+        self.assertNextAction(player, CreateChild)
+        action = self.waitForChild(player)                       
+        self.assertAction(action, Reclaim)
+        
+    def testCoopSelf(self):
+        player = Player(80, SelfCooperator(), strategySourceFromList([SelfCooperator]))  
+        self.assertNextAction(player, CreateChild)
+        action = self.waitForChild(player)                       
+        self.assertAction(action, GiveReward)        
+        
         
 if __name__ == "__main__":
     unittest.main()

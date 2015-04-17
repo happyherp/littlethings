@@ -6,6 +6,9 @@ class Strategy(object):
 
     def pickAction(self, player):
        pass
+       
+    def interruptChild(self, player, child, action):
+        '''Called before the action of the child is executed'''
 
 def strategySourceFromList(strategies):
     '''Creates a playersource that returns the given players. The last one will be used repeatedly'''
@@ -92,14 +95,35 @@ class Cooperator(Strategy):
         return True
           
           
-class SelfCooperator(Cooperator):
+class SelfCooperator(Strategy):
+
+    def pickAction(self, player):
+        if len(player.children) == 0 and  player.money > CREATE_CHILD_COST:
+            return CreateChild(player, player.money-1)
+        elif len(player.children) == 1:
+            child = player.children[0]
+            if child.isPlaying:
+                return WaitForChild(player, child)
+            elif child.canReceiveReward():
+                return GiveReward(player, child)
+        
+        if player.money > 0:
+            return Eat(player)
+        else:        
+            return Quit(player)
+
     
-    def didChildCooperate(self, player, child):
+    def interruptChild(self, player, child, childaction):
         #Pretend we where in position of child. 
         # If the child does something different than we would, do not cooperates        
-        
         myaction = self.pickAction(child)
-        return type(myaction) == type(child.actions[-1])
+        result = type(myaction) == type(childaction)
+        print("didChildCooperate", child, type(myaction), type(childaction))        
+        if result:
+            return None
+        return Reclaim(player, child)
+    
+    
     
     
     
