@@ -2,7 +2,40 @@ from players import *
 from actions import *
 import unittest
 
+
+
+def makePlayerSource(players):
+    '''Creates a playersource that returns the given players. The last one will be used repeatedly'''
+    
+    def source(*args):
+       nonlocal players
+       player = players[0](*args)
+       if len(players) > 1:
+         del players[0]
+       return player
+    return source
+
+
 class PlayerTest(unittest.TestCase):
+        
+    def waitForChild(self, player):
+        '''Lets the player perform wait for child until it does something else'''
+        action=player.pickAction()
+        while type(action) == WaitForChild:
+            action.execute()
+            action=player.pickAction()    
+        return action
+        
+    def assertNextAction(self, player, actiontype):
+        action = player.pickAction()
+        self.assertAction(action, actiontype)
+        
+    def assertAction(self, action, actiontype):
+        self.assertEqual(type(action), actiontype)
+        action.execute()        
+
+
+class AltruistTest(PlayerTest):
 
     def testReward(self):
     
@@ -21,86 +54,55 @@ class PlayerTest(unittest.TestCase):
         except:
             pass
 
-    def test_CooperatorDefect(self):
-        
-        coop = Cooperator(20, [Defector])
-        
-        action=coop.pickAction()
-        self.assertEqual(type(action), CreateChild)
-        action.execute()
-
-        action=coop.pickAction()
-        self.assertEqual(type(action), WaitForChild)
-        action.execute()
-        
-        action=coop.pickAction()
-        while type(action) == WaitForChild:
-            action.execute()
-            action=coop.pickAction()
-
-        self.assertEqual(type(action), Reclaim)
-        action.execute()
+            
+class CooperatorTest(PlayerTest):
+            
+            
+    def test_CooperatorDefect(self):        
+        coop = Cooperator(20, [Defector])               
+        self.assertNextAction(coop, CreateChild)
+        self.assertNextAction(coop, WaitForChild)               
+        action=self.waitForChild(coop)
+        self.assertAction(action, Reclaim)
         
 
-    def test_CooperatorCooperate(self):
-        
-        coop = Cooperator(20, [Altruist])
-        
-        action=coop.pickAction()
-        self.assertEqual(type(action), CreateChild)
-        action.execute()
+    def test_CooperatorCooperate(self):        
+        coop = Cooperator(20, [Altruist])        
+        self.assertNextAction(coop, CreateChild)
+        action=self.waitForChild(coop)
+        self.assertAction(action, GiveReward)
 
-        action=coop.pickAction()
-        while type(action) == WaitForChild:
-            action.execute()
-            action=coop.pickAction()
-
-        self.assertEqual(type(action), GiveReward) 
-        action.execute()
-
-
-    def test_Retry(self):
+    def test_RetryAfterDefector(self):
     
-        once = True
-        def playersource(*args):
-            nonlocal once
-            if once:
-               once = False
-               return Defector(*args)
-            else:
-               return Altruist(*args)
-    
-    
-        coop = Cooperator(40, [playersource])
+        playersource = makePlayerSource([Defector, Altruist])        
+        coop = Cooperator(40, [playersource])   
+        #Reclaim the defector
+        self.assertNextAction(coop, CreateChild)
+        self.assertNextAction(coop, WaitForChild)                       
+        action=self.waitForChild(coop)
+        self.assertAction(action, Reclaim)
+        #Reward the altruist
+        self.assertNextAction(coop, CreateChild)
+        action=self.waitForChild(coop)
+        self.assertAction(action, GiveReward)
+
         
-        action=coop.pickAction()
-        self.assertEqual(type(action), CreateChild)
-        action.execute()
-
-        action=coop.pickAction()
-        self.assertEqual(type(action), WaitForChild)
-        action.execute()
         
-        action=coop.pickAction()
-        while type(action) == WaitForChild:
-            action.execute()
-            action=coop.pickAction()
+class SelfCooperatorTest(PlayerTest):
 
-        self.assertEqual(type(action), Reclaim) 
-        action.execute()
+    def testDefectToAltruist(self):
+        playersource = makePlayerSource([Altruist])        
+        player = SelfCooperator(40, [playersource])   
+        self.assertNextAction(player, CreateChild)
+        action=self.waitForChild(player)                       
+        self.assertAction(action, Reclaim)
 
-        action=coop.pickAction()
-        self.assertEqual(type(action), CreateChild)
-        action.execute()
-
-        action=coop.pickAction()
-        while type(action) == WaitForChild:
-            action.execute()
-            action=coop.pickAction()
-
-        self.assertEqual(type(action), GiveReward) 
-        action.execute()
-        
+    def testDefectToDefector(self):
+        playersource = makePlayerSource([Defector])        
+        player = SelfCooperator(40, [playersource])   
+        self.assertNextAction(player, CreateChild)
+        action=self.waitForChild(player)                       
+        self.assertAction(action, Reclaim)        
         
 if __name__ == "__main__":
     unittest.main()

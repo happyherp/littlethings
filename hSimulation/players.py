@@ -111,3 +111,19 @@ class Cooperator(Player):
             return False
         return True
           
+          
+class SelfCooperator(Cooperator):
+    
+    def didChildCooperate(self, child):
+        #Pretend we where in position of child. 
+        # If the child does something different than we would, do not cooperates
+        
+        
+        clone = SelfCooperator();
+        
+        ouraction = SelfCooperator.pickAction(child)
+        return type(ouraction) == type(child.actions[-1])
+    
+    
+    
+#Separate Player and strategy.     
