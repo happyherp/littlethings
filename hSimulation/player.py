@@ -19,7 +19,7 @@ class Player:
         self.reward = 0
         self.rewardMax = self.money * REWARD_MULTIPLIER
         self.isPlaying = True
-        print(self, "created with money", money)
+        if DEBUG: print(self, "created with money", money)
      
     def canReceiveReward(self):
         return self.reward < self.rewardMax
@@ -27,13 +27,16 @@ class Player:
     def __str__(self):
         return "<%s::%d> "%(self.strategy.__class__.__name__, self.id)
         
+    def __repr__(self):
+        return self.__str__()
+        
     def dispose(self):
       for child in self.children:
          child.dispose()    
     
       self.parent.children.remove(self)
       self.parent.removed_children.append(self)
-      print("money reclaimed", int(self.money / TRANSFER_COST_FACTOR))
+      if DEBUG: print("money reclaimed", int(self.money / TRANSFER_COST_FACTOR))
       self.parent.money += int(self.money / TRANSFER_COST_FACTOR)
       self.isPlaying = False
       self.money=0

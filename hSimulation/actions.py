@@ -15,7 +15,7 @@ class Action():
     if parent:
         interception = parent.strategy.interruptChild(parent, self.source, self)
         if interception:
-           print(parent, "interrupted", self.source, "when doing", self)    
+           if DEBUG: print(parent, "interrupted", self.source, "when doing", self)    
            interception.interruptedAction = self           
            interception.execute()
            return 
@@ -26,7 +26,7 @@ class Action():
 class Eat(Action):
 
     def doAction(self):
-      print(self.source, "eats")
+      if DEBUG: print(self.source, "eats")
       if self.source.money > 0:
         self.source.money-=1
         self.source.cookies+=1
@@ -36,7 +36,7 @@ class Eat(Action):
 class Quit(Action):
     
     def doAction(self):
-        print(self.source, "quits")
+        if DEBUG: print(self.source, "quits")
         self.source.isPlaying = False
     
 class CreateChild(Action):
@@ -46,7 +46,7 @@ class CreateChild(Action):
         self.startmoney = startmoney
         
     def doAction(self):
-       print(self.source, "creates child")
+       if DEBUG: print(self.source, "creates child")
        if self.source.money < self.startmoney+CREATE_CHILD_COST:
          raise Exception("Do not have enough money to create child")
        else:
@@ -65,7 +65,7 @@ class GiveReward(Action):
       self.target = target
       
     def doAction(self):
-      print(self.source, "gives reward to ", self.target)
+      if DEBUG: print(self.source, "gives reward to ", self.target)
       if self.target.canReceiveReward():
         self.target.reward = self.target.rewardMax
       else:
@@ -77,7 +77,7 @@ class WaitForChild(Action):
       self.child = child
       
     def doAction(self):
-      print(self.source, "waits for", self.child)
+      if DEBUG: print(self.source, "waits for", self.child)
       if self.child.isPlaying:
         action = self.child.pickAction()
         action.execute()
@@ -91,6 +91,6 @@ class Reclaim(Action):
       self.child = child
       
     def doAction(self):
-      print(self.source, "reclaims", self.child)    
+      if DEBUG: print(self.source, "reclaims", self.child)    
       self.child.dispose()
                  

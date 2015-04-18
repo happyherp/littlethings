@@ -1,14 +1,8 @@
 
 from constants import *
 from actions import *
+import random
 
-class Strategy(object):
-
-    def pickAction(self, player):
-       pass
-       
-    def interruptChild(self, player, child, action):
-        '''Called before the action of the child is executed'''
 
 def strategySourceFromList(strategies):
     '''Creates a playersource that returns the given players. The last one will be used repeatedly'''
@@ -24,9 +18,36 @@ def strategySourceFromList(strategies):
     
     
     
-def weightedChoice(strategies):
+def weightedChoice(strategieprobs):
     '''Takes a list of (relative_probability, strategy) and creates a 
     strategySource that will create each strategy with the given probability'''
+    
+    sum = 0.0
+    for (p,s) in strategieprobs:
+      sum += p
+
+    def source(*args):
+       nonlocal strategieprobs
+       
+       pick = random.random()*sum
+       
+       for (probability,strategy) in strategieprobs:
+          if pick <= probability:
+            return strategy(*args)
+          pick -= probability
+       raise "This should never be reached."   
+
+    return source    
+    
+    
+class Strategy(object):
+
+    def pickAction(self, player):
+       pass
+       
+    def interruptChild(self, player, child, action):
+        '''Called before the action of the child is executed'''
+
 
 class Defector(Strategy):
     '''Just eats all the cookies'''
@@ -72,20 +93,18 @@ class Cooperator(Strategy):
                         return WaitForChild(player, child)
                     else:
                         return Quit(player)
-                elif type(child.actions[-1]) == Eat or not child.isPlaying:
-                    return Reclaim(player, child)
                 else: 
-                    return WaitForChild(player, child)
-            else:
+                    return Reclaim(player, child)
+            elif child.isPlaying:
                 return WaitForChild(player, child)
-        
+            
         if player.money > 0:
             return Eat(player)
         else:        
             return Quit(player)
        
     def didChildCooperate(self, player, child):
-        print("didChildCooperate")
+        if DEBUG: print("didChildCooperate")
         if child.startmoney < COOPERATION_REQ_MONEY:
           return True
     
@@ -124,7 +143,7 @@ class SelfCooperator(Strategy):
         else:
             myaction = self.pickAction(child)
         result = type(myaction) == type(childaction)
-        print("didChildCooperate", child, type(myaction), type(childaction))        
+        if DEBUG: print("didChildCooperate", child, type(myaction), type(childaction))        
         if result:
             return None
         return Reclaim(player, child)

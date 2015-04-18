@@ -11,22 +11,23 @@ def listAll(node):
       all += listAll(child)
     return all
     
-def simulate(startmoney, strategysource, rounds)
+def simulate(startmoney, strategysource, rounds):
 
-  sums = {}
+  summary = ({},{})
   for round in range(rounds):
     root = simulateRound(startmoney, strategysource)
-    thisRoundSums = makeSums(listAll(root))
-    addSums(sums, thisRoundSums)
-    
+    sums, counts = makeSums(listAll(root))
+    addDicts(summary[0], sums)
+    addDicts(summary[1], counts)
+        
+  return summary  
   
-def addSums(target, addition):
+def addDicts(target, addition):
     for key in addition:
       if not key in target:
-         target[key] = (0,0)
-      sum1, count1 = target[key]
-      sum2, count2 = addition[key]
-      target[key] = (sum1+sum2, count1, count2)
+         target[key] = 0
+      target[key] += addition[key]
+ 
   
 def simulateRound(startmoney, strategysource):
 
@@ -49,22 +50,45 @@ def makeSums(players):
     counts[strategytype]+=1
   return sums, counts
 
-def printSums(sums):
-
+def printSums(sums, counts):
+  print("Performance of strategies")
   for strategytype in sums:
     cookies = sums[strategytype]
     count = counts[strategytype]
     avg = float(cookies)/count
-    print("type %s avg: %4d sum:%d count:%d" %(strategytype, avg, cookies, count))
-      
-root = simulateRound(200,[ Cooperator, Defector, Altruist])
-allPlayers = listAll(root)
+    print("type %20s avg: %4d sum:%4d count:%3d" %(strategytype.__name__, avg, cookies, count))
+   
 
-allPlayers.sort(key=Player.score, reverse=True)
-print("Players sorted by score")
-for player in allPlayers:
-    print("%20s %5d %5d %5d"%(player, player.score(), player.cookies, player.reward))          
+def printScore(players):
+    allPlayers.sort(key=Player.score, reverse=True)
+    print("Players sorted by score      | score-cookies-reward")
+    for player in allPlayers:
+        print("%30s %5d %5d %5d"%(player, player.score(), player.cookies, player.reward))          
+       
+       
+strategieprobs = [
+  (0.5, Cooperator),
+  (0.5, Altruist),
+  (0.5, Defector),
+  (0.5, SelfCooperator)
+]
+  
 
-sums, counts = makeSums(allPlayers)
-printSumByType(sums, counts)
 
+def runSingleRound():
+  
+    root = simulateRound(200, weightedChoice(strategieprobs))
+    allPlayers = listAll(root)
+
+
+    sums, counts = makeSums(allPlayers)
+    print(allPlayers)
+    printScore(allPlayers)
+    printSums(sums, counts)
+
+def runMultipleRounds():
+    sums, counts = simulate(200, weightedChoice(strategieprobs), 1000)
+    printSums(sums, counts)
+    
+    
+runMultipleRounds()    
