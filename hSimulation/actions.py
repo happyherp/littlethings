@@ -5,15 +5,18 @@ from player import Player
 class Action():
   def __init__(self, source):
     self.source = source
+    #If this Action was a Response to another Action  here. 
+    self.interruptedAction = None
     
   def execute(self):
   
-    #check if anyone wants to intercept this action.
+    #check if the parent wants to intercept this action.
     parent = self.source.parent
     if parent:
         interception = parent.strategy.interruptChild(parent, self.source, self)
         if interception:
-           print(parent, "interrupted", self.source, "when doing", self)        
+           print(parent, "interrupted", self.source, "when doing", self)    
+           interception.interruptedAction = self           
            interception.execute()
            return 
   
@@ -89,5 +92,5 @@ class Reclaim(Action):
       
     def doAction(self):
       print(self.source, "reclaims", self.child)    
-      self.child.dispose(self.source)
+      self.child.dispose()
                  

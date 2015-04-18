@@ -27,14 +27,14 @@ class Player:
     def __str__(self):
         return "<%s::%d> "%(self.strategy.__class__.__name__, self.id)
         
-    def dispose(self, parent):
+    def dispose(self):
       for child in self.children:
-         child.dispose(self)    
+         child.dispose()    
     
-      parent.children.remove(self)
-      parent.removed_children.append(self)
+      self.parent.children.remove(self)
+      self.parent.removed_children.append(self)
       print("money reclaimed", int(self.money / TRANSFER_COST_FACTOR))
-      parent.money += int(self.money / TRANSFER_COST_FACTOR)
+      self.parent.money += int(self.money / TRANSFER_COST_FACTOR)
       self.isPlaying = False
       self.money=0
       self.reward=0

@@ -23,6 +23,10 @@ class PlayerTest(unittest.TestCase):
     def assertAction(self, action, actiontype):
         action.execute()        
         self.assertEqual(type(action), actiontype)
+        
+        
+    def assertPrevAction(self, player, actiontype):
+        return type(player.actions[-1]) == actiontype
 
 
 class AltruistTest(PlayerTest):
@@ -84,19 +88,38 @@ class SelfCooperatorTest(PlayerTest):
         player = Player(40, SelfCooperator(), strategySourceFromList([Defector]))  
         self.assertNextAction(player, CreateChild)
         action = self.waitForChild(player)                       
-        self.assertAction(action, Reclaim)     
+        self.assertPrevAction(player, Reclaim)     
 
     def testDefectToAltruist(self):
         player = Player(80, SelfCooperator(), strategySourceFromList([Altruist, Defector]))  
         self.assertNextAction(player, CreateChild)
         action = self.waitForChild(player)                       
-        self.assertAction(action, Reclaim)
+        self.assertPrevAction(player, Reclaim)
         
     def testCoopSelf(self):
         player = Player(80, SelfCooperator(), strategySourceFromList([SelfCooperator]))  
         self.assertNextAction(player, CreateChild)
         action = self.waitForChild(player)                       
-        self.assertAction(action, GiveReward)        
+        self.assertAction(action, GiveReward)      
+
+    def testCoopSelf2(self):
+        player = Player(80, SelfCooperator(), strategySourceFromList([SelfCooperator, Defector]))  
+        self.assertNextAction(player, CreateChild)
+        action = self.waitForChild(player)                       
+        self.assertAction(action, GiveReward)   
+
+    def testCoopSelf3(self):
+        player = Player(80, SelfCooperator(), strategySourceFromList([SelfCooperator, Altruist]))  
+        self.assertNextAction(player, CreateChild)
+        action = self.waitForChild(player)                       
+        self.assertAction(action, GiveReward)           
+        
+    def testCoopSelf3(self):
+        player = Player(80, SelfCooperator(), strategySourceFromList(
+           [SelfCooperator, SelfCooperator, SelfCooperator, Altruist]))  
+        self.assertNextAction(player, CreateChild)
+        action = self.waitForChild(player)                       
+        self.assertAction(action, GiveReward)           
         
         
 if __name__ == "__main__":

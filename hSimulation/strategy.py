@@ -115,8 +115,14 @@ class SelfCooperator(Strategy):
     
     def interruptChild(self, player, child, childaction):
         #Pretend we where in position of child. 
-        # If the child does something different than we would, do not cooperates        
-        myaction = self.pickAction(child)
+        # If the child does something different than we would, do not cooperates 
+
+        if childaction.interruptedAction:
+            myaction = self.interruptChild(child, 
+                                           childaction.interruptedAction.source,
+                                           childaction.interruptedAction)
+        else:
+            myaction = self.pickAction(child)
         result = type(myaction) == type(childaction)
         print("didChildCooperate", child, type(myaction), type(childaction))        
         if result:
@@ -124,7 +130,4 @@ class SelfCooperator(Strategy):
         return Reclaim(player, child)
     
     
-    
-    
-    
-#Separate Player and strategy.     
+     
