@@ -7,7 +7,7 @@ import java.util.List;
 public class State<W> {
 	
 	W word;
-	State<W> prev;
+	protected State<W> prev;
 	
 	protected State(W word, State<W> prev){
 		this.word = word;
