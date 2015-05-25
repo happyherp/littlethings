@@ -16,8 +16,13 @@ public class Optimizer {
     
     private static final long  WEEK_MINUTES = 60*24*7;
     
-    public Map<Activity, Double> optimize(Activity... activities){
-	
+    public Map<Activity, Double> optimize(Activity... activities) {
+	return this.optimize(WEEK_MINUTES, activities);
+    }
+    
+    public Map<Activity, Double> optimize(long timeM, Activity... activities){
+	 Collection<LinearConstraint> cons =  new ArrayList<>();
+
 	
 	 double[] utilities = new double[activities.length];
 	 double[] costs = new double[activities.length];
@@ -27,16 +32,23 @@ public class Optimizer {
 	     utilities[i] = (double) act.utility;
 	     costs[i] = act.cost;
 	     durations[i] = (double) act.durationMin;
+	     
+	     if (act.maximum != null){
+		 double[] da = new double[activities.length];
+		 da[i] = 1;
+		 cons.add(new LinearConstraint(da, Relationship.LEQ, (double)act.maximum));
+	     }
+
 	     i++;
 	 }
-	
+	 
+	 cons.add(new LinearConstraint(costs, Relationship.LEQ, 0));
+	 cons.add(new LinearConstraint(durations, Relationship.EQ, timeM));
+
 	
 	 LinearObjectiveFunction objective = new LinearObjectiveFunction(utilities, 0);
 	 
-	 Collection<LinearConstraint> cons =  new ArrayList<>();
-	 cons.add(new LinearConstraint(costs, Relationship.LEQ, 0));
-	 cons.add(new LinearConstraint(durations, Relationship.EQ, WEEK_MINUTES));
-	 
+
 	
 	 PointValuePair pvp = new SimplexSolver().optimize(objective, cons, GoalType.MAXIMIZE, true);
 	 
@@ -58,10 +70,13 @@ public class Optimizer {
 	    double times = result.get(act);
 	    totalUtil += act.utility * times;
 	    System.out.println(String.format(
-		    "%4.1f times %10s. Time %4dm ",
-		    times, act.name , (long)(times*act.durationMin)));
+		    "%4.1f times %10s. Time %4dm Utility: %5d",
+		    times, act.name , (long)(times*act.durationMin), (long) (times* act.utility)));
 	}
 	System.out.println("Total Utility: "+totalUtil);
     }
+
+
+
 
 }

@@ -10,6 +10,8 @@ public class Activity {
     
     double cost;
     
+    Long maximum = null;
+    
     public Activity(int durationi, double cost, int util) {
 	this.durationMin = durationi;
 	this.cost = cost;
