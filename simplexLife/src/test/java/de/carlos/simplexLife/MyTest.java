@@ -1,5 +1,7 @@
 package de.carlos.simplexLife;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -92,6 +94,34 @@ public class MyTest {
 	}
 	Assert.assertEquals(dayM, timeSpend, 0.1);
 		
+	Optimizer.printResult(result);
+    }
+    
+    
+    @Test
+    public void testHighwaySpeed(){
+	
+	Activity work = new Activity(60, -10.00, 420);
+	work.name = "Work";
+	
+	Activity idle = new Activity(60, 0);
+	idle.name = "Play";
+	idle.setUtilityPerMinute(10);
+	
+	Activity drive100 = new Activity(60, 5.00);
+	drive100.setUtilityPerMinute(3);
+	drive100.name = "Driving 100kmh";
+	
+	
+	Activity drive200 = new Activity(30, 20.00);
+	drive200.setUtilityPerMinute(4);
+	drive200.name = "Driving 200kmh";
+	
+	List<Alternative> alts = new ArrayList<>();
+	alts.add(new Alternative(drive100, drive200));
+	
+	Map<Activity, Double> result = new Optimizer().optimize(60*24, alts, work, drive100, drive200, idle);
+	
 	Optimizer.printResult(result);
 
     }

@@ -3,8 +3,10 @@ package de.carlos.simplexLife;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.optimization.GoalType;
 import org.apache.commons.math3.optimization.PointValuePair;
 import org.apache.commons.math3.optimization.linear.LinearConstraint;
@@ -21,6 +23,10 @@ public class Optimizer {
     }
     
     public Map<Activity, Double> optimize(long timeM, Activity... activities){
+	return this.optimize(timeM, new ArrayList<Alternative>(), activities);
+    }
+    
+    public Map<Activity, Double> optimize(long timeM, List<Alternative> alternatives, Activity... activities){
 	 Collection<LinearConstraint> cons =  new ArrayList<>();
 
 	
@@ -44,12 +50,18 @@ public class Optimizer {
 	 
 	 cons.add(new LinearConstraint(costs, Relationship.LEQ, 0));
 	 cons.add(new LinearConstraint(durations, Relationship.EQ, timeM));
+	 
+	 for (Alternative alt: alternatives){
+	     double[] da = new double[activities.length];
+	     for (Activity act : alt.activities){
+		 da[ArrayUtils.indexOf(activities, act)] = 1;
+	     }
+             cons.add(new LinearConstraint(da, Relationship.EQ, 1.0));
+	 }
 
 	
 	 LinearObjectiveFunction objective = new LinearObjectiveFunction(utilities, 0);
-	 
-
-	
+	 	
 	 PointValuePair pvp = new SimplexSolver().optimize(objective, cons, GoalType.MAXIMIZE, true);
 	 
 	 Map<Activity, Double> result = new HashMap<>();
@@ -70,7 +82,7 @@ public class Optimizer {
 	    double times = result.get(act);
 	    totalUtil += act.utility * times;
 	    System.out.println(String.format(
-		    "%4.1f times %10s. Time %4dm Utility: %5d",
+		    "%4.1f times %30s. Time %4dm Utility: %5d",
 		    times, act.name , (long)(times*act.durationMin), (long) (times* act.utility)));
 	}
 	System.out.println("Total Utility: "+totalUtil);

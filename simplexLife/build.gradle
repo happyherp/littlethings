@@ -9,7 +9,7 @@ repositories {
 
 dependencies {
 
-
+    compile 'org.apache.commons:commons-lang3:3.0'
     compile 'org.apache.commons:commons-math3:3.0'
     compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
     compile 'log4j:log4j:1.2.16'
