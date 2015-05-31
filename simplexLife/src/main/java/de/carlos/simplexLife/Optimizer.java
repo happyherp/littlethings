@@ -32,7 +32,7 @@ public class Optimizer {
 	
 	 double[] utilities = new double[activities.length];
 	 double[] costs = new double[activities.length];
-	 double[] durations = new double[activities.length];
+	 double[] durations = new   double[activities.length];
 	 int i = 0;
 	 for(Activity act: activities){
 	     utilities[i] = (double) act.utility;
@@ -70,8 +70,7 @@ public class Optimizer {
 	     result.put(act, pvp.getKey()[i]);
 	     i++;
 	 }
-	 
-	
+
 	return result;
     }
     

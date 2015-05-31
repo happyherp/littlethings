@@ -125,6 +125,64 @@ public class MyTest {
 	Optimizer.printResult(result);
 
     }
+    
+    
+    @Test
+    public void testMeWeek(){
+	
+	List<Alternative> alts = new ArrayList<>();
+
+	
+	Activity work1 = new Activity(60, - 25 * 0.85 * 1);
+	work1.name = "Work1";
+	work1.maximum = 7L;
+	work1.setUtilityPerMinute(10);
+	
+	Activity work2 = new Activity(60, - 25 * 0.85 * 0.75);
+	work2.name = "Work2";
+	work2.maximum = 20-7L;
+	work2.setUtilityPerMinute(9);
+	
+	Activity work3 = new Activity(60, - 25 * 0.85 * 0.65);
+	work3.name = "work3";
+	work3.maximum = 40-20-7L;
+	work3.setUtilityPerMinute(7);
+	
+	Activity work4 = new Activity(60, - 25 * 0.85 * 0.58);
+	work4.name = "work4";
+	work4.setUtilityPerMinute(5);
+	
+	Activity skyVacation = new Activity(60*24*7, 1500);
+	skyVacation.name = "Skying";
+	skyVacation.setUtilityPerMinute(20);
+	
+	
+	Activity cleanHouseSelf = new Activity(180, 10);
+	cleanHouseSelf.name ="clean House";
+	cleanHouseSelf.setUtilityPerMinute(4);
+	
+	Activity houseHelp = new Activity(20, 3*9, 0);
+	houseHelp.name = "Househelp";
+	
+	alts.add(new Alternative(cleanHouseSelf, houseHelp));
+	
+	Activity eatHome = new Activity(180, 10);
+	eatHome.name ="EatHomee";
+	eatHome.setUtilityPerMinute(4);
+	
+
+	
+	alts.add(new Alternative(eatHome, null));
+
+	
+	
+	long availableTime = 60*24*7;
+	availableTime-= 7*8*24;//Sleep.
+	
+	Map<Activity, Double> result = new Optimizer().optimize(availableTime);
+
+	
+    }
 
 
 }
