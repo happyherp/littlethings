@@ -28,7 +28,7 @@ public class Food {
 
 	public double zink;
 
-	public double selen;
+	//public double selen;
 
 	public double vitaminA;
 
