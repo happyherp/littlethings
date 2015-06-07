@@ -1,6 +1,5 @@
 package de.carlos.simplexFood;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,15 +15,16 @@ public class TestFood {
     	
     	//foods = foods.subList(0, 1000);
     	
-    	Map<Food, Double> result = new FoodOptimize().optimize(foods);
+    	Map<IFood, Double> result = new FoodOptimize().optimize(foods);
     	
-    	Food average = FoodOptimize.getAverage(result);
+
+    	Meal meal = new Meal(result);
     	System.out.println("Selected Foods.");
     	double preis_gesamt = 0.0;
-    	for (Food f : result.keySet()){
-    		double p =  f.price * result.get(f); 
-    		System.out.print(String.format("%-40s %8.3fg %4.2f€",f.name ,result.get(f)*100, p));
-    		FoodOptimize.printCompareToAverage(f, average);
+    	for (IFood f : result.keySet()){
+    		double p =  f.getPrice() * result.get(f); 
+    		System.out.print(String.format("%-40s %8.3fg %4.2f€",f.getName() ,result.get(f)*100, p));
+    		FoodOptimize.printPercentages(f, meal);
     		System.out.println("");
     		preis_gesamt += p;
     	}
@@ -36,7 +36,7 @@ public class TestFood {
     public void printByAttr(){
     	List<Food> foods = new SwissDB().parseDB();
     	
-    	FoodOptimize.printByAttr(foods, f->f.vitaminC);
+    	FoodOptimize.printByAttr(foods, f->f.getVitaminC());
 
     }
 

@@ -51,60 +51,60 @@ public class SwissDB {
 				}
 
 				Food food = new Food();
-				food.name = getCellByName(cells, colNameToIndex, "name D");
-				food.ballast = getGramsFromCell(cells, colNameToIndex,
-						"dietary fibre, total");
-				food.fett = getGramsFromCell(cells, colNameToIndex,
-						"fat, total");
-				food.kohlenhydrate = getGramsFromCell(cells, colNameToIndex,
-						"charbohydrate, total");				
-				food.protein = getGramsFromCell(cells, colNameToIndex,
-								"protein");
+				food.setName(getCellByName(cells, colNameToIndex, "name D"));
+				food.setBallast(getGramsFromCell(cells, colNameToIndex,
+						"dietary fibre, total"));
+				food.setFett(getGramsFromCell(cells, colNameToIndex,
+						"fat, total"));
+				food.setKohlenhydrate(getGramsFromCell(cells, colNameToIndex,
+						"charbohydrate, total"));				
+				food.setProtein(getGramsFromCell(cells, colNameToIndex,
+								"protein"));
 				
-				food.calcium = getGramsFromCell(cells, colNameToIndex,
-						"calcium");
-				food.eisen = getGramsFromCell(cells, colNameToIndex,
-						"iron, total");
-				food.iod = getGramsFromCell(cells, colNameToIndex,
-						"iodide");				
-				food.zink = getGramsFromCell(cells, colNameToIndex,
-								"zinc");
-				food.magnesium = getGramsFromCell(cells, colNameToIndex,
-						"magnesium");		
-				food.fluorid = getGramsFromCell(cells, colNameToIndex,
-						"chlorid");	
-				food.vitaminA = getGramsFromCell(cells, colNameToIndex,
-						"vit A");	
-				food.vitaminB1 = getGramsFromCell(cells, colNameToIndex,
-						"B1");				
-				food.vitaminB2 = getGramsFromCell(cells, colNameToIndex,
-						"B2");
-				food.vitaminB6 = getGramsFromCell(cells, colNameToIndex,
-						"B6");
-				food.vitaminB12 = getGramsFromCell(cells, colNameToIndex,
-						"B12");
-				food.vitaminC = getGramsFromCell(cells, colNameToIndex,
-						"C");					
-				food.vitaminD = getGramsFromCell(cells, colNameToIndex,
-						"D");			
-				food.vitaminE = getGramsFromCell(cells, colNameToIndex,
-						"E");					
-				food.niacin  = getGramsFromCell(cells, colNameToIndex,
-						"niacine");	
-				food.folat = getGramsFromCell(cells, colNameToIndex,
-						"folate");
+				food.setCalcium(getGramsFromCell(cells, colNameToIndex,
+						"calcium"));
+				food.setEisen(getGramsFromCell(cells, colNameToIndex,
+						"iron, total"));
+				food.setIod(getGramsFromCell(cells, colNameToIndex,
+						"iodide"));				
+				food.setZink(getGramsFromCell(cells, colNameToIndex,
+								"zinc"));
+				food.setMagnesium(getGramsFromCell(cells, colNameToIndex,
+						"magnesium"));		
+				food.setFluorid(getGramsFromCell(cells, colNameToIndex,
+						"chlorid"));	
+				food.setVitaminA(getGramsFromCell(cells, colNameToIndex,
+						"vit A"));	
+				food.setVitaminB1(getGramsFromCell(cells, colNameToIndex,
+						"B1"));				
+				food.setVitaminB2(getGramsFromCell(cells, colNameToIndex,
+						"B2"));
+				food.setVitaminB6(getGramsFromCell(cells, colNameToIndex,
+						"B6"));
+				food.setVitaminB12(getGramsFromCell(cells, colNameToIndex,
+						"B12"));
+				food.setVitaminC(getGramsFromCell(cells, colNameToIndex,
+						"C"));					
+				food.setVitaminD(getGramsFromCell(cells, colNameToIndex,
+						"D"));			
+				food.setVitaminE(getGramsFromCell(cells, colNameToIndex,
+						"E"));					
+				food.setNiacin(getGramsFromCell(cells, colNameToIndex,
+						"niacine"));	
+				food.setFolat(getGramsFromCell(cells, colNameToIndex,
+						"folate"));
 
  
 				String priceS = this.getCellByName(cells, colNameToIndex,
 						"Preis");
 				if (priceS.isEmpty()) {
-					food.price = 1.5;//Assume a default price
+					food.setPrice(1.5);//Assume a default price
 				}else{
-					food.price = readDouble(priceS);
+					food.setPrice(readDouble(priceS));
 				}
 				String priceOverride = this.getCellByName(cells, colNameToIndex, "OverridePreis");
 				if (!priceOverride.isEmpty()){
-					food.price = readDouble(priceOverride);
+					food.setPrice(readDouble(priceOverride));
 				}
 
 				foods.add(food);
@@ -157,8 +157,8 @@ public class SwissDB {
 
 	public static void main(String[] args) {
 		List<Food> foods = new SwissDB().parseDB();
-		for (Food food : foods) {
-			System.out.println(food.name + " ballast: " + food.ballast);
+		for (IFood food : foods) {
+			System.out.println(food.getName() + " ballast: " + food.getBallast());
 		}
 	}
 
