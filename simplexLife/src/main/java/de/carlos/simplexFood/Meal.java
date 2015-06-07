@@ -1,6 +1,7 @@
 package de.carlos.simplexFood;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 import java.util.function.ToDoubleFunction;
 
@@ -8,18 +9,18 @@ public class Meal implements IFood{
 	
 	private String name;
 	
-	private Map<IFood, Double> ingredients = new HashMap<IFood, Double>();
+	private Collection<IFood> ingredients = new ArrayList<>();
 	
-	public Meal(Map<IFood, Double> result) {
-		this.ingredients = result;
+	public Meal(Collection<IFood> ingredients) {
+		this.ingredients = ingredients;
 	}
 
-	public void addIngredient(IFood food, double amount){
-		this.ingredients.put(food, amount);
+	public void addIngredient(IFood food){
+		this.ingredients.add(food);
 	}
 	
 	private double sumField(ToDoubleFunction<IFood> acessor){
-		return ingredients.keySet().stream().map(f->acessor.applyAsDouble(f) * ingredients.get(f)).reduce(0.0,(a, b)->a+b);
+		return ingredients.stream().map(f->acessor.applyAsDouble(f)).reduce(0.0,(a, b)->a+b);
 	}
 
 	@Override
@@ -147,6 +148,12 @@ public class Meal implements IFood{
 	@Override
 	public Double getPrice() {
 		return sumField(f->f.getPrice());
+
+	}
+
+	@Override
+	public double getWeight() {
+		return sumField(f->f.getWeight());
 
 	}
 

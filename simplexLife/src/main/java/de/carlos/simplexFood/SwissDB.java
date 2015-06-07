@@ -93,6 +93,7 @@ public class SwissDB {
 						"niacine"));	
 				food.setFolat(getGramsFromCell(cells, colNameToIndex,
 						"folate"));
+				food.setWeight(100.0);
 
  
 				String priceS = this.getCellByName(cells, colNameToIndex,

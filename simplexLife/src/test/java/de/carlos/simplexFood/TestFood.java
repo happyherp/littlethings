@@ -1,7 +1,7 @@
 package de.carlos.simplexFood;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Test;
 
@@ -15,19 +15,18 @@ public class TestFood {
     	
     	//foods = foods.subList(0, 1000);
     	
-    	Map<IFood, Double> result = new FoodOptimize().optimize(foods);
+    	Collection<IFood> result = new FoodOptimize().optimize(foods);
     	
 
     	Meal meal = new Meal(result);
     	System.out.println("Selected Foods.");
-    	double preis_gesamt = 0.0;
-    	for (IFood f : result.keySet()){
-    		double p =  f.getPrice() * result.get(f); 
-    		System.out.print(String.format("%-40s %8.3fg %4.2f€",f.getName() ,result.get(f)*100, p));
+    	for (IFood f : result){
+    		System.out.print(String.format("%-40s %8.3fg %4.2f€",f.getName() ,f.getWeight(), f.getPrice()));
     		FoodOptimize.printPercentages(f, meal);
     		System.out.println("");
-    		preis_gesamt += p;
+
     	}
+    	double preis_gesamt = result.stream().map(f->f.getPrice()).reduce(0.0, (a,b)->a+b);
     	System.out.println(String.format("Gesamtpreis Tagesbedarf: %4.2f€",preis_gesamt));
 
     }

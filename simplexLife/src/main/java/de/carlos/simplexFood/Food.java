@@ -1,10 +1,14 @@
 package de.carlos.simplexFood;
 
+import java.lang.reflect.InvocationTargetException;
+
 public class Food implements IFood {
     
 	private int id;
     
     private String name;
+    
+    private double weight;
     
     private Double price = null;
     
@@ -304,6 +308,16 @@ public class Food implements IFood {
 
 	public void setFolat(double folat) {
 		this.folat = folat;
+	}
+
+
+	public double getWeight() {
+		return weight;
+	}
+
+
+	public void setWeight(double weight) {
+		this.weight = weight;
 	}
 
 

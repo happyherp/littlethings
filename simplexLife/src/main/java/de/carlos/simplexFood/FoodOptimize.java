@@ -1,6 +1,5 @@
 package de.carlos.simplexFood;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ import de.carlos.simplexOO.SimplexOO.Restriction;
 
 public class FoodOptimize {
 
-	public Map<IFood, Double> optimize(List<? extends IFood> foods) {
+	public Collection<IFood> optimize(List<? extends IFood> foods) {
 		
 		List<Restriction<IFood>> constraints = new ArrayList<>();
 		// Basic Elements
@@ -64,8 +63,15 @@ public class FoodOptimize {
 				constraints, 
 						f->f.getPrice(), 
 						GoalType.MINIMIZE);
+		
+		
+		List<IFood> resultFood = new ArrayList<IFood>();
+		for (Map.Entry<IFood, Double> e: result.entrySet()){
+			resultFood.add(e.getKey().mult(e.getValue()));
+		}
+		
 
-		return result;
+		return resultFood;
 	}
 
 	private Stream<? extends IFood> filterValid(List<? extends IFood> foods) {
@@ -75,17 +81,18 @@ public class FoodOptimize {
 
 
 
-	private static Method[] findDoubleGetMethods() {
+	public static Method[] findDoubleGetMethods() {
 		Method[] attributes = Arrays.stream(IFood.class.getMethods())
-				.filter(f -> f.getReturnType() == double.class)
+				.filter(f -> f.getReturnType() == double.class && f.getName().startsWith("get"))
 				.toArray(a->new Method[a]);
 				
 		return attributes;
 	}
 	
-	private static Method[] findDoubleSetMethods() {
-		Method[] attributes = Arrays.stream(IFood.class.getMethods())
-				.filter(f -> f.getParameterCount() == 1 && f.getParameterTypes()[0] == double.class)
+	public static Method[] findDoubleSetMethods() {
+		Method[] attributes = Arrays.stream(Food.class.getMethods())
+				.filter(f -> f.getParameterCount() == 1 && f.getParameterTypes()[0] == double.class
+				&& f.getName().startsWith("set"))
 				.toArray(a->new Method[a]);
 				
 		return attributes;
@@ -104,7 +111,7 @@ public class FoodOptimize {
 		});
 
 		for (Method method : sortedFields) {
-			System.out.print(String.format(" %s(x%2.0f%%) ", method.getName()
+			System.out.print(String.format(" %s(%2.0f%%) ", method.getName()
 					.substring(3), getPercent(f, sum, method)));
 		}
 
