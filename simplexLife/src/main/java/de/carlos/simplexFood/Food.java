@@ -1,6 +1,5 @@
 package de.carlos.simplexFood;
 
-import java.lang.reflect.InvocationTargetException;
 
 public class Food implements IFood {
     
@@ -15,6 +14,12 @@ public class Food implements IFood {
     private double kohlenhydrate;
     
     private double fett;
+    
+    private double fatSaturated;
+    
+    private double fatMonoUnsaturated;
+    
+    private double fatPolyUnsaturated;
     
     private double protein;
     
@@ -32,9 +37,9 @@ public class Food implements IFood {
 
 	private double zink;
 
-	//private double selen;
-
 	private double vitaminA;
+	
+	private double betaCarotene;
 
 	private double vitaminB1;
 
@@ -53,6 +58,14 @@ public class Food implements IFood {
 	private double niacin;
 
 	private double folat;
+	
+	private double pantothenicAcid;
+	
+	private double sodium;
+	
+	private double potassium;
+	
+	private double chloride;
 
     
     public Food() {
@@ -318,6 +331,90 @@ public class Food implements IFood {
 
 	public void setWeight(double weight) {
 		this.weight = weight;
+	}
+
+
+	public double getBetaCarotene() {
+		return betaCarotene;
+	}
+
+
+	public void setBetaCarotene(double betaCarotene) {
+		this.betaCarotene = betaCarotene;
+	}
+
+
+	@Override
+	public double getPantothenicAcid() {
+		return pantothenicAcid;
+	}
+
+
+	public void setPantothenicAcid(double pantothenicAcid) {
+		this.pantothenicAcid = pantothenicAcid;
+	}
+
+
+	public double getSodium() {
+		return sodium;
+	}
+
+
+	public void setSodium(double sodium) {
+		this.sodium = sodium;
+	}
+
+
+	public double getPotassium() {
+		return potassium;
+	}
+
+
+	public void setPotassium(double potassium) {
+		this.potassium = potassium;
+	}
+
+
+	public double getChloride() {
+		return chloride;
+	}
+
+
+	public void setChloride(double chloride) {
+		this.chloride = chloride;
+	}
+
+
+	@Override
+	public double getFatSaturated() {
+		return fatSaturated;
+	}
+
+
+	public void setFatSaturated(double fatSaturated) {
+		this.fatSaturated = fatSaturated;
+	}
+
+
+	@Override
+	public double getFatMonoUnsaturated() {
+		return fatMonoUnsaturated;
+	}
+
+
+	public void setFatMonoUnsaturated(double fatMonoUnsaturated) {
+		this.fatMonoUnsaturated = fatMonoUnsaturated;
+	}
+
+
+	@Override
+	public double getFatPolyUnsaturated() {
+		return fatPolyUnsaturated;
+	}
+
+
+	public void setFatPolyUnsaturated(double fatPolyUnsaturated) {
+		this.fatPolyUnsaturated = fatPolyUnsaturated;
 	}
 
 

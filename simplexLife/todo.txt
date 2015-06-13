@@ -1,0 +1,7 @@
+
+use sql database 
+
+
+GUI
+-change data
+-exclude food, rerun

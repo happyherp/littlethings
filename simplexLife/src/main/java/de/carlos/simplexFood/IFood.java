@@ -51,6 +51,14 @@ public interface IFood {
 
 	public abstract String getName();
 	
+	public double getBetaCarotene();
+	
+	public double getSodium();
+	
+	public double getPotassium();
+	
+	public double getChloride();
+	
 	/**
 	 * Return weight in Grams. 
 	 * @return
@@ -105,5 +113,13 @@ public interface IFood {
 		}
 
 	}
+
+	public abstract double getPantothenicAcid();
+
+	public abstract double getFatPolyUnsaturated();
+
+	public abstract double getFatMonoUnsaturated();
+
+	public abstract double getFatSaturated();
 
 }

@@ -181,7 +181,7 @@ public class MyTest {
 	
 	Map<Activity, Double> result = new Optimizer().optimize(availableTime);
 
-	
+	System.out.println(result);
     }
 
 

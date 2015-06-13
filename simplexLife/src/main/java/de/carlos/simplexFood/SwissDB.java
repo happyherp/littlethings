@@ -20,6 +20,7 @@ public class SwissDB {
 		UNIT_FACTOR.put("microgram", 1.0E-6);
 		UNIT_FACTOR.put("alpha-tocopherol equivalent", 1.0E-3);//Vitamin E mg
 		UNIT_FACTOR.put("retinol equivalent", 1.0E-6); //Retinol in Mikrogramm
+		UNIT_FACTOR.put("beta-carotene equivalent",  1.0E-6);
 	}
 
 	public List<Food> parseDB() {
@@ -56,6 +57,12 @@ public class SwissDB {
 						"dietary fibre, total"));
 				food.setFett(getGramsFromCell(cells, colNameToIndex,
 						"fat, total"));
+				food.setFatSaturated(getGramsFromCell(cells, colNameToIndex,
+						"fatty acids, total saturated"));
+				food.setFatMonoUnsaturated(getGramsFromCell(cells, colNameToIndex,
+						"fatty acids, total mono unsaturated"));
+				food.setFatPolyUnsaturated(getGramsFromCell(cells, colNameToIndex,
+						"fatty acids, total poly unsaturated"));				
 				food.setKohlenhydrate(getGramsFromCell(cells, colNameToIndex,
 						"charbohydrate, total"));				
 				food.setProtein(getGramsFromCell(cells, colNameToIndex,
@@ -75,6 +82,8 @@ public class SwissDB {
 						"chlorid"));	
 				food.setVitaminA(getGramsFromCell(cells, colNameToIndex,
 						"vit A"));	
+				food.setBetaCarotene(getGramsFromCell(cells, colNameToIndex,
+						"beta-carotene equivalents"));					
 				food.setVitaminB1(getGramsFromCell(cells, colNameToIndex,
 						"B1"));				
 				food.setVitaminB2(getGramsFromCell(cells, colNameToIndex,
@@ -93,11 +102,20 @@ public class SwissDB {
 						"niacine"));	
 				food.setFolat(getGramsFromCell(cells, colNameToIndex,
 						"folate"));
+				food.setPantothenicAcid(getGramsFromCell(cells, colNameToIndex,
+						"pantothenic acid"));				
+				food.setSodium(getGramsFromCell(cells, colNameToIndex,
+						"sodium"));	
+				food.setPotassium(getGramsFromCell(cells, colNameToIndex,
+						"potassium"));					
+				food.setChloride(getGramsFromCell(cells, colNameToIndex,
+						"chlorid"));					
+
 				food.setWeight(100.0);
 
  
 				String priceS = this.getCellByName(cells, colNameToIndex,
-						"Preis");
+						"Preis").trim();
 				if (priceS.isEmpty()) {
 					food.setPrice(1.5);//Assume a default price
 				}else{

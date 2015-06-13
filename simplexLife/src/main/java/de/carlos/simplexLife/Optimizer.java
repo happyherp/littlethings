@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.math3.optimization.GoalType;
-import org.apache.commons.math3.optimization.PointValuePair;
-import org.apache.commons.math3.optimization.linear.LinearConstraint;
-import org.apache.commons.math3.optimization.linear.LinearObjectiveFunction;
-import org.apache.commons.math3.optimization.linear.Relationship;
-import org.apache.commons.math3.optimization.linear.SimplexSolver;
+import org.apache.commons.math3.optim.PointValuePair;
+import org.apache.commons.math3.optim.linear.LinearConstraint;
+import org.apache.commons.math3.optim.linear.LinearConstraintSet;
+import org.apache.commons.math3.optim.linear.LinearObjectiveFunction;
+import org.apache.commons.math3.optim.linear.NonNegativeConstraint;
+import org.apache.commons.math3.optim.linear.Relationship;
+import org.apache.commons.math3.optim.linear.SimplexSolver;
+import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
 
 public class Optimizer {
     
@@ -62,8 +64,11 @@ public class Optimizer {
 	
 	 LinearObjectiveFunction objective = new LinearObjectiveFunction(utilities, 0);
 	 	
-	 PointValuePair pvp = new SimplexSolver().optimize(objective, cons, GoalType.MAXIMIZE, true);
-	 
+	 PointValuePair pvp = new SimplexSolver()
+	      .optimize(objective, GoalType.MAXIMIZE, new NonNegativeConstraint(true),
+	    		  new LinearConstraintSet(cons));
+			 
+			 	 
 	 Map<Activity, Double> result = new HashMap<>();
 	 i = 0;
 	 for(Activity act: activities){

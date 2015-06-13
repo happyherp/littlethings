@@ -68,5 +68,9 @@ public class SimplexOO<T> {
 		}
 
 	}
-
+	
+	public static <Q> Restriction<Q> atLeast(double amount, Q obj){
+		return new Restriction<Q>(e->e.equals(obj)?1:0, Relationship.GEQ, amount);
+	}
+	
 }

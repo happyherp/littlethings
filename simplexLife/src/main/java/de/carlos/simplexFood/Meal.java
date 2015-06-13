@@ -2,7 +2,6 @@ package de.carlos.simplexFood;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import java.util.function.ToDoubleFunction;
 
 public class Meal implements IFood{
@@ -157,7 +156,39 @@ public class Meal implements IFood{
 
 	}
 
+	@Override
+	public double getBetaCarotene() {
+		return sumField(f->f.getBetaCarotene());
+	}
 
+	public double getPantothenicAcid() {
+		return sumField(f->f.getPantothenicAcid());
+	}
+
+	@Override
+	public double getSodium() {
+		return sumField(f->f.getSodium());
+	}
 	
+
+	public double getPotassium() {
+		return sumField(f->f.getPotassium());
+	}
+	
+	public double getChloride() {
+		return sumField(f->f.getChloride());
+	}
+
+	public double getFatPolyUnsaturated() {
+		return sumField(f->f.getFatPolyUnsaturated());
+	}
+
+	public double getFatMonoUnsaturated() {
+		return sumField(f->f.getFatMonoUnsaturated());
+	}
+
+	public double getFatSaturated() {
+		return sumField(f->f.getFatSaturated());
+	}
 
 }
