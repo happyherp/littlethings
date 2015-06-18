@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.math3.optim.linear.Relationship;
 import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
+import static de.carlos.simplexFood.Nutrient.*;
 
 import de.carlos.simplexOO.SimplexOO;
 import de.carlos.simplexOO.SimplexOO.Restriction;
@@ -25,44 +26,44 @@ public class FoodOptimize {
 		constraints.addAll(extraRestrictions);
 		
 		// Basic Elements
-		constraints.add(new Restriction<IFood>(f -> f.getKohlenhydrate(), Relationship.EQ, 340.0));
-		//constraints.add(new Restriction<IFood>(f -> f.getFett(), Relationship.EQ, 80.0));
-		constraints.add(new Restriction<IFood>(f -> f.getFatSaturated(), Relationship.EQ, 30.0));
-		constraints.add(new Restriction<IFood>(f -> f.getFatMonoUnsaturated(), Relationship.EQ, 29.0));
-		constraints.add(new Restriction<IFood>(f -> f.getFatPolyUnsaturated(), Relationship.EQ, 21.0));		
-		constraints.add(new Restriction<IFood>(f -> f.getProtein(), Relationship.EQ, 60.0));
-		constraints.add(new Restriction<IFood>(f -> f.getBallast(), Relationship.EQ, 25.0));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Kohlenhydrate), Relationship.EQ, 340.0));
+		//constraints.add(new Restriction<IFood>(f -> f.getNutrient(Fett), Relationship.EQ, 80.0));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(FatSaturated), Relationship.EQ, 30.0));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(FatMonoUnsaturated), Relationship.EQ, 29.0));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(FatPolyUnsaturated), Relationship.EQ, 21.0));		
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Protein), Relationship.EQ, 60.0));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Ballast), Relationship.EQ, 25.0));
 
 		// Spurenelemente
-		constraints.add(new Restriction<IFood>(f -> f.getCalcium(), Relationship.GEQ, 1.0));
-		constraints.add(new Restriction<IFood>(f -> f.getEisen(), Relationship.GEQ, 10.0E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getEisen(), Relationship.LEQ, 45.0E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getIod(), Relationship.GEQ, 200.0E-6));
-		constraints.add(new Restriction<IFood>(f -> f.getIod(), Relationship.LEQ, 500.0E-6));
-		constraints.add(new Restriction<IFood>(f -> f.getFluorid(), Relationship.GEQ, 3.8E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getMagnesium(), Relationship.GEQ, 350.0E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getZink(), Relationship.GEQ, 10.0E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getZink(), Relationship.LEQ, 30.0E-3));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Calcium), Relationship.GEQ, 1.0));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Eisen), Relationship.GEQ, 10.0E-3));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Eisen), Relationship.LEQ, 45.0E-3));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Iod), Relationship.GEQ, 200.0E-6));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Iod), Relationship.LEQ, 500.0E-6));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Fluorid), Relationship.GEQ, 3.8E-3));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Magnesium), Relationship.GEQ, 350.0E-3));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Zink), Relationship.GEQ, 10.0E-3));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Zink), Relationship.LEQ, 30.0E-3));
 
 		// Vitamine
-		constraints.add(new Restriction<IFood>(f -> f.getVitaminA(), Relationship.GEQ, 1.0E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getVitaminA(), Relationship.LEQ, 3.0E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getBetaCarotene(), Relationship.GEQ, 2.0E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getBetaCarotene(), Relationship.LEQ, 10.0E-3));		
-		constraints.add(new Restriction<IFood>(f -> f.getVitaminB1(), Relationship.GEQ, 1.2E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getVitaminB2(), Relationship.GEQ, 1.4E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getVitaminB6(), Relationship.GEQ, 1.5E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getVitaminB12(), Relationship.GEQ, 3E-6));
-		constraints.add(new Restriction<IFood>(f -> f.getVitaminC(), Relationship.GEQ, 100E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getVitaminD(), Relationship.GEQ, 5E-6));
-		constraints.add(new Restriction<IFood>(f -> f.getVitaminE(), Relationship.GEQ, 14E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getVitaminE(), Relationship.LEQ, 300E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getNiacin(), Relationship.GEQ, 16E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getNiacin(), Relationship.LEQ, 32E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getFolat(), Relationship.GEQ, 400E-6));	
-		constraints.add(new Restriction<IFood>(f -> f.getPantothenicAcid(), Relationship.GEQ, 6E-3));	
-		constraints.add(new Restriction<IFood>(f -> f.getSodium(), Relationship.GEQ, 500E-3));	
-		constraints.add(new Restriction<IFood>(f -> f.getChloride(), Relationship.GEQ, 2));	
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(VitaminA), Relationship.GEQ, 1.0E-3));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(VitaminA), Relationship.LEQ, 3.0E-3));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(BetaCarotene), Relationship.GEQ, 2.0E-3));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(BetaCarotene), Relationship.LEQ, 10.0E-3));		
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(VitaminB1), Relationship.GEQ, 1.2E-3));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(VitaminB2), Relationship.GEQ, 1.4E-3));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(VitaminB6), Relationship.GEQ, 1.5E-3));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(VitaminB12), Relationship.GEQ, 3E-6));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(VitaminC), Relationship.GEQ, 100E-3));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(VitaminD), Relationship.GEQ, 5E-6));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(VitaminE), Relationship.GEQ, 14E-3));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(VitaminE), Relationship.LEQ, 300E-3));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Niacin), Relationship.GEQ, 16E-3));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Niacin), Relationship.LEQ, 32E-3));
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Folat), Relationship.GEQ, 400E-6));	
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(PantothenicAcid), Relationship.GEQ, 6E-3));	
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Sodium), Relationship.GEQ, 500E-3));	
+		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Chloride), Relationship.GEQ, 2));	
 		
 		
 		//Unavailable
@@ -92,62 +93,41 @@ public class FoodOptimize {
 	}
 
 
-
-	public static Method[] findDoubleGetMethods() {
-		Method[] attributes = Arrays.stream(IFood.class.getMethods())
-				.filter(f -> f.getReturnType() == double.class && f.getName().startsWith("get"))
-				.toArray(a->new Method[a]);
-				
-		return attributes;
-	}
-	
-	public static Method[] findDoubleSetMethods() {
-		Method[] attributes = Arrays.stream(Food.class.getMethods())
-				.filter(f -> f.getParameterCount() == 1 && f.getParameterTypes()[0] == double.class
-				&& f.getName().startsWith("set"))
-				.toArray(a->new Method[a]);
-				
-		return attributes;
-	}
 	
 	public static void printPercentages(IFood f, IFood sum) {
 
-		Method[] sortedFields = findDoubleGetMethods();
-		Arrays.sort(sortedFields, new Comparator<Method>() {
+		Nutrient[] sortedFields = Arrays.copyOf(Nutrient.values(), Nutrient.values().length);
+		Arrays.sort(sortedFields, new Comparator<Nutrient>() {
 
 			@Override
-			public int compare(Method o1, Method o2) {
+			public int compare(Nutrient o1, Nutrient o2) {
 				return -Double.compare(getPercent(f, sum, o1),
 						getPercent(f, sum, o2));
 			}
 		});
 
-		for (Method method : sortedFields) {
+		for (Nutrient method : sortedFields) {
 			double p = getPercent(f, sum, method);
 			if (p > 5) {
-				System.out.print(String.format(" %s(%2.0f%%) ", method
-						.getName().substring(3),p));
+				System.out.print(String.format(" %s(%2.0f%%) ", method, p));
 			}
 		}
 
 	}
 
-	private static double getPercent(IFood f, IFood all, Method field){
-		try {
-		double thisD = (double)field.invoke(f);
-		double avgD = (double)field.invoke(all); 
-		double factor = 100*thisD/avgD;
+	private static double getPercent(IFood f, IFood all, Nutrient field) {
+		double thisD = f.getNutrient(field);
+		double avgD = all.getNutrient(field);
+		double factor = 100 * thisD / avgD;
 		return factor;
-	} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
-		throw new RuntimeException(e);
-	}
+
 	}
 
-	public static void printByAttr(List<Food> foods, ToDoubleFunction<Food> f) {
+	public static void printByAttr(List<Food> foods, Nutrient n) {
 
     	foods.stream()
-    	   .sorted((o1, o2)-> Double.compare(f.applyAsDouble(o1)/ o1.getPrice(), f.applyAsDouble(o2) / o2.getPrice()))
-		   .forEachOrdered(food -> System.out.println(food.getName() + " "+ f.applyAsDouble(food) / food.getPrice()));
+    	   .sorted((o1, o2)-> Double.compare(o1.getNutrient(n)/ o1.getPrice(), o1.getNutrient(n) / o2.getPrice()))
+		   .forEachOrdered(food -> System.out.println(food.getName() + " "+food.getNutrient(n) / food.getPrice()));
 	   		
 	}
 

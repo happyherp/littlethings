@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import static de.carlos.simplexFood.Nutrient.*;
 
 import au.com.bytecode.opencsv.CSVParser;
 
@@ -55,62 +56,63 @@ public class SwissDB {
 
 				Food food = new Food();
 				food.setName(getCellByName(cells, colNameToIndex, "name D"));
-				food.setBallast(getGramsFromCell(cells, colNameToIndex,
+				
+				food.setNutrient(Ballast,getGramsFromCell(cells, colNameToIndex,
 						"dietary fibre, total"));
-				food.setFett(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(Fett,getGramsFromCell(cells, colNameToIndex,
 						"fat, total"));
-				food.setFatSaturated(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(FatSaturated,getGramsFromCell(cells, colNameToIndex,
 						"fatty acids, total saturated"));
-				food.setFatMonoUnsaturated(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(FatMonoUnsaturated,getGramsFromCell(cells, colNameToIndex,
 						"fatty acids, total mono unsaturated"));
-				food.setFatPolyUnsaturated(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(FatPolyUnsaturated,getGramsFromCell(cells, colNameToIndex,
 						"fatty acids, total poly unsaturated"));				
-				food.setKohlenhydrate(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(Kohlenhydrate,getGramsFromCell(cells, colNameToIndex,
 						"charbohydrate, total"));				
-				food.setProtein(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(Protein,getGramsFromCell(cells, colNameToIndex,
 								"protein"));
 				
-				food.setCalcium(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(Calcium,getGramsFromCell(cells, colNameToIndex,
 						"calcium"));
-				food.setEisen(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(Eisen,getGramsFromCell(cells, colNameToIndex,
 						"iron, total"));
-				food.setIod(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(Iod,getGramsFromCell(cells, colNameToIndex,
 						"iodide"));				
-				food.setZink(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(Zink,getGramsFromCell(cells, colNameToIndex,
 								"zinc"));
-				food.setMagnesium(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(Magnesium,getGramsFromCell(cells, colNameToIndex,
 						"magnesium"));		
-				food.setFluorid(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(Fluorid,getGramsFromCell(cells, colNameToIndex,
 						"chlorid"));	
-				food.setVitaminA(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(VitaminA,getGramsFromCell(cells, colNameToIndex,
 						"vit A"));	
-				food.setBetaCarotene(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(BetaCarotene,getGramsFromCell(cells, colNameToIndex,
 						"beta-carotene equivalents"));					
-				food.setVitaminB1(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(VitaminB1,getGramsFromCell(cells, colNameToIndex,
 						"B1"));				
-				food.setVitaminB2(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(VitaminB2,getGramsFromCell(cells, colNameToIndex,
 						"B2"));
-				food.setVitaminB6(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(VitaminB6,getGramsFromCell(cells, colNameToIndex,
 						"B6"));
-				food.setVitaminB12(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(VitaminB12,getGramsFromCell(cells, colNameToIndex,
 						"B12"));
-				food.setVitaminC(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(VitaminC,getGramsFromCell(cells, colNameToIndex,
 						"C"));					
-				food.setVitaminD(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(VitaminD,getGramsFromCell(cells, colNameToIndex,
 						"D"));			
-				food.setVitaminE(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(VitaminE,getGramsFromCell(cells, colNameToIndex,
 						"E"));					
-				food.setNiacin(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(Niacin,getGramsFromCell(cells, colNameToIndex,
 						"niacine"));	
-				food.setFolat(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(Folat,getGramsFromCell(cells, colNameToIndex,
 						"folate"));
-				food.setPantothenicAcid(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(PantothenicAcid,getGramsFromCell(cells, colNameToIndex,
 						"pantothenic acid"));				
-				food.setSodium(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(Sodium,getGramsFromCell(cells, colNameToIndex,
 						"sodium"));	
-				food.setPotassium(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(Potassium,getGramsFromCell(cells, colNameToIndex,
 						"potassium"));					
-				food.setChloride(getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(Chloride,getGramsFromCell(cells, colNameToIndex,
 						"chlorid"));					
 
 				food.setWeight(100.0);
@@ -179,7 +181,7 @@ public class SwissDB {
 	public static void main(String[] args) {
 		List<Food> foods = new SwissDB().parseDB();
 		for (IFood food : foods) {
-			System.out.println(food.getName() + " ballast: " + food.getBallast());
+			System.out.println(food.getName() + " ballast: " + food.getNutrient(Ballast));
 		}
 	}
 

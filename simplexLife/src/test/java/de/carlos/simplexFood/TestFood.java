@@ -43,7 +43,7 @@ public class TestFood {
     public void printByAttr(){
     	List<Food> foods = new SwissDB().parseDB();
     	
-    	FoodOptimize.printByAttr(foods, IFood::getVitaminB12);
+    	FoodOptimize.printByAttr(foods, Nutrient.VitaminB12);
 
     }
     
