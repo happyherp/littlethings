@@ -10,12 +10,16 @@ public class Meal implements IFood{
 	
 	private Collection<IFood> ingredients = new ArrayList<>();
 	
+	public Meal(){
+	}
+	
 	public Meal(Collection<IFood> ingredients) {
 		this.ingredients = ingredients;
 	}
 
-	public void addIngredient(IFood food){
+	public Meal addIngredient(IFood food){
 		this.ingredients.add(food);
+		return this;
 	}
 	
 	private double sumField(ToDoubleFunction<IFood> acessor){

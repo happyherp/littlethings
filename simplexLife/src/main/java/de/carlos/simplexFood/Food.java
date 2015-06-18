@@ -1,77 +1,83 @@
 package de.carlos.simplexFood;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
+
+
+@Entity()
 public class Food implements IFood {
     
 	private int id;
     
-    private String name;
+    private String name = "nameless";
     
-    private double weight;
+    private double weight = 100.0;
     
     private Double price = null;
     
-    private double kohlenhydrate;
+    private double kohlenhydrate = 0.0;
     
-    private double fett;
+    private double fett = 0.0;
     
-    private double fatSaturated;
+    private double fatSaturated = 0.0;
     
-    private double fatMonoUnsaturated;
+    private double fatMonoUnsaturated = 0.0;
     
-    private double fatPolyUnsaturated;
+    private double fatPolyUnsaturated = 0.0;
     
-    private double protein;
+    private double protein = 0.0;
     
-    private double ballast;
+    private double ballast = 0.0;
 
-	private double calcium;
+	private double calcium = 0.0;
 
-	private double eisen;
+	private double eisen = 0.0;
 
-	private double iod;
+	private double iod = 0.0;
 
-	private double fluorid;
+	private double fluorid = 0.0;
 
-	private double magnesium;
+	private double magnesium = 0.0;
 
-	private double zink;
+	private double zink = 0.0;
 
-	private double vitaminA;
+	private double vitaminA = 0.0;
 	
-	private double betaCarotene;
+	private double betaCarotene = 0.0;
 
-	private double vitaminB1;
+	private double vitaminB1 = 0.0;
 
-	private double vitaminB2;
+	private double vitaminB2 = 0.0;
 
-	private double vitaminB12;
+	private double vitaminB12 = 0.0;
 
-	private double vitaminB6;
+	private double vitaminB6 = 0.0;
 
-	private double vitaminD;
+	private double vitaminD = 0.0;
 
-	private double vitaminC;
+	private double vitaminC = 0.0;
 
-	private double vitaminE;
+	private double vitaminE = 0.0;
 
-	private double niacin;
+	private double niacin = 0.0;
 
-	private double folat;
+	private double folat = 0.0;
 	
-	private double pantothenicAcid;
+	private double pantothenicAcid = 0.0;
 	
-	private double sodium;
+	private double sodium = 0.0;
 	
-	private double potassium;
+	private double potassium = 0.0;
 	
-	private double chloride;
+	private double chloride = 0.0;
 
     
     public Food() {
     }
 
 
+    @Id
     public int getId() {
 		return id;
 	}

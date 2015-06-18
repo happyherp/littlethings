@@ -1,7 +1,18 @@
 
+
+purpose
+-make durable food that tastes ok for smallest price
+
+
 use sql database 
-
-
 GUI
 -change data
--exclude food, rerun
+
+
+
+nahrung
+-ergänzung zu bestehendem nahrungsprofil
+
+-think about how to make sure that the food is enough to make you "full"
+
+-ziel änderbar machen.

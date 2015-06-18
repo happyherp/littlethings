@@ -122,4 +122,26 @@ public interface IFood {
 
 	public abstract double getFatSaturated();
 
+	public default IFood gram(double gram){
+		return this.mult(gram / this.getWeight());
+	}
+
+	/**
+	 * 
+	 * 1 EL -> 10-15g
+	 * @param i
+	 * @return
+	 */
+	public default IFood el(int i){
+		return this.gram(i*12);
+	}
+	
+	
+	public default Food free(){
+		Food f = (Food) this.mult(1.0);
+	    f.setPrice(0.0);
+	    return f;
+	}
+	
+
 }

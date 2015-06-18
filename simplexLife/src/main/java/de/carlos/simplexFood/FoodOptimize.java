@@ -19,7 +19,7 @@ import de.carlos.simplexOO.SimplexOO.Restriction;
 
 public class FoodOptimize {
 
-	public Collection<IFood> optimize(List<? extends IFood> foods, Collection<Restriction<IFood>> extraRestrictions) {
+	public List<IFood> optimize(List<? extends IFood> foods, Collection<Restriction<IFood>> extraRestrictions) {
 		
 		List<Restriction<IFood>> constraints = new ArrayList<>();
 		constraints.addAll(extraRestrictions);
@@ -123,8 +123,11 @@ public class FoodOptimize {
 		});
 
 		for (Method method : sortedFields) {
-			System.out.print(String.format(" %s(%2.0f%%) ", method.getName()
-					.substring(3), getPercent(f, sum, method)));
+			double p = getPercent(f, sum, method);
+			if (p > 5) {
+				System.out.print(String.format(" %s(%2.0f%%) ", method
+						.getName().substring(3),p));
+			}
 		}
 
 	}
@@ -147,7 +150,23 @@ public class FoodOptimize {
 		   .forEachOrdered(food -> System.out.println(food.getName() + " "+ f.applyAsDouble(food) / food.getPrice()));
 	   		
 	}
-	
+
+	public static void printSummary(Collection<IFood> result) {
+    	System.out.println("Selected Foods.");
+    	int i = 1;
+    	for (IFood f : result){
+    		System.out.print(String.format("%2d:%-40s %8.3fg %4.2f€",i, f.getName() ,f.getWeight(), f.getPrice()));
+    		FoodOptimize.printPercentages(f, new Meal(result));
+    		System.out.println("");
+    		i++;
+
+    	}
+    	double preis_gesamt = result.stream().map(IFood::getPrice).reduce(0.0, (a,b)->a+b);
+    	System.out.println(String.format("Gesamtpreis Tagesbedarf: %4.2f€",preis_gesamt));		
+    	
+    	
+	}
+
 	
 
 }

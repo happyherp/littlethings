@@ -12,6 +12,8 @@ import java.util.Map;
 import au.com.bytecode.opencsv.CSVParser;
 
 public class SwissDB {
+	
+	public static final double DEFAULT_PRICE = 1.00;
 
 	public static final Map<String, Double> UNIT_FACTOR = new HashMap<>();
 	static {
@@ -25,7 +27,7 @@ public class SwissDB {
 
 	public List<Food> parseDB() {
 
-		List<Food> foods = new ArrayList<Food>();
+		List<Food> foods = new ArrayList<>();
 		BufferedReader r = null;
 		try {
 //			r = new BufferedReader(new InputStreamReader(this
@@ -117,7 +119,7 @@ public class SwissDB {
 				String priceS = this.getCellByName(cells, colNameToIndex,
 						"Preis").trim();
 				if (priceS.isEmpty()) {
-					food.setPrice(1.5);//Assume a default price
+					food.setPrice(DEFAULT_PRICE);//Assume a default price
 				}else{
 					food.setPrice(readDouble(priceS));
 				}

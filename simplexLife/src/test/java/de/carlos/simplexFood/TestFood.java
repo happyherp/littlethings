@@ -14,7 +14,11 @@ public class TestFood {
     public void test(){
 	
 	
-    	List<Food> foods = new SwissDB().parseDB(); 
+    	List<IFood> foods = new ArrayList<>(new SwissDB().parseDB()); 
+    	
+    	Recipies recipies = new Recipies(foods);
+    	foods.add(recipies.brot);
+    	
     	
     	foods = foods.stream()
     	//		.filter(f->!f.getName().contains("mehl"))
@@ -26,18 +30,11 @@ public class TestFood {
 //    	IFood apple = foods.stream().filter(f->f.getName().contains("Apfel, roh")).findFirst().get();
 //    	extraRestr.add(SimplexOO.atLeast(2, apple));
     	
-    	Collection<IFood> result = new FoodOptimize().optimize(foods, extraRestr);
-    	
+    	List<IFood> result = new FoodOptimize().optimize(foods, extraRestr);
+		result.sort((a,b)->(int) (b.getWeight() - a.getWeight()));
 
-    	System.out.println("Selected Foods.");
-    	for (IFood f : result){
-    		System.out.print(String.format("%-40s %8.3fg %4.2f€",f.getName() ,f.getWeight(), f.getPrice()));
-    		//FoodOptimize.printPercentages(f, meal);
-    		System.out.println("");
 
-    	}
-    	double preis_gesamt = result.stream().map(IFood::getPrice).reduce(0.0, (a,b)->a+b);
-    	System.out.println(String.format("Gesamtpreis Tagesbedarf: %4.2f€",preis_gesamt));
+    	FoodOptimize.printSummary(result);
 
     	
     }
@@ -46,8 +43,41 @@ public class TestFood {
     public void printByAttr(){
     	List<Food> foods = new SwissDB().parseDB();
     	
-    	FoodOptimize.printByAttr(foods, IFood::getFatSaturated);
+    	FoodOptimize.printByAttr(foods, IFood::getVitaminB12);
 
     }
+    
+    @Test
+    public void testInsert(){
+    	
+    	Food food = new Food();
+    	food.setName("testfood");
+    	
+    	HibernateUtil.beginTransaction();
+    	HibernateUtil.getSession().save(food);
+    	
+    }
+    
+    @Test
+    public void testUnpriced(){
+    	List<Food> foods = new SwissDB().parseDB(); 
+    	
+    	foods = foods.stream()
+    			.filter(f->f.getPrice().equals(SwissDB.DEFAULT_PRICE))
+    			.collect(ArrayList::new, ArrayList::add,ArrayList::addAll);
+    	
+    	
+    	List<Restriction<IFood>> extraRestr = new ArrayList<>();
+    	
+//    	IFood apple = foods.stream().filter(f->f.getName().contains("Apfel, roh")).findFirst().get();
+//    	extraRestr.add(SimplexOO.atLeast(2, apple));
+    	
+    	Collection<IFood> result = new FoodOptimize().optimize(foods, extraRestr);
+    	
+
+    	FoodOptimize.printSummary(result);
+
+    }
+   
 
 }
