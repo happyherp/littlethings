@@ -6,6 +6,9 @@ import java.util.List;
 
 import org.junit.Test;
 
+import de.carlos.simplexFood.food.Food;
+import de.carlos.simplexFood.food.IFood;
+import de.carlos.simplexFood.food.Nutrient;
 import de.carlos.simplexOO.SimplexOO.Restriction;
 
 public class TestFood {
@@ -15,6 +18,8 @@ public class TestFood {
 	
 	
     	List<IFood> foods = new ArrayList<>(new SwissDB().parseDB()); 
+    	
+    	NutritionTarget target = NutritionTarget.dailyMale();
     	
     	Recipies recipies = new Recipies(foods);
     	foods.add(recipies.brot);
@@ -30,7 +35,7 @@ public class TestFood {
 //    	IFood apple = foods.stream().filter(f->f.getName().contains("Apfel, roh")).findFirst().get();
 //    	extraRestr.add(SimplexOO.atLeast(2, apple));
     	
-    	List<IFood> result = new FoodOptimize().optimize(foods, extraRestr);
+    	List<IFood> result = new FoodOptimize().optimize(foods, extraRestr, target);
 		result.sort((a,b)->(int) (b.getWeight() - a.getWeight()));
 
 
@@ -72,7 +77,7 @@ public class TestFood {
 //    	IFood apple = foods.stream().filter(f->f.getName().contains("Apfel, roh")).findFirst().get();
 //    	extraRestr.add(SimplexOO.atLeast(2, apple));
     	
-    	Collection<IFood> result = new FoodOptimize().optimize(foods, extraRestr);
+    	Collection<IFood> result = new FoodOptimize().optimize(foods, extraRestr, NutritionTarget.dailyMale());
     	
 
     	FoodOptimize.printSummary(result);

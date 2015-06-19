@@ -1,4 +1,4 @@
-package de.carlos.simplexFood;
+package de.carlos.simplexFood.food;
 
 
 public interface IFood {
@@ -39,7 +39,7 @@ public interface IFood {
 		return fNew;
 
 	}
-
+  
 
 	public default IFood gram(double gram){
 		return this.mult(gram / this.getWeight());

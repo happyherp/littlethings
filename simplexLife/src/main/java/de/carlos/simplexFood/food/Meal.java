@@ -1,4 +1,4 @@
-package de.carlos.simplexFood;
+package de.carlos.simplexFood.food;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -1,76 +1,30 @@
 package de.carlos.simplexFood;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.ToDoubleFunction;
 import java.util.stream.Stream;
 
-import org.apache.commons.math3.optim.linear.Relationship;
 import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
-import static de.carlos.simplexFood.Nutrient.*;
 
+import de.carlos.simplexFood.food.Food;
+import de.carlos.simplexFood.food.IFood;
+import de.carlos.simplexFood.food.Meal;
+import de.carlos.simplexFood.food.Nutrient;
 import de.carlos.simplexOO.SimplexOO;
 import de.carlos.simplexOO.SimplexOO.Restriction;
 
 public class FoodOptimize {
 
-	public List<IFood> optimize(List<? extends IFood> foods, Collection<Restriction<IFood>> extraRestrictions) {
+	public List<IFood> optimize(List<? extends IFood> foods, Collection<Restriction<IFood>> extraRestrictions, NutritionTarget target) {
 		
 		List<Restriction<IFood>> constraints = new ArrayList<>();
 		constraints.addAll(extraRestrictions);
+		constraints.addAll(target.createRestrictions());
 		
-		// Basic Elements
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Kohlenhydrate), Relationship.EQ, 340.0));
-		//constraints.add(new Restriction<IFood>(f -> f.getNutrient(Fett), Relationship.EQ, 80.0));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(FatSaturated), Relationship.EQ, 30.0));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(FatMonoUnsaturated), Relationship.EQ, 29.0));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(FatPolyUnsaturated), Relationship.EQ, 21.0));		
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Protein), Relationship.EQ, 60.0));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Ballast), Relationship.EQ, 25.0));
-
-		// Spurenelemente
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Calcium), Relationship.GEQ, 1.0));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Eisen), Relationship.GEQ, 10.0E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Eisen), Relationship.LEQ, 45.0E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Iod), Relationship.GEQ, 200.0E-6));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Iod), Relationship.LEQ, 500.0E-6));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Fluorid), Relationship.GEQ, 3.8E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Magnesium), Relationship.GEQ, 350.0E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Zink), Relationship.GEQ, 10.0E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Zink), Relationship.LEQ, 30.0E-3));
-
-		// Vitamine
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(VitaminA), Relationship.GEQ, 1.0E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(VitaminA), Relationship.LEQ, 3.0E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(BetaCarotene), Relationship.GEQ, 2.0E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(BetaCarotene), Relationship.LEQ, 10.0E-3));		
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(VitaminB1), Relationship.GEQ, 1.2E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(VitaminB2), Relationship.GEQ, 1.4E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(VitaminB6), Relationship.GEQ, 1.5E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(VitaminB12), Relationship.GEQ, 3E-6));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(VitaminC), Relationship.GEQ, 100E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(VitaminD), Relationship.GEQ, 5E-6));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(VitaminE), Relationship.GEQ, 14E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(VitaminE), Relationship.LEQ, 300E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Niacin), Relationship.GEQ, 16E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Niacin), Relationship.LEQ, 32E-3));
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Folat), Relationship.GEQ, 400E-6));	
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(PantothenicAcid), Relationship.GEQ, 6E-3));	
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Sodium), Relationship.GEQ, 500E-3));	
-		constraints.add(new Restriction<IFood>(f -> f.getNutrient(Chloride), Relationship.GEQ, 2));	
-		
-		
-		//Unavailable
-//		constraints.addC(f -> f.selen
-//				, Relationship.GEQ, 40.0E-6);			 
-		
-
 		Map<IFood, Double> result = new SimplexOO<IFood>().solve(
 				(Collection<IFood>) Arrays.asList(filterValid(foods).toArray(i->new IFood[i])), 
 				constraints, 

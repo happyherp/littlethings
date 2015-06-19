@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static de.carlos.simplexFood.Nutrient.*;
 
+import de.carlos.simplexFood.food.Food;
+import de.carlos.simplexFood.food.IFood;
+import static de.carlos.simplexFood.food.Nutrient.*;
 import au.com.bytecode.opencsv.CSVParser;
 
 public class SwissDB {

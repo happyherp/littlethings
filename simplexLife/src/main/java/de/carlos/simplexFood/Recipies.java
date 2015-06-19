@@ -3,6 +3,10 @@ package de.carlos.simplexFood;
 import java.util.Collection;
 import java.util.List;
 
+import de.carlos.simplexFood.food.Food;
+import de.carlos.simplexFood.food.IFood;
+import de.carlos.simplexFood.food.Meal;
+
 public class Recipies {
 	
 	

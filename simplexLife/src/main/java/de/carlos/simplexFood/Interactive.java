@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.derby.tools.sysinfo;
 
+import de.carlos.simplexFood.food.IFood;
 import de.carlos.simplexOO.SimplexOO.Restriction;
 
 public class Interactive {
@@ -18,10 +19,11 @@ public class Interactive {
 			List<Restriction<IFood>> extraRestrictions = new ArrayList<>();
 			BufferedReader lineIn = new BufferedReader(new InputStreamReader(
 					System.in));
+			NutritionTarget target = NutritionTarget.dailyMale();
 
 			while (true) {
 				List<IFood> result = new FoodOptimize().optimize(available,
-						extraRestrictions);
+						extraRestrictions, target);
 				result.sort((a,b)->(int) (b.getWeight() - a.getWeight()));
 				FoodOptimize.printSummary(result);
 
