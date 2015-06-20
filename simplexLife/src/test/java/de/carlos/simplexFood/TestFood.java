@@ -9,6 +9,7 @@ import org.junit.Test;
 import de.carlos.simplexFood.food.Food;
 import de.carlos.simplexFood.food.IFood;
 import de.carlos.simplexFood.food.Nutrient;
+import de.carlos.simplexFood.swissDB.SwissDB;
 import de.carlos.simplexOO.SimplexOO.Restriction;
 
 public class TestFood {
@@ -24,6 +25,7 @@ public class TestFood {
     	Recipies recipies = new Recipies(foods);
     	foods.add(recipies.brot);
     	
+    	//target = target.subtract(recipies.brot.gram(200.0));    	
     	
     	foods = foods.stream()
     	//		.filter(f->!f.getName().contains("mehl"))
@@ -39,16 +41,57 @@ public class TestFood {
 		result.sort((a,b)->(int) (b.getWeight() - a.getWeight()));
 
 
-    	FoodOptimize.printSummary(result);
-
-    	
+    	FoodOptimize.printSummary(result);    	
     }
+    
+    @Test
+    public void testLowCarb(){
+	
+	
+    	List<IFood> foods = new ArrayList<>(new SwissDB().parseDB()); 
+    	
+    	NutritionTarget target = NutritionTarget.dailyMale();
+    	target.set(Nutrient.Kohlenhydrate, null, 30.0);
+    	target.set(Nutrient.Starch, null, null);
+    	
+
+    	List<Restriction<IFood>> extraRestr = new ArrayList<>();
+    	
+    	List<IFood> result = new FoodOptimize().optimize(foods, extraRestr, target);
+		result.sort((a,b)->(int) (b.getWeight() - a.getWeight()));
+
+
+    	FoodOptimize.printSummary(result);    	
+    }
+    
+    @Test
+    public void testLowFat(){
+	
+	
+    	List<IFood> foods = new ArrayList<>(new SwissDB().parseDB()); 
+    	
+    	NutritionTarget target = NutritionTarget.dailyMale();
+    	target.set(Nutrient.Fett, null, 10.0);
+    	target.set(Nutrient.FatPolyUnsaturated, null, null);
+    	target.set(Nutrient.FatSaturated, null, null);
+    	target.set(Nutrient.FatMonoUnsaturated, null, null);
+
+
+    	List<Restriction<IFood>> extraRestr = new ArrayList<>();
+    	
+    	List<IFood> result = new FoodOptimize().optimize(foods, extraRestr, target);
+		result.sort((a,b)->(int) (b.getWeight() - a.getWeight()));
+
+
+    	FoodOptimize.printSummary(result);    	
+    }
+    
     
     @Test
     public void printByAttr(){
     	List<Food> foods = new SwissDB().parseDB();
     	
-    	FoodOptimize.printByAttr(foods, Nutrient.VitaminB12);
+    	FoodOptimize.printByAttr(foods, Nutrient.Protein);
 
     }
     
@@ -60,6 +103,7 @@ public class TestFood {
     	
     	HibernateUtil.beginTransaction();
     	HibernateUtil.getSession().save(food);
+    	HibernateUtil.flush();
     	
     }
     

@@ -37,6 +37,11 @@ public class FoodOptimize {
 			resultFood.add(e.getKey().mult(e.getValue()));
 		}
 		
+		Meal m = new Meal(resultFood);
+		if (!target.matches(m)){
+			throw new RuntimeException("Food did not match target. Miscalculation in Simplex.");
+		}
+		
 
 		return resultFood;
 	}
@@ -80,7 +85,7 @@ public class FoodOptimize {
 	public static void printByAttr(List<Food> foods, Nutrient n) {
 
     	foods.stream()
-    	   .sorted((o1, o2)-> Double.compare(o1.getNutrient(n)/ o1.getPrice(), o1.getNutrient(n) / o2.getPrice()))
+    	   .sorted((o1, o2)-> Double.compare(o1.getNutrient(n)/ o1.getPrice(), o2.getNutrient(n) / o2.getPrice()))
 		   .forEachOrdered(food -> System.out.println(food.getName() + " "+food.getNutrient(n) / food.getPrice()));
 	   		
 	}

@@ -56,6 +56,10 @@ public enum Nutrient {
 
 	FatMonoUnsaturated,
 
-	FatSaturated ;
+	FatSaturated,
+	
+	Starch,
+	
+	Sugar;
 
 }

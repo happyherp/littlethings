@@ -40,6 +40,8 @@ import de.carlos.simplexOO.SimplexOO.Restriction;
 
 public class NutritionTarget {
 	
+    private static transient final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(HibernateUtil.class);
+
 
 	Map<Nutrient, Limit> target = new HashMap<>();
 	
@@ -69,6 +71,50 @@ public class NutritionTarget {
 		return restrictions;
 	}
 	
+	
+	/**
+	 * Subtract the nutrients of the given food from this target.
+	 * 
+	 * @param food
+	 */
+	public NutritionTarget subtract(IFood food){
+		
+		
+		NutritionTarget subtracted = new NutritionTarget();
+		for (Nutrient n: this.target.keySet()){
+			subtracted.target.put(n, this.target.get(n).subtract(food.getNutrient(n)));
+		}
+		return subtracted;
+	}
+	
+	private static final double TOLERANCE = 0.01;
+	
+	public boolean matches(IFood food){
+		
+		
+		boolean match = true;
+		
+		for (Nutrient n : this.target.keySet()){
+			Limit l = this.target.get(n);
+			
+			if (l.min != null){
+				match = match && food.getNutrient(n) * (1.0+TOLERANCE) >= l.min;
+			}
+			if (l.max != null){
+				match = match && food.getNutrient(n) * (1.0-TOLERANCE)<= l.max;
+			}			
+			
+			if (!match){
+				LOGGER.info("Did not match constraint on "+n);
+			}
+			
+		}
+		
+		
+		return match;
+		
+	}
+	
 
 	public class Limit{
 		
@@ -80,6 +126,15 @@ public class NutritionTarget {
 			this.min = min;
 		}
 		
+		public Limit subtract(Double nutrient) {
+			Limit l = new Limit(this.min == null?null:this.min - nutrient, 
+					            this.max == null?null:this.max - nutrient );
+			if (l.min != null && l.min <=0){
+				l.min = null;
+			}			
+			return l;
+		}
+
 		public Limit(Double min, Double max){
 			this.min = min;
 			this.max = max;
@@ -95,7 +150,9 @@ public class NutritionTarget {
 		
 
 		// Basic Elements
-		target.set(Kohlenhydrate, 340.0, 340.0);
+		target.set(Kohlenhydrate, 340.0, 340.0);		
+		//Braucht man stärke?
+		target.set(Nutrient.Starch, 100.0, null);
 		//(Fett, 80.0
 		target.set(FatSaturated, 30.0, 30.);
 		target.set(FatMonoUnsaturated, 29.0, 29.0);

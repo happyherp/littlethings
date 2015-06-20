@@ -1,14 +1,12 @@
 package de.carlos.simplexFood;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.derby.tools.sysinfo;
-
 import de.carlos.simplexFood.food.IFood;
+import de.carlos.simplexFood.swissDB.SwissDB;
 import de.carlos.simplexOO.SimplexOO.Restriction;
 
 public class Interactive {

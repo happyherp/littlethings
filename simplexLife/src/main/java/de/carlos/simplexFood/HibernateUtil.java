@@ -8,6 +8,7 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
 import de.carlos.simplexFood.food.Food;
+import de.carlos.simplexFood.food.FoodNutrient;
 
 public class HibernateUtil {
 
@@ -20,9 +21,10 @@ public class HibernateUtil {
         try {
             configuration = new Configuration()
                     .configure()
-                    .addPackage("biz.moveabout.datamining.models")
+                    .addPackage("de.carlos.simplexFood")
                     // the fully qualified package name
                     .addAnnotatedClass(Food.class)
+                    .addAnnotatedClass(FoodNutrient.class)
             		;
 
         } catch (Throwable ex) {
