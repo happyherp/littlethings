@@ -25,7 +25,12 @@ public class FoodOptimize {
 		constraints.addAll(extraRestrictions);
 		constraints.addAll(target.createRestrictions());
 		
-		Map<IFood, Double> result = new SimplexOO<IFood>().solve(
+		
+		double precisionFactor = 1.0E-3;
+		
+		Map<IFood, Double> result = 
+			new SimplexOO<IFood>(SimplexOO.DEFAULT_EPSILON*precisionFactor,SimplexOO.DEFAULT_ULPS, SimplexOO.DEFAULT_CUT_OFF* precisionFactor)
+				.solve(
 				(Collection<IFood>) Arrays.asList(filterValid(foods).toArray(i->new IFood[i])), 
 				constraints, 
 						f->f.getPrice(), 
@@ -67,7 +72,7 @@ public class FoodOptimize {
 
 		for (Nutrient method : sortedFields) {
 			double p = getPercent(f, sum, method);
-			if (p > 5) {
+			if (p > 1) {
 				System.out.print(String.format(" %s(%2.0f%%) ", method, p));
 			}
 		}
@@ -82,7 +87,7 @@ public class FoodOptimize {
 
 	}
 
-	public static void printByAttr(List<Food> foods, Nutrient n) {
+	public static void printByAttr(List<? extends IFood> foods, Nutrient n) {
 
     	foods.stream()
     	   .sorted((o1, o2)-> Double.compare(o1.getNutrient(n)/ o1.getPrice(), o2.getNutrient(n) / o2.getPrice()))
@@ -94,7 +99,7 @@ public class FoodOptimize {
     	System.out.println("Selected Foods.");
     	int i = 1;
     	for (IFood f : result){
-    		System.out.print(String.format("%2d:%-40s %8.3fg %4.2f€",i, f.getName() ,f.getWeight(), f.getPrice()));
+    		System.out.print(String.format("%2d:%-50s %8.3fg %4.2f€",i, f.getName() ,f.getWeight(), f.getPrice()));
     		FoodOptimize.printPercentages(f, new Meal(result));
     		System.out.println("");
     		i++;

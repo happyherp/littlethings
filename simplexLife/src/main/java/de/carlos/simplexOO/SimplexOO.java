@@ -17,6 +17,32 @@ import org.apache.commons.math3.optim.linear.SimplexSolver;
 import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
 
 public class SimplexOO<T> {
+	
+    /** Default amount of error to accept in floating point comparisons (as ulps). */
+    public static final int DEFAULT_ULPS = 10;
+
+    /** Default cut-off value. */
+    public static final double DEFAULT_CUT_OFF = 1e-12;
+
+    /** Default amount of error to accept for algorithm convergence. */
+    public static final double DEFAULT_EPSILON = 1.0e-6;
+    
+    
+    
+	private double epsilon;
+	private int maxUlps;
+	private double cutOff;
+
+	public SimplexOO(final double epsilon, final int maxUlps, final double cutOff) {
+        this.epsilon = epsilon;
+        this.maxUlps = maxUlps;
+        this.cutOff = cutOff;
+    
+	}
+	
+	public SimplexOO(){
+		this(DEFAULT_EPSILON, DEFAULT_ULPS, DEFAULT_CUT_OFF);
+	}
 
 	public Map<T, Double> solve(Collection<T> elements,
 			Collection<Restriction<T>> restrictions,
@@ -36,7 +62,8 @@ public class SimplexOO<T> {
 							restr.value));
 		}
 
-		PointValuePair pvp = new SimplexSolver().optimize(objective,
+		PointValuePair pvp = new SimplexSolver(this.epsilon, this.maxUlps, this.cutOff)
+		   .optimize(objective,
 				new LinearConstraintSet(constraints),
 				new NonNegativeConstraint(true));
 

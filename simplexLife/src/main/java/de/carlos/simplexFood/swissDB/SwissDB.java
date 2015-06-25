@@ -103,7 +103,9 @@ public class SwissDB {
 				food.setNutrient(VitaminD,getGramsFromCell(cells, colNameToIndex,
 						"D"));			
 				food.setNutrient(VitaminE,getGramsFromCell(cells, colNameToIndex,
-						"E"));					
+						"E"));			
+				food.setNutrient(VitaminK,getGramsFromCell(cells, colNameToIndex,
+						"VitaminK"));						
 				food.setNutrient(Niacin,getGramsFromCell(cells, colNameToIndex,
 						"niacine"));	
 				food.setNutrient(Folat,getGramsFromCell(cells, colNameToIndex,

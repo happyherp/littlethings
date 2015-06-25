@@ -21,6 +21,8 @@ public enum Nutrient {
 	VitaminB1,
 
 	VitaminA,
+	
+	VitaminK,
 
 	Zink,
 
@@ -61,5 +63,14 @@ public enum Nutrient {
 	Starch,
 	
 	Sugar;
+	
+	public static Nutrient[] waterSolveableVitamins = {
+		VitaminC, VitaminB1, VitaminB2, VitaminB6, Folat
+	};
+	
+	public static Nutrient[] fatSolveableVitamins = {		
+		VitaminA, VitaminD, VitaminE, VitaminK		
+	};
+	
 
 }

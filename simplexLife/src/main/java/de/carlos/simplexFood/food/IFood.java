@@ -1,5 +1,7 @@
 package de.carlos.simplexFood.food;
 
+import java.util.Comparator;
+
 
 public interface IFood {
 
@@ -47,7 +49,7 @@ public interface IFood {
 
 	/**
 	 * 
-	 * 1 EL -> 10-15g
+	 * 1 EL -> 10 -15g
 	 * @param i
 	 * @return
 	 */
@@ -63,5 +65,13 @@ public interface IFood {
 	}
 	
     public Double getNutrient(Nutrient i);
+
+    public class WeightComparator implements Comparator<IFood>{
+    	
+    	@Override
+    	public int compare(IFood arg0, IFood arg1) {
+    		return Double.compare(arg1.getWeight(), arg0.getWeight());
+    	}
+    }
 
 }

@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.carlos.simplexFood.food.Food;
 import de.carlos.simplexFood.food.IFood;
 import de.carlos.simplexFood.swissDB.SwissDB;
 import de.carlos.simplexOO.SimplexOO.Restriction;
@@ -22,7 +23,7 @@ public class Interactive {
 			while (true) {
 				List<IFood> result = new FoodOptimize().optimize(available,
 						extraRestrictions, target);
-				result.sort((a,b)->(int) (b.getWeight() - a.getWeight()));
+				result.sort(new IFood.WeightComparator());
 				FoodOptimize.printSummary(result);
 
 				System.out.println("Choose food to be removed:");
@@ -41,7 +42,10 @@ public class Interactive {
 
 	public static void main(String[] args) {
 
-		new Interactive().start(new SwissDB().parseDB());
+		List<IFood> foods = new ArrayList<>(new SwissDB().parseDB());
+		Recipies recipies = new Recipies(foods);
+		foods.addAll(recipies.vitaminSubsets);
+		new Interactive().start(foods);
 
 	}
 

@@ -62,5 +62,14 @@ public class Meal implements IFood{
 		
 		return sum;
 	}
+	
+	@Override
+	public boolean equals(Object o){
+		if (o instanceof Meal){
+			return this.ingredients.equals(((Meal) o).ingredients);
+		}else{
+			return super.equals(o);
+		}
+	}
 
 }

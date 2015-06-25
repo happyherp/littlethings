@@ -2,12 +2,17 @@ package de.carlos.simplexFood;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+
+import org.junit.Assert;
 
 import org.junit.Test;
 
 import de.carlos.simplexFood.food.Food;
 import de.carlos.simplexFood.food.IFood;
+import de.carlos.simplexFood.food.Meal;
 import de.carlos.simplexFood.food.Nutrient;
 import de.carlos.simplexFood.swissDB.SwissDB;
 import de.carlos.simplexOO.SimplexOO.Restriction;
@@ -23,13 +28,15 @@ public class TestFood {
     	NutritionTarget target = NutritionTarget.dailyMale();
     	
     	Recipies recipies = new Recipies(foods);
-    	foods.add(recipies.brot);
+    	foods.addAll(recipies.vitaminSubsets);
     	
-    	//target = target.subtract(recipies.brot.gram(200.0));    	
+    	//IFood riegelKlein = recipies.riegel.gram(220);
+    	//target = target.subtract(riegelKlein);    
+    	//System.out.println("Riegelkosten "+riegelKlein.getPrice());
     	
-    	foods = foods.stream()
+    	//foods = foods.stream()
     	//		.filter(f->!f.getName().contains("mehl"))
-    			.collect(ArrayList::new, ArrayList::add,ArrayList::addAll);
+    	//		.collect(ArrayList::new, ArrayList::add,ArrayList::addAll);
     	
     	
     	List<Restriction<IFood>> extraRestr = new ArrayList<>();
@@ -38,10 +45,19 @@ public class TestFood {
 //    	extraRestr.add(SimplexOO.atLeast(2, apple));
     	
     	List<IFood> result = new FoodOptimize().optimize(foods, extraRestr, target);
-		result.sort((a,b)->(int) (b.getWeight() - a.getWeight()));
+		result.sort(new IFood.WeightComparator());
 
 
-    	FoodOptimize.printSummary(result);    	
+    	FoodOptimize.printSummary(result);    
+    	
+    	Meal m1 = new Meal(result);
+    	Meal m2 = new Meal(new LinkedList(result));
+    	Assert.assertEquals(m1, m2);
+    	
+    	
+    	FoodOptimize.printByAttr(result, Nutrient.VitaminK);
+    	
+    	
     }
     
     @Test
@@ -58,7 +74,7 @@ public class TestFood {
     	List<Restriction<IFood>> extraRestr = new ArrayList<>();
     	
     	List<IFood> result = new FoodOptimize().optimize(foods, extraRestr, target);
-		result.sort((a,b)->(int) (b.getWeight() - a.getWeight()));
+		result.sort(new IFood.WeightComparator());
 
 
     	FoodOptimize.printSummary(result);    	
@@ -80,7 +96,7 @@ public class TestFood {
     	List<Restriction<IFood>> extraRestr = new ArrayList<>();
     	
     	List<IFood> result = new FoodOptimize().optimize(foods, extraRestr, target);
-		result.sort((a,b)->(int) (b.getWeight() - a.getWeight()));
+		result.sort(new IFood.WeightComparator());
 
 
     	FoodOptimize.printSummary(result);    	
@@ -125,6 +141,35 @@ public class TestFood {
     	
 
     	FoodOptimize.printSummary(result);
+
+    }
+    
+    @Test
+    public void testShuffle(){
+	
+    	NutritionTarget target = NutritionTarget.dailyMale();
+	
+    	List<IFood> foods = new ArrayList<>(new SwissDB().parseDB()); 
+    	List<Restriction<IFood>> extraRestr = new ArrayList<>();
+    	
+    	
+    	
+    	List<IFood> result = new FoodOptimize().optimize(foods, extraRestr, target);
+    	result.sort(new IFood.WeightComparator());
+    	FoodOptimize.printSummary(result);    	
+    	
+    	Meal m1 = new Meal(result);
+    	
+    	
+    	Collections.shuffle(foods);
+    	
+    	List<IFood> result2 = new FoodOptimize().optimize(foods, extraRestr, target);
+    	result2.sort((a,b)->(int) (b.getWeight() - a.getWeight()));
+    	FoodOptimize.printSummary(result);    	    	
+    	
+    	Meal m2 = new Meal(result2);
+    	Assert.assertEquals(m1, m2);
+    	
 
     }
    

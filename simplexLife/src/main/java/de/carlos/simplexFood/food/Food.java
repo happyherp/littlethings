@@ -102,6 +102,14 @@ public class Food implements IFood {
 	public void setWeight(double weight) {
 		this.weight = weight;
 	}
+	
+	public boolean equals(Object o){
+		if (o instanceof Food){
+			return this.name.equals(((Food) o).name) && this.weight == ((Food) o).weight;
+		}else{
+			return super.equals(o);
+		}
+	}
 
     
 }
