@@ -8,11 +8,11 @@ public class  GradientDescent {
 	
 	private final LinearHeuristic h;
 	private final  double learningRate;
-	private List<DataPoint<List<Double>, Double>> data;
+	private List<? extends DataPoint<List<Double>, Double>> data;
 
 	public GradientDescent(
 			LinearHeuristic h, 
-			List<DataPoint<List<Double>, Double>> data,
+			List<? extends DataPoint<List<Double>, Double>> data,
 			double learningRate){
 		
 		this.h = h;
@@ -48,7 +48,7 @@ public class  GradientDescent {
 		return learningRate;
 	}
 
-	public List<DataPoint<List<Double>, Double>> getData() {
+	public List<? extends DataPoint<List<Double>, Double>> getData() {
 		return data;
 	}
 

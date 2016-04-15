@@ -1,6 +1,8 @@
 package de.carlos.machine;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LinearHeuristic implements Heuristic<List<Double>, Double> {
 
@@ -38,6 +40,15 @@ public class LinearHeuristic implements Heuristic<List<Double>, Double> {
 		
 		result += parameters.get(0);
 		return result;
+	}
+
+	public LinearHeuristic asZeroParmater() {
+		LinearHeuristic copy = new LinearHeuristic(
+				this.getParameters().stream()
+				.map(p->0.0D)
+				.collect(Collectors.toList()));
+		
+		return copy;
 	}
 
 }

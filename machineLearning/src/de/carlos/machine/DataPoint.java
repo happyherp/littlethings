@@ -1,6 +1,5 @@
 package de.carlos.machine;
 
-import java.util.ArrayList;
 
 public class DataPoint<IN, OUT> {
 	

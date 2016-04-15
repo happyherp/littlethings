@@ -12,7 +12,7 @@ public class CostFunction<IN, OUT> {
 	}
 	
 	
-	public double calculateCost(Heuristic<IN, OUT> h,  List<DataPoint<IN, OUT>> points ){
+	public double calculateCost(Heuristic<IN, OUT> h,  List<? extends DataPoint<IN, OUT>> points ){
 		
 		return points.stream()
 			.mapToDouble(db -> Math.pow( dist.calculateDistance(db.result, h.apply(db.values)) , 2d)).sum()
