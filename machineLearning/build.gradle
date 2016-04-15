@@ -1,0 +1,15 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+
+//manifest.mainAttributes("Main-Class" : "biz.moveabout.Unzipper")
+//mainClassName = "biz.moveabout.Unzipper"
+
+repositories {
+    mavenCentral()
+  }
+
+
+dependencies {
+ compile 'junit:junit:4.4'
+}
