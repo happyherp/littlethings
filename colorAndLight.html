@@ -1,0 +1,62 @@
+<html>
+
+<table id="table"></table>
+
+<script>
+
+function createColorScale(){
+
+    colors = [{red:255,green:255, blue:255}]
+    for (var i = 0;i<=255;i+=25){
+        colors.push({red:255,green:0, blue:i});
+    }
+    for (var i = 255;i>=0;i-=25){
+        colors.push({red:i,green:0, blue:255});
+    }    
+    for (var i = 5;i<=255;i+=25){
+        colors.push({red:0,green:i, blue:255});
+    }
+    for (var i = 255;i>=0;i-=25){
+        colors.push({red:0,green:255, blue:i});
+    }
+    for (var i = 5;i<=255;i+=25){
+        colors.push({red:i,green:255, blue:0});
+    }
+    for (var i = 255;i>=0;i-=25){
+        colors.push({red:255,green:i, blue:0});
+    }    
+    return colors;
+}
+
+
+function createColorTable(){
+    
+    var table = document.getElementById("table");
+    var colors = createColorScale();
+    for (var y=0;y<colors.length;y++){
+        var tr = document.createElement("tr");
+        for(var x=0;x<colors.length;x++){
+            var color = colors[x];
+            var light = colors[y];
+            var applied = {
+               red:  parseInt(color.red * light.red / 255),
+               green:parseInt(color.green * light.green / 255),
+               blue: parseInt(color.blue * light.blue / 255)
+            }
+            var td = document.createElement("td");
+            td.style.width="10px"
+            td.style.height="10px"
+            td.style.backgroundColor = "rgb("+applied.red+","+applied.green+","+applied.blue+")";
+            tr.appendChild(td);
+        }
+        table.appendChild(tr);
+    }
+    
+
+}
+
+createColorTable()
+
+
+</script>
+</html>
