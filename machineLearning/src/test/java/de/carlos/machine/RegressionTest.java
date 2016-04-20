@@ -71,20 +71,20 @@ public class RegressionTest {
 
 		Heuristic<List<Double>, Double> flatZero = new LinearHeuristic(Arrays.asList(0D,0D));
 		
-		Assert.assertEquals(0.0D, (double) flatZero.apply(Arrays.asList(0D)));
-		Assert.assertEquals(0.0D, (double) flatZero.apply(Arrays.asList(1D)));
-		Assert.assertEquals(0.0D, (double) flatZero.apply(Arrays.asList(2D)));
-		Assert.assertEquals(0.0d, (double) flatZero.apply(Arrays.asList(3D)));
+		Assert.assertEquals(0.0D, (double) flatZero.apply(Arrays.asList(0D)),0.0D);
+		Assert.assertEquals(0.0D, (double) flatZero.apply(Arrays.asList(1D)),0.0D);
+		Assert.assertEquals(0.0D, (double) flatZero.apply(Arrays.asList(2D)),0.0D);
+		Assert.assertEquals(0.0d, (double) flatZero.apply(Arrays.asList(3D)),0.0D);
 		
 		CostFunction<List<Double>, Double> costFunction = CostFunction.doubleCostFunction();
 		
-		Assert.assertEquals((1d+4d+9d+16d)/(2d*5d), costFunction.calculateCost(flatZero, dataLinear));
+		Assert.assertEquals((1d+4d+9d+16d)/(2d*5d), costFunction.calculateCost(flatZero, dataLinear),0.0D);
 		
 		Heuristic<List<Double>, Double> linear = new LinearHeuristic(Arrays.asList(0D,1D));
-		Assert.assertEquals(0d, costFunction.calculateCost(linear, dataLinear));
+		Assert.assertEquals(0d, costFunction.calculateCost(linear, dataLinear),0.0D);
 
 		Heuristic<List<Double>, Double> linearPlusONe = new LinearHeuristic(Arrays.asList(1D,1D));
-		Assert.assertEquals(5d/(5d*2d), costFunction.calculateCost(linearPlusONe, dataLinear));	
+		Assert.assertEquals(5d/(5d*2d), costFunction.calculateCost(linearPlusONe, dataLinear),0.0D);	
 
 	}
 	
@@ -94,24 +94,21 @@ public class RegressionTest {
 
 		
 		
-		checkConvergesToZero(new GradientDescent(new LinearHeuristic(Arrays.asList(0D,0D)), this.dataLinear, 0.1D));
-		checkConvergesToZero(new GradientDescent(new LinearHeuristic(Arrays.asList(100D,100D)), this.dataLinear, 0.1D));
+		checkConvergesToZero(new GradientDescent(this.dataLinear, 0.1D));
+		checkConvergesToZero(new GradientDescent(this.dataLinear, 0.1D));
 		
-		checkConvergesToZero(new GradientDescent(new LinearHeuristic(Arrays.asList(0D,0D)), this.dataFlat, 0.06D));
+		checkConvergesToZero(new GradientDescent(this.dataFlat, 0.06D));
 		
 		
 		checkConvergesToZero(new GradientDescent(
-				this.linear1.asZeroParmater(), 
 				this.buildForFunction(this.linear1), 
 				0.01D));
 		
 		checkConvergesToZero(new GradientDescent(
-				this.linear2.asZeroParmater(), 
 				this.buildForFunction(this.linear2), 
 				0.01D));		
 		
 		checkConvergesToZero(new GradientDescent(
-				this.h5Vars.asZeroParmater(), 
 				this.buildForFunction(this.h5Vars), 
 				0.01D));		
 
@@ -119,9 +116,9 @@ public class RegressionTest {
 	
 	@Test
 	public void testTwoVar(){
-		checkConvergesToZero(new GradientDescent(new LinearHeuristic(Arrays.asList(0D,0D,0D)), this.dataTwoLinear, 0.05D));
+		checkConvergesToZero(new GradientDescent(this.dataTwoLinear, 0.05D));
 		
-		GradientDescent descent = new GradientDescent(new LinearHeuristic(Arrays.asList(0D,0D,0D)), this.firstVarRnd, 0.005D);
+		GradientDescent descent = new GradientDescent(this.firstVarRnd, 0.005D);
 		double tolerance = 0.001D;
 		Assert.assertTrue(descent.getCost() > tolerance);
 		//System.out.println(descent.getCost() + "  "+descent.getH().getParameters());
@@ -139,7 +136,7 @@ public class RegressionTest {
 	
 	@Test
 	public void testDescentRand(){
-		GradientDescent descent = new GradientDescent(new LinearHeuristic(Arrays.asList(0D,0D)), this.dataFlat, 0.05D);
+		GradientDescent descent = new GradientDescent(this.dataFlat, 0.05D);
 		double tolerance = 0.001D;
 		Assert.assertTrue(descent.getCost() > tolerance);
 		//System.out.println(descent.getCost() + "  "+descent.getH().getParameters());
@@ -155,23 +152,14 @@ public class RegressionTest {
 	@Test
 	public void testUneven(){
 		checkConvergesToZero(new GradientDescent(
-				this.hUneven.asZeroParmater(), 
 				FeatureScaling.scaleIt(this.buildForFunction(this.hUneven)), 
 				0.005D));	
 	}
 
 
 	private void checkConvergesToZero(GradientDescent descent) {
+		descent.converge();
 		double tolerance = 0.001D;
-		Assert.assertTrue(descent.getCost() > tolerance);
-		//System.out.println(descent.getCost() + "  "+descent.getH().getParameters());
-		double prevCost = descent.getCost();
-		for (int i = 0; i<200;i++){
-			descent.doIteration();
-			//System.out.println(descent.getCost() + "  "+descent.getH().getParameters());
-			Assert.assertTrue( "Did not descent", prevCost >= descent.getCost());
-			prevCost = descent.getCost();
-		}
 		Assert.assertEquals("Did not converge",0.0D, descent.getCost(), tolerance);
 	}
 	
@@ -208,14 +196,14 @@ public class RegressionTest {
 		//Check that mean-normalization helps.
 		List<DoubleDataPoint> data = this.buildForFunction(new LinearHeuristic(Arrays.asList(100d,1d)));				
 		double learningRate = 0.01;		
-		GradientDescent descent = new GradientDescent( new LinearHeuristic(Arrays.asList(0d,0d)), data, learningRate);
+		GradientDescent descent = new GradientDescent(data, learningRate);
 		try{
 			checkConvergesToZero(descent);
 			Assert.fail();
 		}catch (AssertionError e){
 			//Expected
 		}		
-		descent = new GradientDescent( new LinearHeuristic(Arrays.asList(0d,0d)), FeatureScaling.scaleIt(data), learningRate);
+		descent = new GradientDescent(FeatureScaling.scaleIt(data), learningRate);
 		checkConvergesToZero(descent);
 
 	}
@@ -225,16 +213,33 @@ public class RegressionTest {
 		//Check that mean-normalization helps.
 		List<DoubleDataPoint> data = this.buildForFunction(new LinearHeuristic(Arrays.asList(0d,10000d)));				
 		double learningRate = 0.02;		
-		GradientDescent descent = new GradientDescent( new LinearHeuristic(Arrays.asList(0d,0d)), data, learningRate);
+		GradientDescent descent = new GradientDescent(data, learningRate);
 		try{
 			checkConvergesToZero(descent);
 			Assert.fail();
 		}catch (AssertionError e){
 			//Expected
 		}		
-		descent = new GradientDescent( new LinearHeuristic(Arrays.asList(0d,0d)), FeatureScaling.scaleIt(data), learningRate);
+		descent = new GradientDescent(FeatureScaling.scaleIt(data), learningRate);
 		checkConvergesToZero(descent);
 
+	}
+	
+	@Test
+	public void testAlphaUpdating(){
+		List<DoubleDataPoint> data = this.buildForFunction(new LinearHeuristic(Arrays.asList(0.2d,0.3d)));				
+		double learningRate = 0.1;		
+		GradientDescent descent = new GradientDescent(data, learningRate);
+		try{
+			checkConvergesToZero(descent);
+			Assert.fail();
+		}catch (NoDescentException e){
+			//Expected
+		}		
+		descent = new AlphaUpdatingGD(FeatureScaling.scaleIt(data), learningRate);
+		checkConvergesToZero(descent);
+		
+		
 	}
 	
 	
