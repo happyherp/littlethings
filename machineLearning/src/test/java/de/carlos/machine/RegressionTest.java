@@ -11,14 +11,14 @@ import org.junit.Test;
 
 public class RegressionTest {
 	
-	List<DoubleDataPoint> dataLinear = new ArrayList<>();
-	List<DoubleDataPoint> dataTwoLinear = new ArrayList<>();
+	List<DataPoint> dataLinear = new ArrayList<>();
+	List<DataPoint> dataTwoLinear = new ArrayList<>();
 
-	List<DoubleDataPoint> dataFlat = new ArrayList<>();
+	List<DataPoint> dataFlat = new ArrayList<>();
 	
-	List<DoubleDataPoint> dataRand = new ArrayList<>();
+	List<DataPoint> dataRand = new ArrayList<>();
 	
-	List<DoubleDataPoint> firstVarRnd = new ArrayList<>();
+	List<DataPoint> firstVarRnd = new ArrayList<>();
 	
 	LinearHeuristic linear1 = new LinearHeuristic(Arrays.asList(0d,1d));
 	LinearHeuristic linear2 = new LinearHeuristic(Arrays.asList(0d,-1d));
@@ -30,38 +30,38 @@ public class RegressionTest {
 	
 	public RegressionTest() {
 		
-		dataLinear.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(0D)), 0D));
-		dataLinear.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(1D)), 1D));
-		dataLinear.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(2D)), 2D));
-		dataLinear.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(3D)), 3D));
-		dataLinear.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(4D)), 4D));
+		dataLinear.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0D)), 0D));
+		dataLinear.add(new DataPoint(new ArrayList<Double>(Arrays.asList(1D)), 1D));
+		dataLinear.add(new DataPoint(new ArrayList<Double>(Arrays.asList(2D)), 2D));
+		dataLinear.add(new DataPoint(new ArrayList<Double>(Arrays.asList(3D)), 3D));
+		dataLinear.add(new DataPoint(new ArrayList<Double>(Arrays.asList(4D)), 4D));
 		
-		dataTwoLinear.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(0D,0D)), 0D));
-		dataTwoLinear.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(1D,1D)), 1D));
-		dataTwoLinear.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(2D,2D)), 2D));
-		dataTwoLinear.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(3D,3D)), 3D));
-		dataTwoLinear.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(4D,4D)), 4D));
+		dataTwoLinear.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0D,0D)), 0D));
+		dataTwoLinear.add(new DataPoint(new ArrayList<Double>(Arrays.asList(1D,1D)), 1D));
+		dataTwoLinear.add(new DataPoint(new ArrayList<Double>(Arrays.asList(2D,2D)), 2D));
+		dataTwoLinear.add(new DataPoint(new ArrayList<Double>(Arrays.asList(3D,3D)), 3D));
+		dataTwoLinear.add(new DataPoint(new ArrayList<Double>(Arrays.asList(4D,4D)), 4D));
 
 		
-		dataFlat.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(1D)), 4D));
-		dataFlat.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(2D)), 4D));
-		dataFlat.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(3D)), 4D));
-		dataFlat.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(4D)), 4D));
-		dataFlat.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(5D)), 4D));
+		dataFlat.add(new DataPoint(new ArrayList<Double>(Arrays.asList(1D)), 4D));
+		dataFlat.add(new DataPoint(new ArrayList<Double>(Arrays.asList(2D)), 4D));
+		dataFlat.add(new DataPoint(new ArrayList<Double>(Arrays.asList(3D)), 4D));
+		dataFlat.add(new DataPoint(new ArrayList<Double>(Arrays.asList(4D)), 4D));
+		dataFlat.add(new DataPoint(new ArrayList<Double>(Arrays.asList(5D)), 4D));
 
 		
-		dataRand.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(1D)), 4D));
-		dataRand.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(2D)), 3D));
-		dataRand.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(3D)), 2D));
-		dataRand.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(4D)), 5D));
-		dataRand.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(5D)), 10D));
+		dataRand.add(new DataPoint(new ArrayList<Double>(Arrays.asList(1D)), 4D));
+		dataRand.add(new DataPoint(new ArrayList<Double>(Arrays.asList(2D)), 3D));
+		dataRand.add(new DataPoint(new ArrayList<Double>(Arrays.asList(3D)), 2D));
+		dataRand.add(new DataPoint(new ArrayList<Double>(Arrays.asList(4D)), 5D));
+		dataRand.add(new DataPoint(new ArrayList<Double>(Arrays.asList(5D)), 10D));
 
-		firstVarRnd.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(5D,0d)), 0D));
-		firstVarRnd.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(4D,1d)), -1D));
-		firstVarRnd.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(5D,2d)), -2D));
-		firstVarRnd.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(1D,3d)), -3D));
-		firstVarRnd.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(6D,4d)), -4D));
-		firstVarRnd.add(new DoubleDataPoint(new ArrayList<Double>(Arrays.asList(5D,5d)), -5D));
+		firstVarRnd.add(new DataPoint(new ArrayList<Double>(Arrays.asList(5D,0d)), 0D));
+		firstVarRnd.add(new DataPoint(new ArrayList<Double>(Arrays.asList(4D,1d)), -1D));
+		firstVarRnd.add(new DataPoint(new ArrayList<Double>(Arrays.asList(5D,2d)), -2D));
+		firstVarRnd.add(new DataPoint(new ArrayList<Double>(Arrays.asList(1D,3d)), -3D));
+		firstVarRnd.add(new DataPoint(new ArrayList<Double>(Arrays.asList(6D,4d)), -4D));
+		firstVarRnd.add(new DataPoint(new ArrayList<Double>(Arrays.asList(5D,5d)), -5D));
 		
 	}
 	
@@ -69,21 +69,21 @@ public class RegressionTest {
 	@Test
 	public void testHeuristic(){
 
-		Heuristic<List<Double>, Double> flatZero = new LinearHeuristic(Arrays.asList(0D,0D));
+		LinearHeuristic flatZero = new LinearHeuristic(Arrays.asList(0D,0D));
 		
 		Assert.assertEquals(0.0D, (double) flatZero.apply(Arrays.asList(0D)),0.0D);
 		Assert.assertEquals(0.0D, (double) flatZero.apply(Arrays.asList(1D)),0.0D);
 		Assert.assertEquals(0.0D, (double) flatZero.apply(Arrays.asList(2D)),0.0D);
 		Assert.assertEquals(0.0d, (double) flatZero.apply(Arrays.asList(3D)),0.0D);
 		
-		CostFunction<List<Double>, Double> costFunction = CostFunction.doubleCostFunction();
+		CostFunction costFunction = new CostFunction();
 		
 		Assert.assertEquals((1d+4d+9d+16d)/(2d*5d), costFunction.calculateCost(flatZero, dataLinear),0.0D);
 		
-		Heuristic<List<Double>, Double> linear = new LinearHeuristic(Arrays.asList(0D,1D));
+		LinearHeuristic linear = new LinearHeuristic(Arrays.asList(0D,1D));
 		Assert.assertEquals(0d, costFunction.calculateCost(linear, dataLinear),0.0D);
 
-		Heuristic<List<Double>, Double> linearPlusONe = new LinearHeuristic(Arrays.asList(1D,1D));
+		LinearHeuristic linearPlusONe = new LinearHeuristic(Arrays.asList(1D,1D));
 		Assert.assertEquals(5d/(5d*2d), costFunction.calculateCost(linearPlusONe, dataLinear),0.0D);	
 
 	}
@@ -175,11 +175,11 @@ public class RegressionTest {
 		Assert.assertEquals("Did not converge",0.0D, descent.getCost(), 0.001D);
 	}
 	
-	public List<DoubleDataPoint> buildForFunction(LinearHeuristic h){
+	public List<DataPoint> buildForFunction(LinearHeuristic h){
 		
 		Random r = new Random(0);
 		
-		List<DoubleDataPoint> data = new ArrayList<>();
+		List<DataPoint> data = new ArrayList<>();
 		for (int i = 0; i<100; i++){
 			
 			List<Double> values = new ArrayList<Double>();
@@ -187,7 +187,7 @@ public class RegressionTest {
 				values.add(r.nextDouble());
 			}
 			
-			data.add(new DoubleDataPoint(values, h.apply(values)));
+			data.add(new DataPoint(values, h.apply(values)));
 		}
 		
 		return data;
@@ -206,7 +206,7 @@ public class RegressionTest {
 	@Test
 	public void testMeanNormalization(){
 		//Check that mean-normalization helps.
-		List<DoubleDataPoint> data = this.buildForFunction(new LinearHeuristic(Arrays.asList(100d,1d)));				
+		List<DataPoint> data = this.buildForFunction(new LinearHeuristic(Arrays.asList(100d,1d)));				
 		double learningRate = 0.01;		
 		GradientDescent descent = new GradientDescent(data, learningRate);
 		try{
@@ -223,7 +223,7 @@ public class RegressionTest {
 	@Test
 	public void testScaling(){
 		//Check that mean-normalization helps.
-		List<DoubleDataPoint> data = this.buildForFunction(new LinearHeuristic(Arrays.asList(0d,10000d)));				
+		List<DataPoint> data = this.buildForFunction(new LinearHeuristic(Arrays.asList(0d,10000d)));				
 		double learningRate = 0.02;		
 		GradientDescent descent = new GradientDescent(data, learningRate);
 		try{
@@ -239,7 +239,7 @@ public class RegressionTest {
 	
 	@Test
 	public void testAlphaUpdating(){
-		List<DoubleDataPoint> data = this.buildForFunction(new LinearHeuristic(Arrays.asList(0.2d,0.3d)));				
+		List<DataPoint> data = this.buildForFunction(new LinearHeuristic(Arrays.asList(0.2d,0.3d)));				
 		double learningRate = 0.1;		
 		GradientDescent descent = new GradientDescent(data, learningRate);
 		try{

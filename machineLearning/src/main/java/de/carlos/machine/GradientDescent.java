@@ -9,9 +9,9 @@ public class  GradientDescent {
 	
 	protected final LinearHeuristic h;
 	protected double learningRate;
-	protected List<? extends DataPoint<List<Double>, Double>> data;
+	protected List<DataPoint> data;
 	
-	public GradientDescent(List<? extends DataPoint<List<Double>, Double>> data,
+	public GradientDescent(List<DataPoint> data,
 			double learningRate) {
 		
 		this.data = data;
@@ -26,7 +26,7 @@ public class  GradientDescent {
 
 	public GradientDescent(
 			LinearHeuristic h, 
-			List<? extends DataPoint<List<Double>, Double>> data,
+			List<DataPoint> data,
 			double learningRate){
 		
 		this.h = h;
@@ -68,7 +68,7 @@ public class  GradientDescent {
 		List<Double> newParameters = new ArrayList<Double>();
 		for (int j = 0; j<h.getParameters().size();j++){
 			double sum = 0D;
-			for (DataPoint<List<Double>, Double> dp: data){
+			for (DataPoint dp: data){
 				double x = j==0?1D:dp.values.get(j-1);
 				sum += (h.apply(dp.values) - dp.result) * x;
 			}
@@ -79,7 +79,7 @@ public class  GradientDescent {
 	}
 	
 	public Double getCost(){
-		return CostFunction.doubleCostFunction().calculateCost(this.h, this.data);
+		return new CostFunction().calculateCost(this.h, this.data);
 	}
 
 	public LinearHeuristic getH() {
@@ -90,7 +90,7 @@ public class  GradientDescent {
 		return learningRate;
 	}
 
-	public List<? extends DataPoint<List<Double>, Double>> getData() {
+	public List<DataPoint> getData() {
 		return data;
 	}
 

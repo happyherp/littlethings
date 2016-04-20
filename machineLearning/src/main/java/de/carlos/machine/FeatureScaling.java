@@ -12,7 +12,7 @@ public class FeatureScaling {
 	List<Double> scalers = new ArrayList<>();
 	
 	
-	public FeatureScaling(List<DoubleDataPoint> data) {
+	public FeatureScaling(List<DataPoint> data) {
 		for (int i = 0;i <data.get(0).values.size();i++){
 			final int index = i;
 			List<Double> ithData = data.stream()
@@ -52,14 +52,14 @@ public class FeatureScaling {
 	}
 	
 
-	public List<DoubleDataPoint> convertDataPointsToScale(List<DoubleDataPoint> input) {
+	public List<DataPoint> convertDataPointsToScale(List<DataPoint> input) {
 		return input.stream()
-				.map(dp->new DoubleDataPoint(this.convertToScale(dp.values), dp.result))
+				.map(dp->new DataPoint(this.convertToScale(dp.values), dp.result))
 				.collect(Collectors.toList());
 	}
 
 	
-	public static List<DoubleDataPoint> scaleIt(List<DoubleDataPoint> input){
+	public static List<DataPoint> scaleIt(List<DataPoint> input){
 		FeatureScaling scale = new FeatureScaling(input);
 		return scale.convertDataPointsToScale(input);
 	}

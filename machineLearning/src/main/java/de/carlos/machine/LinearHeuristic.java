@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class LinearHeuristic implements Heuristic<List<Double>, Double> {
+public class LinearHeuristic {
 
 	/**
 	 * First parameters p0 to pN to be applied like p0+p1*x1+p2*x2 ... pN * xN.
@@ -16,17 +16,14 @@ public class LinearHeuristic implements Heuristic<List<Double>, Double> {
 		this.parameters = parameters;
 	}
 
-	@Override
 	public List<Double> getParameters() {
 		return parameters;
 	}
 
-	@Override
 	public void setParameters(List<Double> parameters) {
 		this.parameters = parameters;
 	}
 
-	@Override
 	public Double apply(List<Double> in) {
 		
 		if (parameters.size()-1 != in.size()){

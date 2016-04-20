@@ -4,11 +4,11 @@ import java.util.List;
 
 public class AlphaUpdatingGD extends GradientDescent {
 
-	public AlphaUpdatingGD(List<? extends DataPoint<List<Double>, Double>> data, double startlearningRate) {
+	public AlphaUpdatingGD(List<DataPoint> data, double startlearningRate) {
 		super(data, startlearningRate);
 	}
 	
-	public AlphaUpdatingGD(List<DoubleDataPoint> data) {
+	public AlphaUpdatingGD(List<DataPoint> data) {
 		super(data, 1.0d);
 	}
 
@@ -18,13 +18,13 @@ public class AlphaUpdatingGD extends GradientDescent {
 		
 		Double oldCost = this.getCost();				
 		LinearHeuristic tmpH = new LinearHeuristic(calculateNewParameters());				
-		Double newCost = CostFunction.doubleCostFunction().calculateCost(tmpH, this.getData());
+		Double newCost = new CostFunction().calculateCost(tmpH, this.getData());
 		
 		for (int i = 0;i<100 && newCost>oldCost ;i++){
 			this.learningRate *= 0.3;
 			System.out.println("Updated learning rate to " + this.learningRate);
 			tmpH = new LinearHeuristic(calculateNewParameters());
-			newCost = CostFunction.doubleCostFunction().calculateCost(tmpH, this.getData());
+			newCost = new CostFunction().calculateCost(tmpH, this.getData());
 		}		
 		
 		this.h.setParameters(tmpH.getParameters());
