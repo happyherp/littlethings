@@ -8,6 +8,10 @@ public class AlphaUpdatingGD extends GradientDescent {
 		super(data, startlearningRate);
 	}
 	
+	public AlphaUpdatingGD(List<DoubleDataPoint> data) {
+		super(data, 1.0d);
+	}
+
 	@Override
 	public void doIteration(){
 		

@@ -42,7 +42,7 @@ public class  GradientDescent {
 	
 	public int converge(){
 		
-		double limit = 10.0e-4;
+		double limit = 10.0e-6;
 		
 		//System.out.println(descent.getCost() + "  "+descent.getH().getParameters());
 		double prevCost = this.getCost();

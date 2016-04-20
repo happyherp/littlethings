@@ -110,7 +110,20 @@ public class RegressionTest {
 		
 		checkConvergesToZero(new GradientDescent(
 				this.buildForFunction(this.h5Vars), 
-				0.01D));		
+				0.01D));	
+		
+		
+		checkConvergesToZero(
+				new AlphaUpdatingGD(
+						FeatureScaling.scaleIt(
+								this.buildForFunction(
+										new LinearHeuristic(Arrays.asList(-200d, 0.001))))));
+		
+		checkConvergesToZero(
+				new AlphaUpdatingGD(
+						FeatureScaling.scaleIt(
+								this.buildForFunction(
+										new LinearHeuristic(Arrays.asList(-200.001d, 2000d, -8000d, 0.23d, -1d))))));		
 
 	}
 	
@@ -159,8 +172,7 @@ public class RegressionTest {
 
 	private void checkConvergesToZero(GradientDescent descent) {
 		descent.converge();
-		double tolerance = 0.001D;
-		Assert.assertEquals("Did not converge",0.0D, descent.getCost(), tolerance);
+		Assert.assertEquals("Did not converge",0.0D, descent.getCost(), 0.001D);
 	}
 	
 	public List<DoubleDataPoint> buildForFunction(LinearHeuristic h){
