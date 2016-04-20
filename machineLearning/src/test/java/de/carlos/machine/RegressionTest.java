@@ -76,7 +76,7 @@ public class RegressionTest {
 		Assert.assertEquals(0.0D, (double) flatZero.apply(Arrays.asList(2D)),0.0D);
 		Assert.assertEquals(0.0d, (double) flatZero.apply(Arrays.asList(3D)),0.0D);
 		
-		CostFunction costFunction = new CostFunction();
+		SquaredError costFunction = new SquaredError();
 		
 		Assert.assertEquals((1d+4d+9d+16d)/(2d*5d), costFunction.calculateCost(flatZero, dataLinear),0.0D);
 		
@@ -250,6 +250,44 @@ public class RegressionTest {
 		}		
 		descent = new AlphaUpdatingGD(FeatureScaling.scaleIt(data), learningRate);
 		checkConvergesToZero(descent);
+	}
+	
+	@Test
+	public void testWithOneMissing(){
+		
+		
+		List<DataPoint> data = this.buildForFunction(new LinearHeuristic(Arrays.asList(3d, 10d, 0.1d, 4d)));		
+
+		//remove one variable from the learning data. 
+		data.stream().forEach(d->d.values.remove(0));
+		
+		AlphaUpdatingGD gd = new AlphaUpdatingGD(data);
+		Assert.assertTrue(gd.getCost() > 10.0d);
+		gd.converge();
+		Assert.assertTrue(gd.getCost() < 5.00d);		
+	}
+	
+	
+	@Test
+	public void trainingVsTest(){
+		
+		List<DataPoint> data = this.buildForFunction(new LinearHeuristic(Arrays.asList(10d, -2d, 0.1d, 4.3d)));	
+		
+		int splitIndex = (int) (data.size()*0.7);
+		List<DataPoint> trainingData = data.subList(0, splitIndex);
+		List<DataPoint> testData = data.subList(splitIndex, data.size());
+		
+		
+		FeatureScaling scale = new FeatureScaling(trainingData); 
+		AlphaUpdatingGD gd = new AlphaUpdatingGD(scale.convertDataPointsToScale(trainingData));
+		gd.converge();
+		
+		double costTraining = new SquaredError().calculateCost(gd.getH(), scale.convertDataPointsToScale(trainingData));		
+		double costTest =     new SquaredError().calculateCost(gd.getH(), scale.convertDataPointsToScale(testData));
+		
+		Assert.assertEquals(costTraining, costTest ,0.01d);
+		
+		
 		
 		
 	}

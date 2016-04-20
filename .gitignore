@@ -5,3 +5,4 @@ Servers/
 RemoteSystemsTempFiles/
 *.classpath
 .gradle
+.recommenders/

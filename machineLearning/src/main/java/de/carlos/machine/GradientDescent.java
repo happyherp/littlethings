@@ -79,7 +79,7 @@ public class  GradientDescent {
 	}
 	
 	public Double getCost(){
-		return new CostFunction().calculateCost(this.h, this.data);
+		return new SquaredError().calculateCost(this.h, this.data);
 	}
 
 	public LinearHeuristic getH() {

@@ -18,13 +18,13 @@ public class AlphaUpdatingGD extends GradientDescent {
 		
 		Double oldCost = this.getCost();				
 		LinearHeuristic tmpH = new LinearHeuristic(calculateNewParameters());				
-		Double newCost = new CostFunction().calculateCost(tmpH, this.getData());
+		Double newCost = new SquaredError().calculateCost(tmpH, this.getData());
 		
 		for (int i = 0;i<100 && newCost>oldCost ;i++){
 			this.learningRate *= 0.3;
 			System.out.println("Updated learning rate to " + this.learningRate);
 			tmpH = new LinearHeuristic(calculateNewParameters());
-			newCost = new CostFunction().calculateCost(tmpH, this.getData());
+			newCost = new SquaredError().calculateCost(tmpH, this.getData());
 		}		
 		
 		this.h.setParameters(tmpH.getParameters());

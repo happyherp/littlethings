@@ -2,7 +2,7 @@ package de.carlos.machine;
 
 import java.util.List;
 
-public class CostFunction{
+public class SquaredError{
 
 
 	
