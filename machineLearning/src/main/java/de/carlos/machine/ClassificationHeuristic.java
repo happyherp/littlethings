@@ -2,10 +2,10 @@ package de.carlos.machine;
 
 import java.util.List;
 
-public class LinearHeuristic extends Heuristic {
+public class ClassificationHeuristic extends Heuristic {
 
-	public LinearHeuristic(List<Double> parameters) {
-		super(parameters);
+	public ClassificationHeuristic(List<Double> parameters2) {
+		super(parameters2);
 	}
 
 	@Override
@@ -13,28 +13,27 @@ public class LinearHeuristic extends Heuristic {
 		
 		if (parameters.size()-1 != in.size()){
 			throw new RuntimeException("Parameter did not match input. "+ parameters.size()+" -1 != "+in.size());
-		}
+		}		
 		
-		Double result = 0.0;
+		Double result = parameters.get(0);
 		for (int i = 0; i<in.size();i++){
 			result += in.get(i) * parameters.get(i+1);
 		}		
-		
-		result += parameters.get(0);
-		return result;
+
+		return  1.0D / (1.0D+ Math.pow(Math.E, -result));
 	}
 
 	@Override
 	public CostFunction getCostFunction() {
-		return new SquaredError();
+		return new ClassificationCostFunction();
 	}
-	
+
 	@Override
-	public LinearHeuristic withNewParameters(List<Double> newParameters) {
+	public ClassificationHeuristic withNewParameters(List<Double> newParameters) {
 		if (newParameters.size() != this.parameters.size()){
 			throw new RuntimeException();
 		}		
-		return new LinearHeuristic(newParameters);
-	}	
+		return new ClassificationHeuristic(newParameters);
+	}
 
 }

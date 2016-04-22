@@ -1,13 +1,12 @@
 package de.carlos.machine;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 
 public class  GradientDescent {
 	
-	protected final LinearHeuristic h;
+	protected Heuristic h;
 	protected double learningRate;
 	protected List<DataPoint> data;
 	
@@ -25,7 +24,7 @@ public class  GradientDescent {
 	}
 
 	public GradientDescent(
-			LinearHeuristic h, 
+			Heuristic h, 
 			List<DataPoint> data,
 			double learningRate){
 		
@@ -36,15 +35,16 @@ public class  GradientDescent {
 	
 	public void doIteration(){
 		
-		List<Double> newParameters = calculateNewParameters();		
-		this.h.setParameters(newParameters);
+		List<Double> newParameters = this.h.getCostFunction()
+				.calculateNewParameters(this.h, this.getData(),this.learningRate);		
+		this.h = h.withNewParameters(newParameters);
 	}
 	
 	public int converge(){
 		
 		double limit = 10.0e-6;
 		
-		//System.out.println(descent.getCost() + "  "+descent.getH().getParameters());
+		System.out.println(this.getCost() + "  "+this.getH().getParameters());
 		double prevCost = this.getCost();
 		int i;
 		boolean converged = false; 
@@ -64,25 +64,13 @@ public class  GradientDescent {
 		return i;
 	}
 
-	public List<Double> calculateNewParameters() {
-		List<Double> newParameters = new ArrayList<Double>();
-		for (int j = 0; j<h.getParameters().size();j++){
-			double sum = 0D;
-			for (DataPoint dp: data){
-				double x = j==0?1D:dp.values.get(j-1);
-				sum += (h.apply(dp.values) - dp.result) * x;
-			}
-			sum = sum*this.learningRate / h.getParameters().size();
-			newParameters.add(h.getParameters().get(j) - sum);
-		}
-		return newParameters;
-	}
+
 	
 	public Double getCost(){
-		return new SquaredError().calculateCost(this.h, this.data);
+		return h.getCostFunction().calculateCost(this.h, this.data);
 	}
 
-	public LinearHeuristic getH() {
+	public Heuristic getH() {
 		return h;
 	}
 

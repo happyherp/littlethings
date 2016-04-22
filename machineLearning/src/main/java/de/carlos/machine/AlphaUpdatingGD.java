@@ -9,7 +9,7 @@ public class AlphaUpdatingGD extends GradientDescent {
 	}
 	
 	public AlphaUpdatingGD(List<DataPoint> data) {
-		super(data, 1.0d);
+		super(data, 100.0d);
 	}
 
 	@Override
@@ -17,17 +17,17 @@ public class AlphaUpdatingGD extends GradientDescent {
 		
 		
 		Double oldCost = this.getCost();				
-		LinearHeuristic tmpH = new LinearHeuristic(calculateNewParameters());				
-		Double newCost = new SquaredError().calculateCost(tmpH, this.getData());
+		Heuristic tmpH = this.getH().improve(getData(), getLearningRate());		
+		Double newCost = tmpH.calculateCost(getData());
 		
 		for (int i = 0;i<100 && newCost>oldCost ;i++){
 			this.learningRate *= 0.3;
 			System.out.println("Updated learning rate to " + this.learningRate);
-			tmpH = new LinearHeuristic(calculateNewParameters());
-			newCost = new SquaredError().calculateCost(tmpH, this.getData());
+			tmpH = this.getH().improve(getData(), getLearningRate());		
+			newCost = tmpH.calculateCost(getData());
 		}		
 		
-		this.h.setParameters(tmpH.getParameters());
+		this.h = tmpH;
 	}
 
 }

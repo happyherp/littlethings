@@ -3,19 +3,20 @@ package de.carlos.machine;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SquaredError implements CostFunction{
+public class ClassificationCostFunction implements CostFunction {
 
-
-	
 	@Override
 	public double calculateCost(Heuristic h,  List<DataPoint> points ){
 		
-		return points.stream()
-			.mapToDouble(db -> Math.pow(db.result - h.apply(db.values) , 2d)).sum()
-			/ (2d*points.size());
-		
+		return -1 * 
+				points.stream()
+					.mapToDouble(db -> 
+						db.result * Math.log(h.apply(db.values)) 
+						+ (1.0d-db.result) * Math.log(1-h.apply(db.values)) )
+					.sum()
+				/ points.size();		
 	}
-	
+
 	@Override
 	public List<Double> calculateNewParameters(Heuristic h, List<DataPoint> data, double learningRate) {
 		List<Double> newParameters = new ArrayList<Double>();
@@ -25,11 +26,9 @@ public class SquaredError implements CostFunction{
 				double x = j==0?1D:dp.values.get(j-1);
 				sum += (h.apply(dp.values) - dp.result) * x;
 			}
-			sum = sum*learningRate / h.getParameters().size();
-			newParameters.add(h.getParameters().get(j) - sum);
+			newParameters.add(h.getParameters().get(j) - sum *learningRate );
 		}
 		return newParameters;
 	}
-	
-	
+
 }
