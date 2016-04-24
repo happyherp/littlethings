@@ -12,4 +12,5 @@ repositories {
 
 dependencies {
  compile 'junit:junit:4.9'
+ compile 'org.jfree:jfreechart:1.0.19'
 }

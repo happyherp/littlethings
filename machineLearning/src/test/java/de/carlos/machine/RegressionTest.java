@@ -19,7 +19,19 @@ public class RegressionTest {
 	
 	List<DataPoint> firstVarRnd = new ArrayList<>();
 	
-	List<DataPoint> classification1 = new ArrayList<>();
+	static List<DataPoint> classification1 = new ArrayList<>();
+	static{
+		classification1.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.0d)), 0D));
+		classification1.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.2d)), 0D));
+		classification1.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.3d)), 0D));
+		classification1.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.4d)), 0D));
+		classification1.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.5d)), 0D));
+		classification1.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.6d)), 1D));
+		classification1.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.7d)), 1D));
+		classification1.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.8d)), 1D));
+		classification1.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.9d)), 1D));
+			
+	}
 
 	
 	Heuristic linear1 = new LinearHeuristic(Arrays.asList(0d,1d));
@@ -65,16 +77,7 @@ public class RegressionTest {
 		firstVarRnd.add(new DataPoint(new ArrayList<Double>(Arrays.asList(6D,4d)), -4D));
 		firstVarRnd.add(new DataPoint(new ArrayList<Double>(Arrays.asList(5D,5d)), -5D));
 		
-		classification1.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.0d)), 0D));
-		classification1.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.2d)), 0D));
-		classification1.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.3d)), 0D));
-		classification1.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.4d)), 0D));
-		classification1.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.5d)), 0D));
-		classification1.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.6d)), 1D));
-		classification1.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.7d)), 1D));
-		classification1.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.8d)), 1D));
-		classification1.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.9d)), 1D));
-		
+	
 		
 	}
 	
@@ -318,6 +321,31 @@ public class RegressionTest {
 	public void testLogisticRegression(){
 		
 		ClassificationHeuristic h = new ClassificationHeuristic(Arrays.asList(0d,0d));
+		GradientDescent d=  new GradientDescent(h, this.classification1, 5D);
+		Assert.assertTrue(d.getCost() > 0.1d);
+		
+				
+		for (int i = 0;i<100;i++){
+			d.doIteration();
+		}
+		
+		for (DataPoint dp: this.classification1){
+			double prediction = d.getH().apply(dp.values);
+			System.out.println("For "+dp+" predicted "+prediction);
+			if (dp.result == 0){
+				Assert.assertTrue(prediction < 0.5d);
+			}else{
+				Assert.assertTrue(prediction > 0.5d);
+			}
+		}
+		
+		Assert.assertEquals(0.0, d.getCost(), 0.01d);	
+	}
+	
+	@Test
+	public void testLogisticRegressionConverge(){
+		
+		ClassificationHeuristic h = new ClassificationHeuristic(Arrays.asList(0d,0d));
 		GradientDescent d=  new GradientDescent(h, this.classification1, 1D);
 		Assert.assertTrue(d.getCost() > 0.1d);
 		
@@ -335,5 +363,29 @@ public class RegressionTest {
 		
 		Assert.assertEquals(0.0, d.getCost(), 0.01d);	
 	}
+	
+	@Test
+	public void testLogisticRegressionConverge2(){
+		
+		ClassificationHeuristic h = new ClassificationHeuristic(Arrays.asList(0d,0d));
+		GradientDescent d=  new AlphaUpdatingGD(h, this.classification1, 1D);
+		Assert.assertTrue(d.getCost() > 0.1d);
+		
+		d.converge();
+		
+		for (DataPoint dp: this.classification1){
+			double prediction = d.getH().apply(dp.values);
+			System.out.println("For "+dp+" predicted "+prediction);
+			if (dp.result == 0){
+				Assert.assertTrue(prediction < 0.5d);
+			}else{
+				Assert.assertTrue(prediction > 0.5d);
+			}
+		}
+		
+		Assert.assertEquals(0.0, d.getCost(), 0.01d);	
+	}	
+	
+
 	
 }

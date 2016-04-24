@@ -38,6 +38,8 @@ public class  GradientDescent {
 		List<Double> newParameters = this.h.getCostFunction()
 				.calculateNewParameters(this.h, this.getData(),this.learningRate);		
 		this.h = h.withNewParameters(newParameters);
+		System.out.println(this.getCost() + "  "+this.getH().getParameters());
+		
 	}
 	
 	public int converge(){
@@ -50,7 +52,6 @@ public class  GradientDescent {
 		boolean converged = false; 
 		for (i = 0; i<2000 && !converged;i++){
 			this.doIteration();
-			System.out.println(this.getCost() + "  "+this.getH().getParameters());
 			if (!(prevCost >= this.getCost())){
 				throw new NoDescentException("The algorithm did not descend after an iteration");
 			}
