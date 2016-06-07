@@ -11,4 +11,8 @@ public class DataPoint {
 	public List<Double> values;
 	public Double result; 
 
+	@Override
+	public String toString(){
+		return this.values.toString()+"->"+this.result;
+	}
 }
