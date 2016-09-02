@@ -1,22 +1,29 @@
 package fquery;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.apache.commons.lang3.SerializationUtils;
+
 
 public class Halde {
 	
-	List<String> content = new ArrayList<>();
+	List<byte[]> content = new ArrayList<>();
 	
-	List<Consumer<String>> onNewContent = new ArrayList<>();
+	List<Consumer<byte[]>> onNewContent = new ArrayList<>();
 	
-	public void addContentListener(Consumer<String> listener){
+	public void addContentListener(Consumer<byte[]> listener){
 		this.onNewContent.add(listener);
 	}
+	
+	public void read(Serializable serializable){
+		this.read(SerializationUtils.serialize(serializable));
+	}
 
-	public void read(String string) {
+	public void read(byte[] string) {
 		content.add(string);	
 		onNewContent.forEach(c->c.accept(string));
 	}
