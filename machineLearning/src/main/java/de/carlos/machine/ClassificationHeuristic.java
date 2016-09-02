@@ -1,11 +1,20 @@
 package de.carlos.machine;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 
 public class ClassificationHeuristic extends Heuristic {
 
 	public ClassificationHeuristic(List<Double> parameters2) {
 		super(parameters2);
+	}
+
+	public ClassificationHeuristic(int inputValueCount) {
+		super(DoubleStream.generate(()->0.0d)
+				.limit(inputValueCount+1)
+				.mapToObj(a->a)
+				.collect(Collectors.toList()));
 	}
 
 	@Override

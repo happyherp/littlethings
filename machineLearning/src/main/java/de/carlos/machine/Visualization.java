@@ -81,27 +81,31 @@ public class Visualization {
 	}	
 	
 
-	private static void displayIterationCollection(XYSeriesCollection collection) {
-		ApplicationFrame af = new ApplicationFrame("Visualization of GradientDescent");
-		JFreeChart lineChart = ChartFactory.createXYLineChart("", "Iteration", "Cost", collection);
-
-		ChartPanel chartPanel = new ChartPanel(lineChart);
-		chartPanel.setPreferredSize(new java.awt.Dimension(560, 367));
-	
-		af.setContentPane(chartPanel);
-
-		af.pack();
-		RefineryUtilities.centerFrameOnScreen(af);
-		af.setVisible(true);
-	}
 	
 	public static void main(String[] args){
-		ClassificationHeuristic h = new ClassificationHeuristic(Arrays.asList(0d,0d));
-		GradientDescent d1=  new GradientDescent(h,  RegressionTest.classification1, 5D);
-		GradientDescent d2=  new AlphaUpdatingGD(h,  RegressionTest.classification1, 5D);
+		Heuristic h = new ClassificationHeuristic(2);
+		List<DataPoint> data = DataPoint.buildForFunction(
+				input -> {
+					double v = input.get(0)*0.3 + input.get(1)*-0.4 + 0.5;
+					return v>0.5?1d:0d;
+				} 
+				,2);
+		//data = FeatureScaling.scaleIt(data);
+		GradientDescent d=  new AlphaUpdatingGD(h,  data, 1.1D);
 		
 		
-		Visualization.showGDs(300, d1,d2);
+		Visualization.showGDs(100, d);
+	}
+	
+	public static void gdVsAlphaUpdating(){
+		Heuristic h = new LinearHeuristic(Arrays.asList(0d,0d,0d,0d));
+		List<DataPoint> data = DataPoint.buildForFunction(new LinearHeuristic(Arrays.asList(3d, 10d, 0.1d, 4d)));
+		data = FeatureScaling.scaleIt(data);
+		GradientDescent d1=  new GradientDescent(h,  data, 0.01D);
+		GradientDescent d2=  new AlphaUpdatingGD(h.asZeroParmater(),  data, 5D);
+		
+		
+		Visualization.showGDs(10, d1,d2);
 	}
 
 }

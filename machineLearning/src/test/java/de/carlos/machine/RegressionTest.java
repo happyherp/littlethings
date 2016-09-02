@@ -32,6 +32,24 @@ public class RegressionTest {
 		classification1.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.9d)), 1D));
 			
 	}
+	
+	static List<DataPoint> classification2 = new ArrayList<>();
+	static{
+		classification2.add(new DataPoint(new ArrayList<Double>(Arrays.asList(-0.4d)), 0D));
+		classification2.add(new DataPoint(new ArrayList<Double>(Arrays.asList(-0.3d)), 0D));
+		classification2.add(new DataPoint(new ArrayList<Double>(Arrays.asList(-0.2d)), 0D));
+		classification2.add(new DataPoint(new ArrayList<Double>(Arrays.asList(-0.1d)), 0D));
+		classification2.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.0d)), 0D));
+		classification2.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.1d)), 0D));
+		classification2.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.2d)), 0D));
+		classification2.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.3d)), 0D));
+		
+		classification2.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.6d)), 1D));
+		classification2.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.7d)), 1D));
+		classification2.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.8d)), 1D));
+		classification2.add(new DataPoint(new ArrayList<Double>(Arrays.asList(0.9d)), 1D));
+			
+	}
 
 	
 	Heuristic linear1 = new LinearHeuristic(Arrays.asList(0d,1d));
@@ -117,28 +135,28 @@ public class RegressionTest {
 		
 		
 		checkConvergesToZero(new GradientDescent(
-				this.buildForFunction(this.linear1), 
+				DataPoint.buildForFunction(this.linear1), 
 				0.01D));
 		
 		checkConvergesToZero(new GradientDescent(
-				this.buildForFunction(this.linear2), 
+				DataPoint.buildForFunction(this.linear2), 
 				0.01D));		
 		
 		checkConvergesToZero(new GradientDescent(
-				this.buildForFunction(this.h5Vars), 
+				DataPoint.buildForFunction(this.h5Vars), 
 				0.01D));	
 		
 		
 		checkConvergesToZero(
 				new AlphaUpdatingGD(
 						FeatureScaling.scaleIt(
-								this.buildForFunction(
+								DataPoint.buildForFunction(
 										new LinearHeuristic(Arrays.asList(-200d, 0.001))))));
 		
 		checkConvergesToZero(
 				new AlphaUpdatingGD(
 						FeatureScaling.scaleIt(
-								this.buildForFunction(
+								DataPoint.buildForFunction(
 										new LinearHeuristic(Arrays.asList(-200.001d, 2000d, -8000d, 0.23d, -1d))))));		
 
 	}
@@ -181,7 +199,7 @@ public class RegressionTest {
 	@Test
 	public void testUneven(){
 		checkConvergesToZero(new GradientDescent(
-				FeatureScaling.scaleIt(this.buildForFunction(this.hUneven)), 
+				FeatureScaling.scaleIt(DataPoint.buildForFunction(this.hUneven)), 
 				0.005D));	
 	}
 
@@ -191,23 +209,7 @@ public class RegressionTest {
 		Assert.assertEquals("Did not converge",0.0D, descent.getCost(), 0.001D);
 	}
 	
-	public List<DataPoint> buildForFunction(Heuristic h){
-		
-		Random r = new Random(0);
-		
-		List<DataPoint> data = new ArrayList<>();
-		for (int i = 0; i<100; i++){
-			
-			List<Double> values = new ArrayList<Double>();
-			for(int v = 0; v<h.getParameters().size()-1;v++){
-				values.add(r.nextDouble());
-			}
-			
-			data.add(new DataPoint(values, h.apply(values)));
-		}
-		
-		return data;
-	}
+
 	
 	@Test
 	public void testFeatureScaling(){
@@ -222,7 +224,7 @@ public class RegressionTest {
 	@Test
 	public void testMeanNormalization(){
 		//Check that mean-normalization helps.
-		List<DataPoint> data = this.buildForFunction(new LinearHeuristic(Arrays.asList(100d,1d)));				
+		List<DataPoint> data = DataPoint.buildForFunction(new LinearHeuristic(Arrays.asList(100d,1d)));				
 		double learningRate = 0.01;		
 		GradientDescent descent = new GradientDescent(data, learningRate);
 		try{
@@ -239,7 +241,7 @@ public class RegressionTest {
 	@Test
 	public void testScaling(){
 		//Check that mean-normalization helps.
-		List<DataPoint> data = this.buildForFunction(new LinearHeuristic(Arrays.asList(0d,10000d)));				
+		List<DataPoint> data = DataPoint.buildForFunction(new LinearHeuristic(Arrays.asList(0d,10000d)));				
 		double learningRate = 0.02;		
 		GradientDescent descent = new GradientDescent(data, learningRate);
 		try{
@@ -255,7 +257,7 @@ public class RegressionTest {
 	
 	@Test
 	public void testAlphaUpdating(){
-		List<DataPoint> data = this.buildForFunction(new LinearHeuristic(Arrays.asList(0.2d,0.3d)));				
+		List<DataPoint> data = DataPoint.buildForFunction(new LinearHeuristic(Arrays.asList(0.2d,0.3d)));				
 		double learningRate = 0.1;		
 		GradientDescent descent = new GradientDescent(data, learningRate);
 		try{
@@ -272,7 +274,7 @@ public class RegressionTest {
 	public void testWithOneMissing(){
 		
 		
-		List<DataPoint> data = this.buildForFunction(new LinearHeuristic(Arrays.asList(3d, 10d, 0.1d, 4d)));		
+		List<DataPoint> data = DataPoint.buildForFunction(new LinearHeuristic(Arrays.asList(3d, 10d, 0.1d, 4d)));		
 
 		//remove one variable from the learning data. 
 		data.stream().forEach(d->d.values.remove(0));
@@ -287,7 +289,7 @@ public class RegressionTest {
 	@Test
 	public void trainingVsTest(){
 		
-		List<DataPoint> data = this.buildForFunction(new LinearHeuristic(Arrays.asList(10d, -2d, 0.1d, 4.3d)));	
+		List<DataPoint> data = DataPoint.buildForFunction(new LinearHeuristic(Arrays.asList(10d, -2d, 0.1d, 4.3d)));	
 		
 		int splitIndex = (int) (data.size()*0.7);
 		List<DataPoint> trainingData = data.subList(0, splitIndex);
