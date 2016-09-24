@@ -8,12 +8,12 @@ import java.util.stream.Collectors;
 
 public class UserService {
 
-	private Halde halde;
+	Halde halde;
 	
-	private Tokenizer<User> tokenizer = new UserTokenizer();
+	Tokenizer<User> tokenizer = new UserTokenizer();
 
-	private Index<User, String> nameToUserIndex;
-	private Index<Post, String> nameToPostIndex;
+	Index<User, String> nameToUserIndex;
+	Index<Post, String> nameToPostIndex;
 		
 
 	public UserService(Halde halde) {
@@ -23,7 +23,11 @@ public class UserService {
 		
 		this.nameToUserIndex = new Index<>(tokenizer, User::getName, this.halde);
 		this.nameToPostIndex = new Index<Post, String>(new SerializeTokenizer<Post>(Post.class), Post::getUsername, this.halde);
-	}				
+	}			
+	
+	public void addUser(User user){
+		halde.read(String.format("<NEWUSER name='%s' age='%d' />", user.getName(), user.getAge()));
+	}
 	
 	public List<User> getAll() {
 		
@@ -67,6 +71,15 @@ public class UserService {
 			}
 		}						
 		return crossproduct;
+	}
+
+	public List<User> under25() {
+		
+		
+		
+		
+		
+		return null;
 	}
 	
 

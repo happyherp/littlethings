@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 public class UserTokenizer implements Tokenizer<User> {
 
 	@Override
-	public Iterable<User> tokenize(byte[] data) {
+	public Iterable<User> tokenize(RawData data) {
 		
 		
 		Pattern userpattern = Pattern.compile("<NEWUSER name='([\\w]+)' age='(\\d+)' />");

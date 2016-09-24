@@ -20,20 +20,29 @@ public class UserTest {
 		Halde halde = new Halde();
 		halde.read(builder.toString());
 		
+		
 		UserService userquery = new UserService(halde);
 		List<User> users = userquery.getAll();
 		Assert.assertEquals(10, users.size());
 		
 		Assert.assertEquals(10, userquery.count());
 		
+		CachedReduction<User, Integer> cachedCount = new CachedReduction<>(
+				Reducer.counter(), 
+				userquery.tokenizer, halde);
+		
+		Assert.assertEquals(10, (int) cachedCount.getResult());
+
+		
 		User u190 = userquery.findByName("Number_107").iterator().next();
 		Assert.assertNotNull(u190);
 		
-		halde.read("<NEWUSER name='Carlos' age='28' />");
+		userquery.addUser(new User("Carlos", 28));
 		Assert.assertNotNull(userquery.findByName("Carlos"));
-		
-		
+		Assert.assertEquals(11, (int) cachedCount.getResult());
 
+		List<User> under25 = userquery.under25();
+		Assert.assertEquals(4, under25.size());
 	}
 	
 	@Test
@@ -53,11 +62,8 @@ public class UserTest {
 		Collection<UserWithPost> posts = userquery.joinUsersWithPosts();
 		
 		Assert.assertEquals(20, posts.size());
-		
-		
-		
 	}
-	
+
 	@Test
 	public void testDelete(){
 		Halde halde = new Halde();
@@ -69,6 +75,7 @@ public class UserTest {
 		userquery.deleteByName("Carlos");
 		Assert.assertNull(userquery.findByName("Carlos"));
 	}
+	
 	
 
 	

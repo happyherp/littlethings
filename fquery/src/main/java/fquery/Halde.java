@@ -1,6 +1,7 @@
 package fquery;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,11 +12,13 @@ import org.apache.commons.lang3.SerializationUtils;
 
 public class Halde {
 	
-	List<byte[]> content = new ArrayList<>();
+	List<RawData> content = new ArrayList<>();
 	
-	List<Consumer<byte[]>> onNewContent = new ArrayList<>();
+	long counter = 1;
 	
-	public void addContentListener(Consumer<byte[]> listener){
+	List<Consumer<RawData>> onNewContent = new ArrayList<>();
+	
+	public void addContentListener(Consumer<RawData> listener){
 		this.onNewContent.add(listener);
 	}
 	
@@ -23,9 +26,10 @@ public class Halde {
 		this.read(SerializationUtils.serialize(serializable));
 	}
 
-	public void read(byte[] string) {
-		content.add(string);	
-		onNewContent.forEach(c->c.accept(string));
+	public void read(byte[] data) {
+		RawData rawdata = new RawData(data,Instant.now(), this.counter++);
+		content.add(rawdata);	
+		onNewContent.forEach(c->c.accept(rawdata));
 	}
 
 	public <T> Iterator<T>  plow(Tokenizer<T> tokenizer) {
@@ -37,7 +41,6 @@ public class Halde {
 	}
 
 	public  <T,R> R reduce(Tokenizer<? extends T> tokenizer, Reducer<T, R> reducer) {
-		
 		
 		return StreamUtils.asStream(this.plow(tokenizer))
 			.reduce(reducer.initial(), reducer::reduce, reducer::combine);

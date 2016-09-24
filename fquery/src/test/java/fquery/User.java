@@ -4,6 +4,13 @@ public class User {
 	
 	private String name;
 	private Integer age;
+	public User(String string, int i) {
+		this.name = string;
+		this.age = i;
+	}
+	public User() {
+		// TODO Auto-generated constructor stub
+	}
 	public String getName() {
 		return name;
 	}

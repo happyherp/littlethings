@@ -18,12 +18,12 @@ public class SerializeTokenizer<T extends Serializable> implements Tokenizer<T>{
 	}
 	
 	@Override
-	public Iterable<T> tokenize(byte[] data) {
+	public Iterable<T> tokenize(RawData data) {
 		
 		List<T> l = new ArrayList<>();
 		
 		try {
-			ObjectInputStream stream = new ObjectInputStream(new ByteArrayInputStream(data));
+			ObjectInputStream stream = new ObjectInputStream(new ByteArrayInputStream(data.payload));
 			while (true){
 				try {
 					Object o = stream.readObject();

@@ -11,8 +11,10 @@ import com.google.common.collect.PeekingIterator;
 
 public class Join {
 
-	public static <R,K extends Comparable<K>,V1,V2> Collection<R>  join(Index<V1, K> index1,
-			Index<V2, K> index2, BiFunction<Collection<V1>, Collection<V2>, R> resultcombiner) {
+	public static <R,K extends Comparable<K>,V1,V2> Collection<R>  join(
+			Index<V1, K> index1,
+			Index<V2, K> index2, 
+			BiFunction<Collection<V1>, Collection<V2>, R> resultcombiner) {
 		
 		
 		List<R> joined = new ArrayList<>();

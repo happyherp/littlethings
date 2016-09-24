@@ -16,13 +16,13 @@ public class Index<T,A extends Comparable<A>> {
 	SortedMap<A, Collection<T>> index = new TreeMap<>();
 	private Tokenizer<T> tokenizer;
 	private Function<T, A> accessor;
-	private Halde hale;
+	private Halde halde;
 	
 	public Index(Tokenizer<T> tokenizer, Function<T, A> accessor, Halde h){
 		
 		this.tokenizer = tokenizer;
 		this.accessor = accessor;
-		this.hale = h;
+		this.halde = h;
 		
 		h.plow(tokenizer).forEachRemaining(this::add);
 		
