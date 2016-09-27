@@ -29,7 +29,7 @@ public class UserTest {
 		
 		CachedReduction<User, Integer> cachedCount = new CachedReduction<>(
 				Reducer.counter(), 
-				userquery.tokenizer, halde);
+				userquery.userinsertmap);
 		
 		Assert.assertEquals(10, (int) cachedCount.getResult());
 
@@ -41,8 +41,15 @@ public class UserTest {
 		Assert.assertNotNull(userquery.findByName("Carlos"));
 		Assert.assertEquals(11, (int) cachedCount.getResult());
 
-		List<User> under25 = userquery.under25();
-		Assert.assertEquals(4, under25.size());
+		
+		List<User> evenAge = userquery.evenAge();
+		Assert.assertEquals(6, evenAge.size());
+		
+		
+		Collection<User> under25 = userquery.under25();
+		Assert.assertEquals(5, under25.size());
+
+		
 	}
 	
 	@Test
@@ -69,10 +76,13 @@ public class UserTest {
 		Halde halde = new Halde();
 		
 		UserService userquery = new UserService(halde);
+		Assert.assertEquals(0,userquery.userdeletemap.stream().count());		
 		halde.read("<NEWUSER name='Carlos' age='28' />");
 		Assert.assertNotNull(userquery.findByName("Carlos"));
 		
+		Assert.assertEquals(0,userquery.userdeletemap.stream().count());
 		userquery.deleteByName("Carlos");
+		Assert.assertEquals(1,userquery.userdeletemap.stream().count());
 		Assert.assertNull(userquery.findByName("Carlos"));
 	}
 	

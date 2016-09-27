@@ -8,28 +8,42 @@ import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import fquery.ChangingList.ChangeListener;
 
 public class Index<T,A extends Comparable<A>> {
 	
-	SortedMap<A, Collection<T>> index = new TreeMap<>();
-	private Tokenizer<T> tokenizer;
-	private Function<T, A> accessor;
-	private Halde halde;
+	TreeMap<A, Collection<T>> index = new TreeMap<>();
+	Function<T, A> accessor;
+	ChangingList<T> source;
 	
-	public Index(Tokenizer<T> tokenizer, Function<T, A> accessor, Halde h){
-		
-		this.tokenizer = tokenizer;
+	public Index(ChangingList<T> source,  Function<T, A> accessor){
+		this.source = source;
 		this.accessor = accessor;
-		this.halde = h;
 		
-		h.plow(tokenizer).forEachRemaining(this::add);
+		source.forEach(this::add);
 		
-		h.addContentListener(data ->{
-			 tokenizer.tokenize(data)
-			 	.forEach(this::add);
+		source.addChangeListener(new ChangeListener<T>(){
+
+			@Override
+			public void onAdd(T obj) {
+				Index.this.add(obj);				
+			}
+
+			@Override
+			public void onRemove(T obj) {
+				index.remove(accessor.apply(obj));
+			}
+
+			@Override
+			public void onChange(T obj) {
+				throw new RuntimeException("Not implemented");
+				
+			}
+			
 		});
+		
 	}
 	
 	
@@ -53,7 +67,11 @@ public class Index<T,A extends Comparable<A>> {
 				.collect(Collectors.toList());
 	}
 
-
+	public Collection<T> lowerThan(A limit){
+		return index.headMap(limit).values().stream()
+				.flatMap(Collection::stream)
+				.collect(Collectors.toList());
+	}
 
 	public Iterator<Entry<A,Collection<T>>> iteratorKey() {
 		return index.entrySet().iterator();
