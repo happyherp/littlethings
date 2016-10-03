@@ -15,11 +15,11 @@ import java.util.function.Function;
  * @param <S>
  * @param <T>
  */
-public class Mapping<S,T> extends AbstractChangingList<T> {
+public class Mapping<S,T> extends AbstractChangingView<T> {
 	
 	Map<S,T> cache = new HashMap<>();
 	
-	public Mapping(ChangingList<S> source, Function<S, T> f) {
+	public Mapping(ChangingView<S> source, Function<S, T> f) {
 		source.forEach(s->cache.put(s, f.apply(s)));
 		source.addChangeListener(new ChangeListener<S>() {
 
@@ -33,10 +33,6 @@ public class Mapping<S,T> extends AbstractChangingList<T> {
 				cache.remove(s);
 			}
 
-			@Override
-			public void onChange(S s) {
-				cache.put(s, f.apply(s));				
-			}
 		});
 	}
 

@@ -1,6 +1,6 @@
 package fquery;
 
-import fquery.ChangingList.ChangeListener;
+import fquery.ChangingView.ChangeListener;
 
 public class CachedReduction<T, R> {
 	
@@ -8,7 +8,7 @@ public class CachedReduction<T, R> {
 	
 	R cachedResult;
 	
-	public CachedReduction(Reducer<T, R> reducer, ChangingList<T> source) {
+	public CachedReduction(Reducer<T, R> reducer, ChangingView<T> source) {
 		super();
 		this.reducer = reducer;
 		this.cachedResult = Reducer.reduce(source, reducer);
@@ -16,11 +16,6 @@ public class CachedReduction<T, R> {
 			
 			@Override
 			public void onRemove(T obj) {
-				throw new RuntimeException("Not implemented");
-			}
-			
-			@Override
-			public void onChange(T obj) {
 				throw new RuntimeException("Not implemented");
 			}
 			

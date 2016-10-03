@@ -3,12 +3,12 @@ package fquery;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractChangingList<T> implements ChangingList<T>{
+public abstract class AbstractChangingView<T> implements ChangingView<T>{
 	
 	List<ChangeListener<T>> listeners = new ArrayList<>();
 
 	@Override
-	public void addChangeListener(fquery.ChangingList.ChangeListener<T> l) {
+	public void addChangeListener(fquery.ChangingView.ChangeListener<T> l) {
 		this.listeners.add(l);
 	}	
 	
@@ -19,6 +19,10 @@ public abstract class AbstractChangingList<T> implements ChangingList<T>{
 	
 	protected void fireRemove(T t) {
 		this.listeners.forEach(l->l.onRemove(t));		
+	}
+	
+	protected void fireChange(T old, T newO) {
+		this.listeners.forEach(l->l.onChange(old, newO));		
 	}
 
 }

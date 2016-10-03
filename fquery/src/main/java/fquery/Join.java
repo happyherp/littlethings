@@ -1,4 +1,4 @@
-package fquery;
+  package fquery;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,21 +10,28 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-
 import com.google.common.collect.Iterators;
 import com.google.common.collect.PeekingIterator;
 
-public class Join<K extends Comparable<K>, T, L,R> extends AbstractChangingList<T> {
+//TODO: Make this work with T being another ChangingList
+public class Join<K extends Comparable<K>, T, L,R> extends AbstractChangingView<T> {
 	
 	Map<K, T> cache;
 	private Index<L, K> leftSource;
 	private Index<R, K> rightSource;
-	private BiFunction<Collection<L>, Collection<R>, T> resultcombiner;
+	private JoinFunction<T, K, L, R> resultcombiner;
+	
+	public Join(Index<L, K> leftSource, 
+			Index<R, K> rightsource,
+			BiFunction<Collection<L>, Collection<R>, T> resultcombiner
+		   ){
+		this(leftSource,rightsource,(k,a,b)-> resultcombiner.apply(a, b));
+		
+	}
 	
 	public Join(Index<L, K> leftSource, 
 						Index<R, K> rightsource, 
-					   BiFunction<Collection<L>, Collection<R>, T> resultcombiner){
+					   JoinFunction<T, K, L, R> resultcombiner){
 		
 		this.leftSource = leftSource;
 		this.rightSource = rightsource;
@@ -42,13 +49,9 @@ public class Join<K extends Comparable<K>, T, L,R> extends AbstractChangingList<
 
 			@Override
 			public void onRemove(L obj) {
-				throw new RuntimeException();				
+				this.onAdd(obj);			
 			}
 
-			@Override
-			public void onChange(L obj) {
-				throw new RuntimeException();				
-			}
 		});
 		rightSource.source.addChangeListener(new ChangeListener<R>() {
 
@@ -60,18 +63,10 @@ public class Join<K extends Comparable<K>, T, L,R> extends AbstractChangingList<
 
 			@Override
 			public void onRemove(R obj) {
-				throw new RuntimeException();				
-			}
-
-			@Override
-			public void onChange(R obj) {
-				throw new RuntimeException();				
+				this.onAdd(obj);			
 			}
 		});
-		
-		
 	}
-
 
 	protected void recalculateKey(K key) {
 		if (this.cache.containsKey(key)){
@@ -79,7 +74,7 @@ public class Join<K extends Comparable<K>, T, L,R> extends AbstractChangingList<
 		}
 		Collection<L> leftCollection = leftSource.get(key) == null ? Collections.emptyList():  leftSource.get(key);
 		Collection<R> rightCollection = rightSource.get(key) == null ? Collections.emptyList():  rightSource.get(key);
-		T result =  this.resultcombiner.apply(leftCollection, rightCollection);
+		T result =  this.resultcombiner.apply(key, leftCollection, rightCollection);
 		this.cache.put(key,result);
 		this.fireAdd(result);			
 	}
@@ -102,8 +97,8 @@ public class Join<K extends Comparable<K>, T, L,R> extends AbstractChangingList<
 		
 		List<R> joined = new ArrayList<>();
 			
-		PeekingIterator<Entry<K, Collection<V1>>> left = Iterators.peekingIterator(index1.iteratorKey());
-		PeekingIterator<Entry<K, Collection<V2>>> right = Iterators.peekingIterator(index2.iteratorKey());
+		PeekingIterator<Entry<K, Collection<V1>>> left = Iterators.peekingIterator(index1.iterator());
+		PeekingIterator<Entry<K, Collection<V2>>> right = Iterators.peekingIterator(index2.iterator());
 		
 		if (left.hasNext() && right.hasNext()){
 			
@@ -141,13 +136,13 @@ public class Join<K extends Comparable<K>, T, L,R> extends AbstractChangingList<
 	public static <R,K extends Comparable<K>,V1,V2> Map<K,R>  joinAll(
 			Index<V1, K> index1,
 			Index<V2, K> index2, 
-			BiFunction<Collection<V1>, Collection<V2>, R> resultcombiner) {
+			 JoinFunction<R, K, V1, V2> resultcombiner) {
 		
 		
 		Map<K, R> joined = new HashMap<>();
 			
-		Iterator<Entry<K, Collection<V1>>> left = index1.iteratorKey();
-		Iterator<Entry<K, Collection<V2>>> right = index2.iteratorKey();
+		Iterator<Entry<K, Collection<V1>>> left = index1.iterator();
+		Iterator<Entry<K, Collection<V2>>> right = index2.iterator();
 		
 		Entry<K, Collection<V1>> leftEntry = nextOrNull(left);
 		Entry<K, Collection<V2>> rightEntry = nextOrNull(right);
@@ -158,16 +153,16 @@ public class Join<K extends Comparable<K>, T, L,R> extends AbstractChangingList<
 			R result;
 			if (comp == 0){
 				key = leftEntry.getKey();
-				result = resultcombiner.apply(leftEntry.getValue(), rightEntry.getValue());
+				result = resultcombiner.apply(key, leftEntry.getValue(), rightEntry.getValue());
 				leftEntry = nextOrNull(left);
 				rightEntry = nextOrNull(right);		
 			}else if (comp < 0){		
 				key = leftEntry.getKey();				
-				result = resultcombiner.apply(leftEntry.getValue(), Collections.emptyList());
+				result = resultcombiner.apply(key, leftEntry.getValue(), Collections.emptyList());
 				leftEntry = nextOrNull(left);				
 			}else{
 				key = rightEntry.getKey();				
-				result = resultcombiner.apply(Collections.emptyList(), rightEntry.getValue());
+				result = resultcombiner.apply(key, Collections.emptyList(), rightEntry.getValue());
 				rightEntry = nextOrNull(right);						
 			}
 			joined.put(key, result);	
@@ -177,14 +172,14 @@ public class Join<K extends Comparable<K>, T, L,R> extends AbstractChangingList<
 		while (leftEntry != null){
 			joined.put(
 					leftEntry.getKey(), 
-					resultcombiner.apply(leftEntry.getValue(), Collections.emptyList()));
+					resultcombiner.apply(leftEntry.getKey(), leftEntry.getValue(), Collections.emptyList()));
 			leftEntry = nextOrNull(left);
 		}
 		
 		while (rightEntry != null){
 			joined.put(
 					rightEntry.getKey(), 
-					resultcombiner.apply(Collections.emptyList(),rightEntry.getValue()));
+					resultcombiner.apply(rightEntry.getKey(), Collections.emptyList(),rightEntry.getValue()));
 			rightEntry = nextOrNull(right);
 		}
 		
@@ -194,6 +189,17 @@ public class Join<K extends Comparable<K>, T, L,R> extends AbstractChangingList<
 	
 	public static  <T> T nextOrNull (Iterator<T> iter){
 		return iter.hasNext() ? iter.next():null;
+	}
+	
+	@FunctionalInterface
+	public interface JoinFunction<T,K,L,R>{
+		
+		public T apply(K key, Collection<L> left, Collection<R> right );
+		
+	}
+
+	public T getKey(K key) {
+		return cache.get(key);
 	}
 
 }

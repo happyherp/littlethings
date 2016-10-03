@@ -17,11 +17,11 @@ import java.util.stream.Collectors;
  * @param <S>
  * @param <T>
  */
-public class Flatmapping<S,T> extends AbstractChangingList<T> {
+public class Flatmapping<S,T> extends AbstractChangingView<T> {
 	
 	Map<S,Collection<T>> cache = new HashMap<>();
 	
-	public Flatmapping(ChangingList<S> source, Function<S, Collection<T>> f) {
+	public Flatmapping(ChangingView<S> source, Function<S, Collection<T>> f) {
 		source.forEach(s->cache.put(s, f.apply(s)));
 		source.addChangeListener(new ChangeListener<S>() {
 
@@ -35,13 +35,9 @@ public class Flatmapping<S,T> extends AbstractChangingList<T> {
 			@Override
 			public void onRemove(S s) {
 				cache.remove(s)
-					.forEach(Flatmapping.this::fireAdd);
+					.forEach(Flatmapping.this::fireRemove);
 			}
 
-			@Override
-			public void onChange(S s) {
-				onAdd(s);			
-			}
 		});
 	}
 

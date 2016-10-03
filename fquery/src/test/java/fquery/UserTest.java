@@ -2,6 +2,7 @@ package fquery;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,12 +21,11 @@ public class UserTest {
 		Halde halde = new Halde();
 		halde.read(builder.toString());
 		
-		
 		UserService userquery = new UserService(halde);
 		List<User> users = userquery.getAll();
 		Assert.assertEquals(10, users.size());
 		
-		Assert.assertEquals(10, userquery.count());
+		Assert.assertEquals(10, userquery.countUsers());
 		
 		CachedReduction<User, Integer> cachedCount = new CachedReduction<>(
 				Reducer.counter(), 
@@ -33,23 +33,19 @@ public class UserTest {
 		
 		Assert.assertEquals(10, (int) cachedCount.getResult());
 
-		
 		User u190 = userquery.findByName("Number_107").iterator().next();
 		Assert.assertNotNull(u190);
 		
 		userquery.addUser(new User("Carlos", 28));
 		Assert.assertNotNull(userquery.findByName("Carlos"));
 		Assert.assertEquals(11, (int) cachedCount.getResult());
-
 		
 		List<User> evenAge = userquery.evenAge();
 		Assert.assertEquals(6, evenAge.size());
 		
-		
-		Collection<User> under25 = userquery.under25();
+		Collection<User> under25 = userquery.underAge(25);
 		Assert.assertEquals(5, under25.size());
 
-		
 	}
 	
 	@Test
@@ -61,13 +57,10 @@ public class UserTest {
 			halde.read("<NEWUSER name='"+name+"' age='"+(i+20)+"' />");
 			halde.read(new Post(name,"I am "+name));
 			halde.read(new Post(name,"I love pie"));
-			
 		}		
 				
 		UserService userquery = new UserService(halde);
-		
 		Collection<UserWithPost> posts = userquery.joinUsersWithPosts();
-		
 		Assert.assertEquals(20, posts.size());
 	}
 
@@ -84,6 +77,40 @@ public class UserTest {
 		userquery.deleteByName("Carlos");
 		Assert.assertEquals(1,userquery.userdeletemap.stream().count());
 		Assert.assertNull(userquery.findByName("Carlos"));
+	}
+	
+	@Test
+	public void testMostWrites(){
+		Halde halde = new Halde();
+		UserService service = new UserService(halde);
+		
+		Random random = new Random(4455);
+		
+		int totalUsers = 2000;
+		
+		for (int i = 0;i<totalUsers;i++){
+			User user = new User();
+			user.setName("User#"+i);
+			user.setAge(i+10);
+			service.addUser(user);
+			
+			for (int j = random.nextInt(100); j > 0;j-- ){
+				Post post = new Post(user.getName(), "I am post number "+j);
+				service.addPost(post);
+			}
+		}
+		
+		Assert.assertEquals(totalUsers, service.countUsers());
+		Assert.assertTrue(service.countPosts() > totalUsers*45);
+		Assert.assertTrue(service.countPosts() < totalUsers*55);
+		
+		List<HighscoreEntry> top10Users = service.getTop10Posters();
+		Assert.assertEquals(10, top10Users.size());
+		
+		for (int i = 1;i<top10Users.size();i++){
+			Assert.assertTrue(top10Users.get(i-1).getPosts() >= top10Users.get(i).getPosts());
+		}
+		 
 	}
 	
 	

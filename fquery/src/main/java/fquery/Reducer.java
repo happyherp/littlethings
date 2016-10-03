@@ -36,7 +36,7 @@ public interface Reducer<T,R> {
 		return build(()->0, (a,b) -> b+1, (a,b)-> a+b);
 	}
 	
-	public static <T,R> R reduce(ChangingList<T> source, Reducer<T, R> reducer) {
+	public static <T,R> R reduce(ChangingView<T> source, Reducer<T, R> reducer) {
 		
 		return  source.stream()
 			.reduce(reducer.initial(), reducer::reduce, reducer::combine);		

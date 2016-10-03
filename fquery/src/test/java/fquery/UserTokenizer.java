@@ -11,7 +11,7 @@ public class UserTokenizer implements Tokenizer<User> {
 	public Iterable<User> tokenize(RawData data) {
 		
 		
-		Pattern userpattern = Pattern.compile("<NEWUSER name='([\\w]+)' age='(\\d+)' />");
+		Pattern userpattern = Pattern.compile("<NEWUSER name='([\\w#]+)' age='(\\d+)' />");
 		
 		List<User> users = new ArrayList<>();
 		for (String stringData : new SerializeTokenizer<>(String.class).tokenize(data)){

@@ -6,11 +6,11 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 
-public class Filter<T> extends AbstractChangingList<T> {
+public class Filter<T> extends AbstractChangingView<T> {
 
 	Set<T> cache;
 	
-	public Filter(ChangingList<T> source, Predicate<T> test){
+	public Filter(ChangingView<T> source, Predicate<T> test){
 		cache =  source.stream()
 				.filter(test)
 				.collect(Collectors.toSet());
@@ -32,14 +32,6 @@ public class Filter<T> extends AbstractChangingList<T> {
 					cache.remove(obj);
 					Filter.this.fireRemove(obj);
 				}				
-			}
-
-			@Override
-			public void onChange(T obj) {
-				//TODO: Really need to change how equality is handles. 
-				//If changing an object changes their equality, the old version should also be available here. 
-				throw new RuntimeException("Not implemented. ");
-				
 			}
 		});
 		

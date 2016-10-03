@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.management.RuntimeErrorException;
+
 import com.google.common.collect.Lists;
 
 public class UserService {
@@ -25,9 +27,15 @@ public class UserService {
 	
 	Filter<User> ageEvenFilter;
 
-	private ChangingList<User> currentUsers;
+	private ChangingView<User> currentUsers;
 
 	private Index<User, String> nameToInsertIndex;
+
+	private CachedReduction<Post, Integer> postcount;
+
+	private Join<String, HighscoreEntry, User, Post> highscore;
+
+	private Index<HighscoreEntry, Integer> highscoreIndex;
 
 
 		
@@ -54,6 +62,23 @@ public class UserService {
 		
 		this.userAgeIndex = new Index<>(this.currentUsers, User::getAge);
 		this.ageEvenFilter = new Filter<User>(this.currentUsers, u -> u.getAge() % 2 == 0);
+		
+		
+		postcount = new CachedReduction<>(Reducer.counter(), this.postmap);
+		
+		
+		highscore = new Join<String,HighscoreEntry, User, Post>(
+				nameToUser,nameToPostIndex, 
+				(users, posts) -> {
+					if (users.size() != 1){
+						throw new RuntimeException();
+					}
+					return new HighscoreEntry(users.iterator().next(), posts.size());
+				});
+		
+		
+		highscoreIndex = new Index<>(highscore, HighscoreEntry::getPosts);
+		
 	}			
 	
 	public void addUser(User user){
@@ -65,7 +90,7 @@ public class UserService {
 		
 	}
 	
-	public int count(){
+	public int countUsers(){
 		return Reducer.reduce(currentUsers,Reducer.counter());
 	}
 	
@@ -111,18 +136,34 @@ public class UserService {
 			}else{
 				return null;
 			}
-		}
-		
-		
+		}		
 		return null;
 	}
 
-	public Collection<User> under25() {
-		return userAgeIndex.lowerThan(25);
+	public Collection<User> underAge(int age) {
+		return userAgeIndex.lowerThan(age);
 	}
 
 	public List<User> evenAge() {		
 		return Lists.newArrayList(ageEvenFilter.iterator());				
+	}
+
+	public void addPost(Post post) {
+		this.halde.read(post);
+	}
+
+	public int countPosts() {
+		return postcount.getResult();
+	}
+	
+	public List<HighscoreEntry> getPostCounts() {
+
+		return highscore.asList();
+	}
+
+	public List<HighscoreEntry> getTop10Posters() {
+
+		return highscoreIndex.top(10);
 	}
 	
 

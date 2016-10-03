@@ -4,21 +4,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import fquery.ChangingList.ChangeListener;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
-public class Index<T,A extends Comparable<A>> {
+import fquery.ChangingView.ChangeListener;
+
+public class Index<T,A extends Comparable<A>> extends AbstractChangingView<Entry<A,Collection<T>>> {
 	
 	TreeMap<A, Collection<T>> index = new TreeMap<>();
 	Function<T, A> accessor;
-	ChangingList<T> source;
+	ChangingView<T> source;
 	
-	public Index(ChangingList<T> source,  Function<T, A> accessor){
+	public Index(ChangingView<T> source,  Function<T, A> accessor){
 		this.source = source;
 		this.accessor = accessor;
 		
@@ -33,35 +36,42 @@ public class Index<T,A extends Comparable<A>> {
 
 			@Override
 			public void onRemove(T obj) {
-				index.remove(accessor.apply(obj));
+				A key = accessor.apply(obj);
+				Collection<T> oldList = index.get(key);	
+				ArrayList<T> newList = new ArrayList<>(oldList);
+				newList.remove(obj);
+				if (newList.isEmpty()){
+					index.remove(key);
+					fireRemove(new ImmutablePair<A, Collection<T>>(key,oldList));					
+				}else{
+					index.put(key, newList);
+					fireChange(new ImmutablePair<A, Collection<T>>(key, oldList),
+							new ImmutablePair<A, Collection<T>>(key, newList));					}
 			}
-
-			@Override
-			public void onChange(T obj) {
-				throw new RuntimeException("Not implemented");
-				
-			}
-			
 		});
-		
 	}
-	
 	
 	private void add(T obj){
 		A key = this.accessor.apply(obj);
-		if (!this.index.containsKey(key)){
+		if (!this.index.containsKey(key)){			
 			this.index.put(key, new ArrayList<>());
+			this.index.get(key).add(obj);			
+			this.fireAdd(new ImmutablePair<A, Collection<T>>(key, this.index.get(key)));
+		}else{
+			Collection<T> oldList = this.index.get(key);
+			ArrayList<T> newList = new ArrayList<>(oldList);
+			newList.add(obj);
+			this.index.put(key, newList);			
+			this.fireChange(new ImmutablePair<A, Collection<T>>(key, oldList),
+					new ImmutablePair<A, Collection<T>>(key, newList));			
 		}
-		this.index.get(key).add(obj);
 	}
-	
-
 
 	public Collection<T> get(A key){
 		return index.get(key);
 	}
 	
-	public Collection<T> sorted(){
+	public List<T> sorted(){
 		return index.values().stream()
 				.flatMap(Collection::stream)
 				.collect(Collectors.toList());
@@ -73,9 +83,19 @@ public class Index<T,A extends Comparable<A>> {
 				.collect(Collectors.toList());
 	}
 
-	public Iterator<Entry<A,Collection<T>>> iteratorKey() {
+	public Iterator<Entry<A,Collection<T>>> iterator() {
 		return index.entrySet().iterator();
 	}
+
+
+	public List<T> top(int i) {
+		return index.descendingMap().values().stream()
+				.flatMap(Collection::stream)
+				.limit(i)
+				.collect(Collectors.toList());
+	}
+
+
 	
 	
 
