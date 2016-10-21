@@ -4,11 +4,10 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import fquery.Flatmapping;
+import fquery.ChangingView;
 import fquery.Halde;
 import fquery.Index;
 import fquery.Join;
-import fquery.RawData;
 
 public class PerformanceTest {
 
@@ -19,8 +18,8 @@ public class PerformanceTest {
 		
 		Halde halde = new Halde();
 		
-		Flatmapping<RawData, Account> accounts = halde.get(Account.class);
-		Flatmapping<RawData, Transfer> transfers = halde.get(Transfer.class);
+		ChangingView<Account> accounts = halde.get(Account.class);
+		ChangingView<Transfer> transfers = halde.get(Transfer.class);
 		
 		
 		Join<Long, AccountBalance, Transfer, Transfer> balance = new Join<Long, AccountBalance, Transfer, Transfer>(
@@ -38,9 +37,9 @@ public class PerformanceTest {
 		int ACCOUNTS = (int) 10e2;
 		int TRANSFERS = (int) 10e2;
 		for (int i = 0;i<ACCOUNTS;i++){
-			halde.read(new Account(i));						
+			halde.write(new Account(i));						
 			for (int j = 0;j<TRANSFERS;j++){
-				halde.read(new Transfer(i, random.nextInt(ACCOUNTS), random.nextInt(1000)));
+				halde.write(new Transfer(i, random.nextInt(ACCOUNTS), random.nextInt(1000)));
 			}						
 		}
 		

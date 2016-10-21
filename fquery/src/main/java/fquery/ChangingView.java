@@ -2,6 +2,7 @@ package fquery;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import com.google.common.collect.Lists;
@@ -30,6 +31,14 @@ public interface ChangingView<T> extends Iterable<T> {
 	
 	default <A extends Comparable<A>> Index<T, A> index(Function<T, A> accessor){
 		return new Index<T,A>(this, accessor);
+	}
+	
+	default Filter<T> filter(Predicate<T> pred){
+		return new Filter<T>(this, pred);
+	}
+	
+	default <M> Mapping<T, M> map(Function<T, M> f){
+		return new Mapping<>(this, f);
 	}
 	
 }

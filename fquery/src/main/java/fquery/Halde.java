@@ -17,13 +17,15 @@ public class Halde extends AbstractChangingView<RawData>{
 	
 	List<RawData> content = new ArrayList<>();
 	
+	Flatmapping<RawData, Serializable> serializeReader = Tokenizer.doMap(this, new SerializeTokenizer<Serializable>(Serializable.class));
+	
 	long counter = 1;
 	
-	public void read(Serializable serializable){
-		this.read(SerializationUtils.serialize(serializable));
+	public void write(Serializable serializable){
+		this.write(SerializationUtils.serialize(serializable));
 	}
 
-	public void read(byte[] data) {
+	public void write(byte[] data) {
 		RawData rawdata = new RawData(data,Instant.now(), this.counter++);
 		content.add(rawdata);	
 		this.fireAdd(rawdata);
@@ -34,7 +36,9 @@ public class Halde extends AbstractChangingView<RawData>{
 		return content.iterator();
 	}
 
-	public <T extends Serializable> Flatmapping<RawData, T> get(Class<T> class1) {
-		return Tokenizer.doMap(this, new SerializeTokenizer<>(class1));
+	public <T extends Serializable> ChangingView<T> get(Class<T> class1) {
+		return (ChangingView<T>) serializeReader
+				.filter(o->o.getClass().equals(class1));
+				
 	}
 }

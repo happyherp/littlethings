@@ -7,15 +7,14 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import fquery.CachedReduction;
-import fquery.Flatmapping;
+import fquery.CachedReduction2;
+import fquery.ChangingView;
 import fquery.Halde;
 import fquery.Join;
 import fquery.Mapping;
 import fquery.MultiJoin;
 import fquery.NestedView;
-import fquery.RawData;
-import fquery.Reducer;
+import fquery.Reduction2;
 
 public class BankTest {
 	
@@ -29,10 +28,10 @@ public class BankTest {
 		Halde halde = new Halde();
 		
 		
-		Flatmapping<RawData, Account> accounts = halde.get(Account.class);
-		Flatmapping<RawData, Transfer> transfers = halde.get(Transfer.class);
-		Flatmapping<RawData, Deposit> deposits = halde.get(Deposit.class);
-		Flatmapping<RawData, Withdrawal> withdrawals = halde.get(Withdrawal.class);
+		ChangingView<Account> accounts = halde.get(Account.class);
+		ChangingView<Transfer> transfers = halde.get(Transfer.class);
+		ChangingView<Deposit> deposits = halde.get(Deposit.class);
+		ChangingView<Withdrawal> withdrawals = halde.get(Withdrawal.class);
 		
 		
 		Join<Long, AccountBalance, Transfer, Transfer> balance1 = new Join<Long, AccountBalance, Transfer, Transfer>(
@@ -61,9 +60,9 @@ public class BankTest {
 						));		
 		
 		
-		halde.read(new Account(1));
-		halde.read(new Account(2));
-		halde.read(new Transfer(1,2,200));
+		halde.write(new Account(1));
+		halde.write(new Account(2));
+		halde.write(new Transfer(1,2,200));
 		
 		Assert.assertEquals(-200, balance1.getKey(1L).getBalance());
 		Assert.assertEquals(200, balance1.getKey(2L).getBalance());
@@ -72,14 +71,14 @@ public class BankTest {
 		Assert.assertEquals(-200, balance3.getKey(1L).getBalance());
 		Assert.assertEquals(200, balance3.getKey(2L).getBalance());
 		
-		halde.read(new Deposit("Carlos", 1, 500));
+		halde.write(new Deposit("Carlos", 1, 500));
 		
 		Assert.assertEquals(-200, balance1.getKey(1L).getBalance());//Unchanged
 		Assert.assertEquals(200, balance1.getKey(2L).getBalance());//Unchanged		
 		Assert.assertEquals(300, balance2.getKey(1L).getBalance());
 		Assert.assertEquals(300, balance3.getKey(1L).getBalance());
 		
-		halde.read(new Withdrawal("Carlos", 1, 200));
+		halde.write(new Withdrawal("Carlos", 1, 200));
 		
 		Assert.assertEquals(-200, balance1.getKey(1L).getBalance());//Unchanged
 		Assert.assertEquals(200, balance1.getKey(2L).getBalance());//Unchanged		
@@ -97,10 +96,10 @@ public class BankTest {
 		Halde halde = new Halde();
 		
 		
-		Flatmapping<RawData, Account> accounts = halde.get(Account.class);
-		Flatmapping<RawData, Transfer> transfers = halde.get(Transfer.class);
-		Flatmapping<RawData, Deposit> deposits = halde.get(Deposit.class);
-		Flatmapping<RawData, Withdrawal> withdrawals = halde.get(Withdrawal.class);
+		ChangingView<Account> accounts = halde.get(Account.class);
+		ChangingView<Transfer> transfers = halde.get(Transfer.class);
+		ChangingView<Deposit> deposits = halde.get(Deposit.class);
+		ChangingView<Withdrawal> withdrawals = halde.get(Withdrawal.class);
 		
 		MultiJoin balanceJoin = new MultiJoin(
 				Arrays.asList(
@@ -122,19 +121,19 @@ public class BankTest {
 					return new AccountBalance((Long) key, sum);	
 				});
 		
-		halde.read(new Account(1));
-		halde.read(new Account(2));
+		halde.write(new Account(1));
+		halde.write(new Account(2));
 	   
 		
-		halde.read(new Transfer(1,2,200));
+		halde.write(new Transfer(1,2,200));
 		Assert.assertEquals(-200, ((AccountBalance)balanceJoin.getKey(1L)).getBalance());
 		Assert.assertEquals(200, ((AccountBalance)balanceJoin.getKey(2L)).getBalance());		
 
-		halde.read(new Deposit("Carlos", 1, 500));
+		halde.write(new Deposit("Carlos", 1, 500));
 		Assert.assertEquals(300, ((AccountBalance)balanceJoin.getKey(1L)).getBalance());
 		Assert.assertEquals(200, ((AccountBalance)balanceJoin.getKey(2L)).getBalance());
 		
-		halde.read(new Withdrawal("Carlos", 1, 200));
+		halde.write(new Withdrawal("Carlos", 1, 200));
 		Assert.assertEquals(100, ((AccountBalance)balanceJoin.getKey(1L)).getBalance());
 		Assert.assertEquals(200, ((AccountBalance)balanceJoin.getKey(2L)).getBalance());
 		
@@ -148,10 +147,10 @@ public class BankTest {
 //		Halde halde = new Halde();
 //		
 //		
-//		Flatmapping<RawData, Account> accounts = halde.get(Account.class);
-//		Flatmapping<RawData, Transfer> transfers = halde.get(Transfer.class);
-//		Flatmapping<RawData, Deposit> deposits = halde.get(Deposit.class);
-//		Flatmapping<RawData, Withdrawal> withdrawals = halde.get(Withdrawal.class);
+//		ChangingView<Account> accounts = halde.get(Account.class);
+//		ChangingView<Transfer> transfers = halde.get(Transfer.class);
+//		ChangingView<Deposit> deposits = halde.get(Deposit.class);
+//		ChangingView<Withdrawal> withdrawals = halde.get(Withdrawal.class);
 //		
 //		MultiJoin<Long, AccountBalance, Object> balanceJoin = new MultiJoin<Long, AccountBalance, Object>(
 //				Arrays.asList(
@@ -196,20 +195,20 @@ public class BankTest {
 	@Test
 	public void innerChange(){
 		Halde halde = new Halde();
-		Flatmapping<RawData, Transfer> transfers = halde.get(Transfer.class);
-		halde.read(new Transfer(1,2,200));
-		halde.read(new Transfer(2,1,500));
-		halde.read(new Transfer(1,3,100));
+		ChangingView<Transfer> transfers = halde.get(Transfer.class);
+		halde.write(new Transfer(1,2,200));
+		halde.write(new Transfer(2,1,500));
+		halde.write(new Transfer(1,3,100));
 		
 		NestedView<Transfer,Long> nestedView = new NestedView<>(transfers, Transfer::getFromAccountId);
 		Assert.assertEquals(2, nestedView.get(1L).stream().count());
 		Assert.assertEquals(500, nestedView.get(2L).iterator().next().getAmount());
 		
-		Mapping<NestedView<Transfer, Long>.SubView, CachedReduction<Transfer, Integer>> mapToCount = 
-				 new Mapping<>(nestedView, subview -> new CachedReduction<>(Reducer.counter(), subview));
+		Mapping<NestedView<Transfer, Long>.SubView, CachedReduction2<Transfer, Integer>> mapToCount = 
+				 new Mapping<>(nestedView, subview -> new CachedReduction2<>(Reduction2.counter(), subview));
 		 
-		Assert.assertTrue(mapToCount.stream().map(CachedReduction::getResult).anyMatch(c-> c == 1));
-		Assert.assertTrue(mapToCount.stream().map(CachedReduction::getResult).anyMatch(c-> c == 2));
+		Assert.assertTrue(mapToCount.stream().map(CachedReduction2::getResult).anyMatch(c-> c == 1));
+		Assert.assertTrue(mapToCount.stream().map(CachedReduction2::getResult).anyMatch(c-> c == 2));
 		 
 		 
 	}

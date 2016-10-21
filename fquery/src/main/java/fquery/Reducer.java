@@ -11,6 +11,12 @@ public interface Reducer<T,R> {
 	
 	R combine(R r1, R r2);
 	
+	static <T,R> R reduce(ChangingView<T> source, Reducer<T, R> reducer) {
+		
+		return  source.stream()
+			.reduce(reducer.initial(), reducer::reduce, reducer::combine);		
+	}
+
 	public static <R,T> Reducer<T, R> build(Supplier<R> supplier, BiFunction<T, R, R> reducer, BiFunction<R, R, R> combiner){
 		return new Reducer<T, R>() {
 
@@ -29,17 +35,6 @@ public interface Reducer<T,R> {
 				return combiner.apply(r1, r2);
 			}
 		};
-	}
-	
-	
-	public static <T> Reducer<T, Integer> counter(){
-		return build(()->0, (a,b) -> b+1, (a,b)-> a+b);
-	}
-	
-	public static <T,R> R reduce(ChangingView<T> source, Reducer<T, R> reducer) {
-		
-		return  source.stream()
-			.reduce(reducer.initial(), reducer::reduce, reducer::combine);		
 	}
 	
 	

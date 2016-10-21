@@ -37,7 +37,7 @@ public class SwissDB {
 //					.getClass().getResourceAsStream(
 //							"Swiss Food Comp Data V5.0.csv")));
 			r = new BufferedReader(new InputStreamReader(new FileInputStream(
-						"src/main/java/de/carlos/simplexFood/swissDB/Swiss Food Comp Data V5.0.csv")));
+						"src/main/java/de/carlos/simplexFood/swissDB/Swiss Food Comp Data V5.0_2.csv")));
 			
 			CSVParser parser = new CSVParser(',', '"');
 
@@ -61,7 +61,7 @@ public class SwissDB {
 				
 				food.setNutrient(Ballast,getGramsFromCell(cells, colNameToIndex,
 						"dietary fibre, total"));
-				food.setNutrient(Fett,getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(FatTotal,getGramsFromCell(cells, colNameToIndex,
 						"fat, total"));
 				food.setNutrient(FatSaturated,getGramsFromCell(cells, colNameToIndex,
 						"fatty acids, total saturated"));

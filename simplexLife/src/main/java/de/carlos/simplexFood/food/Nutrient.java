@@ -40,7 +40,7 @@ public enum Nutrient {
 
 	Protein,
 
-	Fett,
+	FatTotal,
 
 	Kohlenhydrate,
 

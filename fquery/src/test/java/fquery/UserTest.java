@@ -19,7 +19,7 @@ public class UserTest {
 		}		
 		
 		Halde halde = new Halde();
-		halde.read(builder.toString());
+		halde.write(builder.toString());
 		
 		UserService userquery = new UserService(halde);
 		List<User> users = userquery.getAll();
@@ -27,8 +27,8 @@ public class UserTest {
 		
 		Assert.assertEquals(10, userquery.countUsers());
 		
-		CachedReduction<User, Integer> cachedCount = new CachedReduction<>(
-				Reducer.counter(), 
+		CachedReduction2<User, Integer> cachedCount = new CachedReduction2<>(
+				Reduction2.counter(), 
 				userquery.userinsertmap);
 		
 		Assert.assertEquals(10, (int) cachedCount.getResult());
@@ -54,9 +54,9 @@ public class UserTest {
 		Halde halde = new Halde();
 		for(int i = 0;i<10;i++){
 			String name = "Number_"+(i+99);
-			halde.read("<NEWUSER name='"+name+"' age='"+(i+20)+"' />");
-			halde.read(new Post(name,"I am "+name));
-			halde.read(new Post(name,"I love pie"));
+			halde.write("<NEWUSER name='"+name+"' age='"+(i+20)+"' />");
+			halde.write(new Post(name,"I am "+name));
+			halde.write(new Post(name,"I love pie"));
 		}		
 				
 		UserService userquery = new UserService(halde);
@@ -70,7 +70,7 @@ public class UserTest {
 		
 		UserService userquery = new UserService(halde);
 		Assert.assertEquals(0,userquery.userdeletemap.stream().count());		
-		halde.read("<NEWUSER name='Carlos' age='28' />");
+		halde.write("<NEWUSER name='Carlos' age='28' />");
 		Assert.assertNotNull(userquery.findByName("Carlos"));
 		
 		Assert.assertEquals(0,userquery.userdeletemap.stream().count());
@@ -87,7 +87,7 @@ public class UserTest {
 		Random random = new Random(4455);
 		
 		int totalUsers = 2000;
-		
+		  
 		for (int i = 0;i<totalUsers;i++){
 			User user = new User();
 			user.setName("User#"+i);

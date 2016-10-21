@@ -12,13 +12,12 @@ import de.carlos.simplexOO.SimplexOO.Restriction;
 
 public class Interactive {
 
-	public void start(List<? extends IFood> available) {
+	public void start(List<? extends IFood> available, NutritionTarget target) {
 
 		try {
 			List<Restriction<IFood>> extraRestrictions = new ArrayList<>();
 			BufferedReader lineIn = new BufferedReader(new InputStreamReader(
 					System.in));
-			NutritionTarget target = NutritionTarget.dailyMale();
 
 			while (true) {
 				List<IFood> result = new FoodOptimize().optimize(available,
@@ -44,8 +43,10 @@ public class Interactive {
 
 		List<IFood> foods = new ArrayList<>(new SwissDB().parseDB());
 		Recipies recipies = new Recipies(foods);
-		foods.addAll(recipies.vitaminSubsets);
-		new Interactive().start(foods);
+		//foods.addAll(recipies.vitaminSubsets);
+		NutritionTarget target = NutritionTarget.dailyMale();
+
+		new Interactive().start(foods, target);
 
 	}
 

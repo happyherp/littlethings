@@ -26,7 +26,7 @@ public class FoodOptimize {
 		constraints.addAll(target.createRestrictions());
 		
 		
-		double precisionFactor = 1.0E-3;
+		double precisionFactor = 1.0E-0;
 		
 		Map<IFood, Double> result = 
 			new SimplexOO<IFood>(SimplexOO.DEFAULT_EPSILON*precisionFactor,SimplexOO.DEFAULT_ULPS, SimplexOO.DEFAULT_CUT_OFF* precisionFactor)

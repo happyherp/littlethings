@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public class NestedView<T,A extends Comparable<A>> extends AbstractChangingView<NestedView<T,A>. SubView> {
+public class NestedView<T,A extends Comparable<A>> extends AbstractChangingView<NestedView<T,A>.SubView> {
 		
 		Map<A, SubView> index = new HashMap<>();
 		Function<T, A> accessor;

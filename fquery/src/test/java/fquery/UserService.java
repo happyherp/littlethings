@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.management.RuntimeErrorException;
-
 import com.google.common.collect.Lists;
 
 public class UserService {
@@ -31,7 +29,7 @@ public class UserService {
 
 	private Index<User, String> nameToInsertIndex;
 
-	private CachedReduction<Post, Integer> postcount;
+	private CachedReduction2<Post, Integer> postcount;
 
 	private Join<String, HighscoreEntry, User, Post> highscore;
 
@@ -64,7 +62,7 @@ public class UserService {
 		this.ageEvenFilter = new Filter<User>(this.currentUsers, u -> u.getAge() % 2 == 0);
 		
 		
-		postcount = new CachedReduction<>(Reducer.counter(), this.postmap);
+		postcount = new CachedReduction2<Post, Integer>(Reduction2.counter(), this.postmap);
 		
 		
 		highscore = new Join<String,HighscoreEntry, User, Post>(
@@ -82,7 +80,7 @@ public class UserService {
 	}			
 	
 	public void addUser(User user){
-		halde.read(String.format("<NEWUSER name='%s' age='%d' />", user.getName(), user.getAge()));
+		halde.write(String.format("<NEWUSER name='%s' age='%d' />", user.getName(), user.getAge()));
 	}
 	
 	public List<User> getAll() {
@@ -91,7 +89,7 @@ public class UserService {
 	}
 	
 	public int countUsers(){
-		return Reducer.reduce(currentUsers,Reducer.counter());
+		return Reducer.reduce(currentUsers,Reduction2.counter());
 	}
 	
 	public Collection<User> findByName(String name){
@@ -99,7 +97,7 @@ public class UserService {
 	}
 	
 	public void deleteByName(String name){
-		this.halde.read(String.format("<DELUSER name='%s' />",name) );
+		this.halde.write(String.format("<DELUSER name='%s' />",name) );
 	}
 
 	public Collection<UserWithPost> joinUsersWithPosts() {		
@@ -149,7 +147,7 @@ public class UserService {
 	}
 
 	public void addPost(Post post) {
-		this.halde.read(post);
+		this.halde.write(post);
 	}
 
 	public int countPosts() {

@@ -74,9 +74,11 @@ public class Join<K extends Comparable<K>, T, L,R> extends AbstractChangingView<
 		}
 		Collection<L> leftCollection = leftSource.get(key) == null ? Collections.emptyList():  leftSource.get(key);
 		Collection<R> rightCollection = rightSource.get(key) == null ? Collections.emptyList():  rightSource.get(key);
-		T result =  this.resultcombiner.apply(key, leftCollection, rightCollection);
-		this.cache.put(key,result);
-		this.fireAdd(result);			
+		if (!leftCollection.isEmpty() || !rightCollection.isEmpty()){
+			T result =  this.resultcombiner.apply(key, leftCollection, rightCollection);
+			this.cache.put(key,result);
+			this.fireAdd(result);			
+		}
 	}
 
 

@@ -9,11 +9,12 @@ import java.util.Map;
 
 import org.apache.commons.math3.optim.linear.Relationship;
 
+import de.carlos.simplexFood.NutritionTarget.Limit;
 import de.carlos.simplexFood.food.IFood;
 import de.carlos.simplexFood.food.Nutrient;
 import de.carlos.simplexOO.SimplexOO.Restriction;
 
-public class NutritionTarget {
+public class NutritionTarget implements Cloneable{
 	
     private static transient final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(HibernateUtil.class);
 
@@ -21,12 +22,24 @@ public class NutritionTarget {
 	Map<Nutrient, Limit> target = new HashMap<>();
 	
 	
+	public NutritionTarget(Map<Nutrient, Limit> target) {
+		this.target = new HashMap<>(target);
+	}
+
+	public NutritionTarget() {
+	}
+
 	public Limit get(Nutrient n){
 		return this.target.get(n);
 	}
 	
 	public void set(Nutrient n, Double min, Double max){
 		this.target.put(n, new Limit(min, max));
+	}
+	
+	public void set(Nutrient n, Limit mult) {
+		this.target.put(n, mult);
+		
 	}
 	
 	
@@ -105,7 +118,12 @@ public class NutritionTarget {
 		}
 	}
 	
+
 	
+	@Override
+	public NutritionTarget clone(){
+		return new NutritionTarget(this.target);
+	}
 
 	public class Limit{
 		
@@ -136,6 +154,9 @@ public class NutritionTarget {
 			this.max = max;
 		}
 
+		public Limit mult(double factor) {
+			return new Limit(this.min==null?null:this.min*factor, this.max == null?null:this.max*factor);
+		}
 		
 	}
 	
@@ -180,11 +201,52 @@ public class NutritionTarget {
 		target.set(Sodium, 500.0E-3, null);	
 		target.set(Chloride, 2.0, null);	
 		
+		return target;
+	}
+	
+	public static NutritionTarget dailyAlisherNontrain(){
 		
+		NutritionTarget target = new NutritionTarget();
+		
+
+		// Basic Elements
+		target.set(Kohlenhydrate, 150.0, 200.0);		
+		target.set(Nutrient.Starch, 100.0, null);
+		target.set(FatTotal, 80.0, 100.0);
+		target.set(FatSaturated, 30.0, null);
+		target.set(FatMonoUnsaturated, 29.0, null);
+		target.set(FatPolyUnsaturated, 21.0, null);		
+		target.set(Protein, 150.0, 150.0);
+		target.set(Ballast, 25.0, 25.0);
+
+		// Spurenelemente
+		target.set(Calcium, 1.0, null);
+		target.set(Eisen, 10.0E-3, 45.0E-3);
+		target.set(Iod, 200.0E-6, 500.0E-6);
+		target.set(Fluorid, 3.8E-3, null);
+		target.set(Magnesium, 350.0E-3, null);
+		target.set(Zink, 10.0E-3, 30.0E-3);
+
+		// Vitamine
+		target.set(VitaminA, 1.0E-3, 3.0E-3);
+		target.set(BetaCarotene, 2.0E-3, 10.0E-3);
+		target.set(VitaminB1, 1.2E-3, null);
+		target.set(VitaminB2, 1.4E-3, null);
+		target.set(VitaminB6, 1.5E-3, null);
+		target.set(VitaminB12, 3.0E-6, null);
+		target.set(VitaminC, 100.0E-3, null);
+		target.set(VitaminD, 5E-6, null);
+		target.set(VitaminE, 14E-3, 300E-3);
+		target.set(VitaminK, 80.0E-6, null);
+		target.set(Niacin, 16.0E-3, 32E-3);
+		target.set(Folat, 400.0E-6, null);	
+		target.set(PantothenicAcid, 6.0E-3, null);	
+		target.set(Sodium, 500.0E-3, null);	
+		target.set(Chloride, 2.0, null);	
 		
 		return target;
-		
-		
 	}
+
+
 
 }

@@ -28,7 +28,7 @@ public class TestFood {
     	NutritionTarget target = NutritionTarget.dailyMale();
     	
     	Recipies recipies = new Recipies(foods);
-    	foods.addAll(recipies.vitaminSubsets);
+    	//foods.addAll(recipies.vitaminSubsets);
     	
     	//IFood riegelKlein = recipies.riegel.gram(220);
     	//target = target.subtract(riegelKlein);    
@@ -87,7 +87,7 @@ public class TestFood {
     	List<IFood> foods = new ArrayList<>(new SwissDB().parseDB()); 
     	
     	NutritionTarget target = NutritionTarget.dailyMale();
-    	target.set(Nutrient.Fett, null, 10.0);
+    	target.set(Nutrient.FatTotal, null, 10.0);
     	target.set(Nutrient.FatPolyUnsaturated, null, null);
     	target.set(Nutrient.FatSaturated, null, null);
     	target.set(Nutrient.FatMonoUnsaturated, null, null);
