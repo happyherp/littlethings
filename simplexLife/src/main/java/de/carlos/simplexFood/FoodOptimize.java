@@ -58,7 +58,7 @@ public class FoodOptimize {
 
 
 	
-	public static void printPercentages(IFood f, IFood sum) {
+	public static String getPercentages(IFood f, IFood sum) {
 
 		Nutrient[] sortedFields = Arrays.copyOf(Nutrient.values(), Nutrient.values().length);
 		Arrays.sort(sortedFields, new Comparator<Nutrient>() {
@@ -70,12 +70,14 @@ public class FoodOptimize {
 			}
 		});
 
+		String s = "";
 		for (Nutrient method : sortedFields) {
 			double p = getPercent(f, sum, method);
 			if (p > 1) {
-				System.out.print(String.format(" %s(%2.0f%%) ", method, p));
+				 s += String.format(" %s(%2.0f%%) ", method, p);
 			}
 		}
+		return s;
 
 	}
 
@@ -99,9 +101,8 @@ public class FoodOptimize {
     	System.out.println("Selected Foods.");
     	int i = 1;
     	for (IFood f : result){
-    		System.out.print(String.format("%2d:%-50s %8.3fg %4.2f€",i, f.getName() ,f.getWeight(), f.getPrice()));
-    		FoodOptimize.printPercentages(f, new Meal(result));
-    		System.out.println("");
+    		System.out.print(String.format("%2d:%-50s %8.3fg %4.2f€",i, f.getName() ,f.getWeight(), f.getPrice()));    		
+    		System.out.println(FoodOptimize.getPercentages(f, new Meal(result)));
     		i++;
 
     	}

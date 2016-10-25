@@ -1,5 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'war'
+apply plugin: 'eclipse-wtp'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -22,5 +24,9 @@ dependencies {
 	compile 'postgresql:postgresql:9.0-801.jdbc4'
     compile 'org.javassist:javassist:3.19.0-GA'
     
+    providedCompile "javax.servlet:servlet-api:2.5"
+}
 
+war{
+	from 'WebContent' // adds a file-set to the root of the archive
 }

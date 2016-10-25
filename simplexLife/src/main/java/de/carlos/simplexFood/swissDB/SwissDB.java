@@ -33,11 +33,11 @@ public class SwissDB {
 		List<Food> foods = new ArrayList<>();
 		BufferedReader r = null;
 		try {
-//			r = new BufferedReader(new InputStreamReader(this
-//					.getClass().getResourceAsStream(
-//							"Swiss Food Comp Data V5.0.csv")));
-			r = new BufferedReader(new InputStreamReader(new FileInputStream(
-						"src/main/java/de/carlos/simplexFood/swissDB/Swiss Food Comp Data V5.0_2.csv")));
+			r = new BufferedReader(new InputStreamReader(this
+					.getClass().getResourceAsStream(
+							"/Swiss Food Comp Data V5.0.csv")));
+//			r = new BufferedReader(new InputStreamReader(new FileInputStream(
+//						"src/main/java/de/carlos/simplexFood/swissDB/Swiss Food Comp Data V5.0_2.csv")));
 			
 			CSVParser parser = new CSVParser(',', '"');
 
@@ -59,7 +59,7 @@ public class SwissDB {
 				Food food = new Food();
 				food.setName(getCellByName(cells, colNameToIndex, "name D"));
 				
-				food.setNutrient(Ballast,getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(Fiber,getGramsFromCell(cells, colNameToIndex,
 						"dietary fibre, total"));
 				food.setNutrient(FatTotal,getGramsFromCell(cells, colNameToIndex,
 						"fat, total"));
@@ -69,7 +69,7 @@ public class SwissDB {
 						"fatty acids, total mono unsaturated"));
 				food.setNutrient(FatPolyUnsaturated,getGramsFromCell(cells, colNameToIndex,
 						"fatty acids, total poly unsaturated"));				
-				food.setNutrient(Kohlenhydrate,getGramsFromCell(cells, colNameToIndex,
+				food.setNutrient(Carbohydrates,getGramsFromCell(cells, colNameToIndex,
 						"charbohydrate, total"));				
 				food.setNutrient(Protein,getGramsFromCell(cells, colNameToIndex,
 								"protein"));
@@ -190,7 +190,7 @@ public class SwissDB {
 	public static void main(String[] args) {
 		List<Food> foods = new SwissDB().parseDB();
 		for (IFood food : foods) {
-			System.out.println(food.getName() + " ballast: " + food.getNutrient(Ballast));
+			System.out.println(food.getName() + " ballast: " + food.getNutrient(Fiber));
 		}
 	}
 

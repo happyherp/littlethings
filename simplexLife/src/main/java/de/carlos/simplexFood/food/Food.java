@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
+import static de.carlos.simplexFood.food.Nutrient.*;
 
 
 
@@ -28,6 +29,16 @@ public class Food implements IFood {
     	
     	FoodNutrient fd = this.nutrients.get(i);
     	if (fd == null){
+    		
+    		
+    		if (i == Calories){
+    			return /*http://www.ernaehrung-bw.info/pb/,Lde/Startseite/Empfehlungen/Kohlenhydrate_+Fett+und+Eiweiss+_+Hauptnaehrstoffe+im+Ueberblick */
+    					getNutrient(FatTotal) * 9.0 +
+    					getNutrient(Carbohydrates) * 4.0 +
+    					getNutrient(Protein) * 4.0;
+    					
+    		}
+    		
     		return 0.0;
     	} 
     	
@@ -110,6 +121,11 @@ public class Food implements IFood {
 			return super.equals(o);
 		}
 	}
+	
+    
+    public String toString(){
+    	return this.getName();
+    }
 
     
 }

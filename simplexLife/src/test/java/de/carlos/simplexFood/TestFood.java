@@ -67,7 +67,7 @@ public class TestFood {
     	List<IFood> foods = new ArrayList<>(new SwissDB().parseDB()); 
     	
     	NutritionTarget target = NutritionTarget.dailyMale();
-    	target.set(Nutrient.Kohlenhydrate, null, 30.0);
+    	target.set(Nutrient.Carbohydrates, null, 30.0);
     	target.set(Nutrient.Starch, null, null);
     	
 

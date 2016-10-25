@@ -12,6 +12,12 @@ GUI
 
 nahrung
 -ergänzung zu bestehendem nahrungsprofil
+--ALLERGIEN
+--diät profil
+
+--aktuelle preise umgebung 
+---webweiten edeka, lidle, penny etc checken
+
 
 -think about how to make sure that the food is enough to make you "full"
 

@@ -44,7 +44,7 @@ public class Interactive {
 		List<IFood> foods = new ArrayList<>(new SwissDB().parseDB());
 		Recipies recipies = new Recipies(foods);
 		//foods.addAll(recipies.vitaminSubsets);
-		NutritionTarget target = NutritionTarget.dailyMale();
+		NutritionTarget target = NutritionTarget.anyCalories();
 
 		new Interactive().start(foods, target);
 

@@ -1,15 +1,44 @@
 package de.carlos.simplexFood;
 
-import static de.carlos.simplexFood.food.Nutrient.*;
+import static de.carlos.simplexFood.food.Nutrient.Fiber;
+import static de.carlos.simplexFood.food.Nutrient.BetaCarotene;
+import static de.carlos.simplexFood.food.Nutrient.Calcium;
+import static de.carlos.simplexFood.food.Nutrient.Calories;
+import static de.carlos.simplexFood.food.Nutrient.Chloride;
+import static de.carlos.simplexFood.food.Nutrient.Eisen;
+import static de.carlos.simplexFood.food.Nutrient.FatMonoUnsaturated;
+import static de.carlos.simplexFood.food.Nutrient.FatPolyUnsaturated;
+import static de.carlos.simplexFood.food.Nutrient.FatSaturated;
+import static de.carlos.simplexFood.food.Nutrient.FatTotal;
+import static de.carlos.simplexFood.food.Nutrient.Fluorid;
+import static de.carlos.simplexFood.food.Nutrient.Folat;
+import static de.carlos.simplexFood.food.Nutrient.Iod;
+import static de.carlos.simplexFood.food.Nutrient.Carbohydrates;
+import static de.carlos.simplexFood.food.Nutrient.Magnesium;
+import static de.carlos.simplexFood.food.Nutrient.Niacin;
+import static de.carlos.simplexFood.food.Nutrient.PantothenicAcid;
+import static de.carlos.simplexFood.food.Nutrient.Protein;
+import static de.carlos.simplexFood.food.Nutrient.Sodium;
+import static de.carlos.simplexFood.food.Nutrient.Starch;
+import static de.carlos.simplexFood.food.Nutrient.VitaminA;
+import static de.carlos.simplexFood.food.Nutrient.VitaminB1;
+import static de.carlos.simplexFood.food.Nutrient.VitaminB12;
+import static de.carlos.simplexFood.food.Nutrient.VitaminB2;
+import static de.carlos.simplexFood.food.Nutrient.VitaminB6;
+import static de.carlos.simplexFood.food.Nutrient.VitaminC;
+import static de.carlos.simplexFood.food.Nutrient.VitaminD;
+import static de.carlos.simplexFood.food.Nutrient.VitaminE;
+import static de.carlos.simplexFood.food.Nutrient.VitaminK;
+import static de.carlos.simplexFood.food.Nutrient.Zink;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.math3.optim.linear.Relationship;
 
-import de.carlos.simplexFood.NutritionTarget.Limit;
 import de.carlos.simplexFood.food.IFood;
 import de.carlos.simplexFood.food.Nutrient;
 import de.carlos.simplexOO.SimplexOO.Restriction;
@@ -40,6 +69,10 @@ public class NutritionTarget implements Cloneable{
 	public void set(Nutrient n, Limit mult) {
 		this.target.put(n, mult);
 		
+	}
+	
+	public Set<Nutrient> nutrients(){
+		return target.keySet();
 	}
 	
 	
@@ -125,7 +158,7 @@ public class NutritionTarget implements Cloneable{
 		return new NutritionTarget(this.target);
 	}
 
-	public class Limit{
+	public static class Limit{
 		
 		Double min;
 		Double max;
@@ -157,6 +190,16 @@ public class NutritionTarget implements Cloneable{
 		public Limit mult(double factor) {
 			return new Limit(this.min==null?null:this.min*factor, this.max == null?null:this.max*factor);
 		}
+
+		public Double getMin() {
+			return min;
+		}
+
+		public Double getMax() {
+			return max;
+		}
+		
+		
 		
 	}
 	
@@ -166,15 +209,15 @@ public class NutritionTarget implements Cloneable{
 		
 
 		// Basic Elements
-		target.set(Kohlenhydrate, 340.0, 340.0);		
-		//Braucht man stärke?
-		target.set(Nutrient.Starch, 100.0, null);
+		target.set(Carbohydrates, 340.0, 340.0);		
+		//Braucht man stï¿½rke?
+		target.set(Starch, 100.0, null);
 		//(Fett, 80.0
 		target.set(FatSaturated, 30.0, 30.);
 		target.set(FatMonoUnsaturated, 29.0, 29.0);
 		target.set(FatPolyUnsaturated, 21.0, 21.0);		
 		target.set(Protein, 60.0, 60.0);
-		target.set(Ballast, 25.0, 25.0);
+		target.set(Fiber, 25.0, 25.0);
 
 		// Spurenelemente
 		target.set(Calcium, 1.0, null);
@@ -210,14 +253,14 @@ public class NutritionTarget implements Cloneable{
 		
 
 		// Basic Elements
-		target.set(Kohlenhydrate, 150.0, 200.0);		
-		target.set(Nutrient.Starch, 100.0, null);
+		target.set(Carbohydrates, 150.0, 200.0);		
+		target.set(Starch, 100.0, null);
 		target.set(FatTotal, 80.0, 100.0);
 		target.set(FatSaturated, 30.0, null);
 		target.set(FatMonoUnsaturated, 29.0, null);
 		target.set(FatPolyUnsaturated, 21.0, null);		
 		target.set(Protein, 150.0, 150.0);
-		target.set(Ballast, 25.0, 25.0);
+		target.set(Fiber, 25.0, 25.0);
 
 		// Spurenelemente
 		target.set(Calcium, 1.0, null);
@@ -248,5 +291,42 @@ public class NutritionTarget implements Cloneable{
 	}
 
 
+public static NutritionTarget anyCalories(){
+		
+		NutritionTarget target = new NutritionTarget();
+		
+
+		// Basic Elements
+		target.set(Calories, 2800.0, 2800.0);
+		target.set(Fiber, 25.0, 25.0);
+
+		// Spurenelemente
+		target.set(Calcium, 1.0, null);
+		target.set(Eisen, 10.0E-3, 45.0E-3);
+		target.set(Iod, 200.0E-6, 500.0E-6);
+		target.set(Fluorid, 3.8E-3, null);
+		target.set(Magnesium, 350.0E-3, null);
+		target.set(Zink, 10.0E-3, 30.0E-3);
+
+		// Vitamine
+		target.set(VitaminA, 1.0E-3, 3.0E-3);
+		target.set(BetaCarotene, 2.0E-3, 10.0E-3);
+		target.set(VitaminB1, 1.2E-3, null);
+		target.set(VitaminB2, 1.4E-3, null);
+		target.set(VitaminB6, 1.5E-3, null);
+		target.set(VitaminB12, 3.0E-6, null);
+		target.set(VitaminC, 100.0E-3, null);
+		target.set(VitaminD, 5E-6, null);
+		target.set(VitaminE, 14E-3, 300E-3);
+		target.set(VitaminK, 80.0E-6, null);
+		target.set(Niacin, 16.0E-3, 32E-3);
+		target.set(Folat, 400.0E-6, null);	
+		target.set(PantothenicAcid, 6.0E-3, null);	
+		target.set(Sodium, 500.0E-3, null);	
+		target.set(Chloride, 2.0, null);	
+		
+		return target;
+	}
+	
 
 }
