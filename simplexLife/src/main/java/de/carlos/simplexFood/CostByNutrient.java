@@ -11,7 +11,7 @@ import de.carlos.simplexOO.SimplexOO.Restriction;
 
 public class CostByNutrient {
 	
-	private static final double FACTOR = 1.1;
+	public static final double FACTOR = 1.1;
 	
 	public static void main(String[] args){
 		
@@ -20,40 +20,40 @@ public class CostByNutrient {
 		
 		List<IFood> foods = new ArrayList<>(new SwissDB().parseDB());
 
-		calculateAlternatives(target, foods);
+		printAlternatives(target, foods);
 		
 	}
 
 
-	private static void calculateAlternatives(NutritionTarget target, List<IFood> foods) {
-		List<Restriction<IFood>> extraRestrictions = new ArrayList<>();
+	private static void printAlternatives(NutritionTarget target, List<IFood> foods) {
 
-		List<IFood> base = new FoodOptimize().optimize(foods,
-				extraRestrictions, target);
+		List<IFood> base = new FoodOptimize().optimize(foods, target);
 		Double basePrice = base.stream().mapToDouble(IFood::getPrice).sum();
 		
 		System.out.println("The base price is "+basePrice+ " adding "+FACTOR +" of ");
 		
 		
-		target.target.keySet().parallelStream().map(n->{
-			
-			NutritionTarget modifiedTarget = target.clone();
-			
-			modifiedTarget.set(n, modifiedTarget.get(n).mult(FACTOR));
-			List<IFood> optimal = new FoodOptimize().optimize(foods,
-					extraRestrictions, modifiedTarget);
-			
-			AltSzenario alt = new AltSzenario();
-			alt.nutrient = n;
-			alt.price =  optimal.stream().mapToDouble(IFood::getPrice).sum();
-			return alt;		
-		})
+		target.target.keySet().parallelStream().map(n->buildAlt(target, n, foods))
 		.sorted(Comparator.comparing(a->-a.price))
 		.forEachOrdered(a->a.print(basePrice));
 	}
 	
+	public static AltSzenario buildAlt(NutritionTarget original, Nutrient toChange, List<IFood> foods){
+
+		NutritionTarget modifiedTarget = original.clone();
+		
+		modifiedTarget.set(toChange, modifiedTarget.get(toChange).mult(FACTOR));
+		List<IFood> optimal = new FoodOptimize().optimize(foods,
+				new ArrayList<>(), modifiedTarget);
+		
+		AltSzenario alt = new AltSzenario();
+		alt.nutrient = toChange;
+		alt.price =  optimal.stream().mapToDouble(IFood::getPrice).sum();
+		return alt;		
+	}
 	
-	private static class AltSzenario{
+	
+	public static class AltSzenario{
 		public Nutrient nutrient;
 		public Double price;
 		

@@ -18,6 +18,10 @@ import de.carlos.simplexOO.SimplexOO;
 import de.carlos.simplexOO.SimplexOO.Restriction;
 
 public class FoodOptimize {
+	
+	public List<IFood> optimize(List<? extends IFood> foods, NutritionTarget target) {
+		return this.optimize(foods, new ArrayList<>(), target);
+	}
 
 	public List<IFood> optimize(List<? extends IFood> foods, Collection<Restriction<IFood>> extraRestrictions, NutritionTarget target) {
 		
@@ -101,13 +105,13 @@ public class FoodOptimize {
     	System.out.println("Selected Foods.");
     	int i = 1;
     	for (IFood f : result){
-    		System.out.print(String.format("%2d:%-50s %8.3fg %4.2f€",i, f.getName() ,f.getWeight(), f.getPrice()));    		
+    		System.out.print(String.format("%2d:%-50s %8.3fg %4.2fï¿½",i, f.getName() ,f.getWeight(), f.getPrice()));    		
     		System.out.println(FoodOptimize.getPercentages(f, new Meal(result)));
     		i++;
 
     	}
     	double preis_gesamt = result.stream().map(IFood::getPrice).reduce(0.0, (a,b)->a+b);
-    	System.out.println(String.format("Gesamtpreis Tagesbedarf: %4.2f€",preis_gesamt));		
+    	System.out.println(String.format("Gesamtpreis Tagesbedarf: %4.2fï¿½",preis_gesamt));		
     	
     	
 	}

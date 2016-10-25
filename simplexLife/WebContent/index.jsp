@@ -1,3 +1,7 @@
+<%@page import="de.carlos.simplexFood.Formats"%>
+<%@page import="de.carlos.simplexFood.CostByNutrient.AltSzenario"%>
+<%@page import="de.carlos.simplexLife.Alternative"%>
+<%@page import="de.carlos.simplexFood.CostByNutrient"%>
 <%@page import="java.util.stream.Collectors"%>
 <%@page import="de.carlos.simplexFood.FoodService"%>
 <%@page import="de.carlos.simplexFood.NutritionTarget"%>
@@ -23,6 +27,7 @@
 FoodService service = new FoodService();
 NutritionTarget target = service.makeTarget(request);
 List<IFood> excluded = service.makeExcluded(request);
+List<IFood> ingredients =  service.getFood(excluded);
 List<IFood> result =  service.run(target, excluded);
 Meal asMeal = new  Meal(result);
 
@@ -42,18 +47,18 @@ Meal asMeal = new  Meal(result);
 		<table>
 			<tr><th>Ingredient</th><th>Amount</th><th>Cost</th><th>Aktion</th><th>Purpose<th></tr>
 		
-		<%
-		for (IFood food: result){
-			%>
-			<tr>
-				<td><%=food.getName() %></td>
-				<td align="right"><%=String.format("%3.1fg",food.getWeight())%></td>
-				<td align="right"><%=String.format("%3.2f€",food.getPrice())%></td>	
-				<td><input type="submit" name="exclude_<%=food.getName()%>" value="exclude" /></td>
-				<td "><%=FoodOptimize.getPercentages(food, asMeal)%></td>	
 			<%
-		}
-		%>
+			for (IFood food: result){
+				%>
+				<tr>
+					<td><%=food.getName() %></td>
+					<td align="right"><%=String.format("%3.1fg",food.getWeight())%></td>
+					<td align="right"><%=Formats.eur(food.getPrice())%></td>	
+					<td><input type="submit" name="exclude_<%=food.getName()%>" value="exclude" /></td>
+					<td "><%=FoodOptimize.getPercentages(food, asMeal)%></td>	
+				<%
+			}
+			%>
 		</table>
 	<%} %>
 
@@ -77,6 +82,24 @@ Meal asMeal = new  Meal(result);
 	</table>
 	<input type="submit" value="start" />
 
+
+	<%if (request.getParameter("start") != null) {%>
+		<h1>Cost of increasing Nutrients by <%=String.format("%2.0f%%",(CostByNutrient.FACTOR-1.0)*100)%></h1>	
+		<table>
+			<tr><th>Nutrient</th><th>Cost increase</th><th>Total Cost</th></tr>
+			<%
+			for (Nutrient n: Nutrient.values()){ 
+				out.flush();
+				AltSzenario alt = CostByNutrient.buildAlt(target, n, ingredients);%>
+				
+				<tr>
+					<td><%=n.name()%></td>
+					<td align="right"><%=Formats.eur(alt.price-asMeal.getPrice())%></td>
+					<td align="right"><%=Formats.eur(alt.price)%></td>
+				</tr>
+			<%}%>
+		</table>
+	<%} %>
 
 </form>
 

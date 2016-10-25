@@ -18,15 +18,17 @@ public class FoodService {
 	
 	public List<IFood> run(NutritionTarget target, List<IFood> excluded){
 
-		
-		List<IFood> foods = new ArrayList<>(allFoods);
-		foods.removeAll(excluded);
-
-		List<IFood> result = new FoodOptimize().optimize(foods, new ArrayList<>(), target);
+		List<IFood> result = new FoodOptimize().optimize(getFood(excluded), new ArrayList<>(), target);
 		result.sort(new IFood.WeightComparator());
 		
 		
 		return result;
+	}
+	
+	public List<IFood> getFood( List<IFood> excluded){
+		List<IFood> foods = new ArrayList<>(allFoods);
+		foods.removeAll(excluded);
+		return foods;
 	}
 	
 	public List<IFood> makeExcluded(ServletRequest request){

@@ -35,7 +35,7 @@ public class SwissDB {
 		try {
 			r = new BufferedReader(new InputStreamReader(this
 					.getClass().getResourceAsStream(
-							"/Swiss Food Comp Data V5.0.csv")));
+							"/Swiss Food Comp Data V5.0_2.csv")));
 //			r = new BufferedReader(new InputStreamReader(new FileInputStream(
 //						"src/main/java/de/carlos/simplexFood/swissDB/Swiss Food Comp Data V5.0_2.csv")));
 			
