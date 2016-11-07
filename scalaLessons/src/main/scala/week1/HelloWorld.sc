@@ -18,3 +18,7 @@ def and(x:Boolean, y: => Boolean):Boolean = if (x) y else false
 def or(x:Boolean, y: => Boolean):Boolean = if (x) true else y
 
 and(false, fak(10000) > 10)
+
+
+
+sqrt x = fixedPoint(averageDamp(x=>x/y))(1)
