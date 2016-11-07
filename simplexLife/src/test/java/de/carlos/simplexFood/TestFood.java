@@ -28,6 +28,11 @@ public class TestFood {
     	NutritionTarget target = NutritionTarget.dailyMale();
     	
     	Recipies recipies = new Recipies(foods);
+    	
+    	Assert.assertTrue(
+    			foods.stream().anyMatch(f->f.getName().contains("Blätterteigpastetli")));
+    	
+    	
     	//foods.addAll(recipies.vitaminSubsets);
     	
     	//IFood riegelKlein = recipies.riegel.gram(220);

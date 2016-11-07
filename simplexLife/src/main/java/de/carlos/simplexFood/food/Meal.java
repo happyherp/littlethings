@@ -8,6 +8,8 @@ public class Meal implements IFood{
 	
 	private String name;
 	
+	private String source;
+	
 	private Collection<IFood> ingredients = new ArrayList<>();
 	
 	public Meal(){
@@ -70,6 +72,14 @@ public class Meal implements IFood{
 		}else{
 			return super.equals(o);
 		}
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
 	}
 
 }

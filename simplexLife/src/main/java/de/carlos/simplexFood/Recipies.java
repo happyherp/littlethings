@@ -37,7 +37,7 @@ public class Recipies {
 		   .addIngredient(this.water.gram(350))
 		   .addIngredient(this.findByName("Trockenhefe (Dr. Oetker)").gram(7))
 		   .addIngredient(this.findByName("Zucker, weiss").el(1))
-		   .addIngredient(this.findByName("Distelöl").el(2))
+		   .addIngredient(this.findByName("DistelÃ¶l").el(2))
 		   .addIngredient(this.findByName("Kochsalz, jodiert").el(1));
 		
 		

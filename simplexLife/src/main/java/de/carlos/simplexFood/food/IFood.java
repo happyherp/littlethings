@@ -57,6 +57,11 @@ public interface IFood {
 		return this.gram(i*12);
 	}
 	
+	public default IFood tl(int i){
+		return this.gram(i*4);
+	}
+
+	
 	
 	public default Food free(){
 		Food f = (Food) this.mult(1.0);
@@ -73,5 +78,6 @@ public interface IFood {
     		return Double.compare(arg1.getWeight(), arg0.getWeight());
     	}
     }
+
 
 }
