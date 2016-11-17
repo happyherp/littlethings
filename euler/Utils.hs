@@ -4,6 +4,7 @@ import Data.Maybe(fromJust)
 import Data.List(find, nub, delete)
 import qualified Data.Set as Set (Set, fromList, empty, (\\), findMax, findMin, delete)
 
+primeFactors 1 = []
 primeFactors x =  let 
   smallestFactor = fromJust $ find (\d-> 0 == x `mod` d) [2..]
   divisor = x `div` smallestFactor
@@ -12,7 +13,7 @@ primeFactors x =  let
 primesUntil :: Int -> [Int]
 primesUntil 1 =  []
 primesUntil 2 = [2]
-primesUntil x = (reverse $ dividePrimes [2] (Set.fromList [3..x])) ++[error "Ran out of primes"]
+primesUntil x = (reverse $ dividePrimes [2] (Set.fromList [3..x])) 
 
 dividePrimes :: [Int] -> Set.Set Int -> [Int]
 dividePrimes prime maybePrime | Set.empty == maybePrime = prime
