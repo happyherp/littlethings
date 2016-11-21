@@ -3,6 +3,7 @@ module Utils where
 import Data.Maybe(fromJust)
 import Data.List(find, nub, delete)
 import qualified Data.Set as Set (Set, fromList, empty, (\\), findMax, findMin, delete)
+import Data.Ord(comparing)
 
 primeFactors 1 = []
 primeFactors x =  let 
@@ -30,7 +31,10 @@ dividents 1 = [1]
 dividents x =  nub $ map (foldl (*) 1) 
                          (variate (primeFactors x))
 
-
+permutate :: [Int] -> [[Int]]
+permutate (x:[]) = [[x]]
+permutate xs = concat $ map buildSub xs
+   where buildSub x = map (x:) (permutate (delete x xs))
   
 variate :: [a] -> [[a]]       
 variate [] = [[]]
@@ -40,12 +44,24 @@ variate (x:xs) = subpermutations++(map (x:) subpermutations)
 quersumme :: Integer -> Integer
 quersumme x =  sum $  map (read . (:[])) (show x)                      
 
+toDigits :: Integral a => Show a => Read a => a -> [a]
+toDigits n =  map (read . (:[]) ) $ show n
+
+fromDigits :: Integral a => Show a => Read a => [a] -> a
+fromDigits ds = (read) $ concat $ map show ds
 
 keep :: (a->b) -> a -> (a,b)
 keep f a = (a, f a)
 
 
-permutate :: [Int] -> [[Int]]
-permutate (x:[]) = [[x]]
-permutate xs = concat $ map buildSub xs
-   where buildSub x = map (x:) (permutate (delete x xs))
+    
+merge :: Ord a => [a] -> [a] -> [a]
+merge = mergeBy (comparing id)
+     
+     
+     
+mergeBy :: (a->a->Ordering)->[a]->[a]->[a]     
+mergeBy _ [] ys = ys
+mergeBy _ xs [] = xs
+mergeBy comp (x:xs) (y:ys) | comp x y /= GT = x:(mergeBy comp xs (y:ys))
+                           | otherwise      = y:(mergeBy comp (x:xs) ys)

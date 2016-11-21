@@ -1,0 +1,33 @@
+	Sun Nov 20 23:10 2016 Time and Allocation Profiling Report  (Final)
+
+	   47_distinct_primes_factors.exe +RTS -p -RTS
+
+	total time  =      128.66 secs   (128664 ticks @ 1000 us, 1 processor)
+	total alloc = 241,656,803,680 bytes  (excludes profiling overheads)
+
+COST CENTRE                   MODULE  %time %alloc
+
+primeFactors.smallestFactor.\ Utils    58.9   43.6
+primeFactors.smallestFactor   Utils    40.6   56.2
+
+
+                                                                                    individual      inherited
+COST CENTRE                             MODULE                   no.     entries  %time %alloc   %time %alloc
+
+MAIN                                    MAIN                      47          0    0.0    0.0   100.0  100.0
+ CAF                                    GHC.IO.Encoding.CodePage  83          0    0.0    0.0     0.0    0.0
+ CAF                                    GHC.IO.Encoding           80          0    0.0    0.0     0.0    0.0
+ CAF                                    GHC.TopHandler            69          0    0.0    0.0     0.0    0.0
+ CAF                                    GHC.IO.Handle.FD          67          0    0.0    0.0     0.0    0.0
+ CAF                                    GHC.IO.Exception          59          0    0.0    0.0     0.0    0.0
+ CAF                                    Main                      55          0    0.0    0.0   100.0  100.0
+  result                                Main                      95          1    0.0    0.0   100.0  100.0
+   differentFactors                     Main                      96      95638    0.0    0.0   100.0  100.0
+    differentFactors.factors            Main                      98      95638    0.1    0.0    99.9  100.0
+     primeFactors                       Utils                    100     625168    0.2    0.1    99.7   99.9
+      primeFactors.smallestFactor       Utils                    102     625167   40.6   56.2    99.5   99.8
+       primeFactors.smallestFactor.\    Utils                    103  941424627   58.9   43.6    58.9   43.6
+      primeFactors.divisor              Utils                    101     625167    0.0    0.0     0.0    0.0
+     exponentiate                       Main                      99     111414    0.1    0.0     0.1    0.0
+    differentFactors.allHaveRightLength Main                      97      95638    0.1    0.0     0.1    0.0
+  main                                  Main                      94          1    0.0    0.0     0.0    0.0

@@ -1,12 +1,8 @@
 module Prime2 where 
-
-    
-merge :: Ord a => [a] -> [a] -> [a]
-merge [] ys = ys
-merge xs [] = xs
-merge (x:xs) (y:ys) | x<=y      = x:(merge xs (y:ys))
-                    | otherwise = y:(merge (x:xs) ys)
-        
+import Data.List.Ordered(member)
+import Utils(merge, mergeBy)
+import Data.Ord(comparing)
+   
 unmerge :: Ord a => [a] -> [a] -> [a]
 unmerge all [] = all
 unmerge [] _ = []
@@ -21,15 +17,34 @@ allProducts factors = let
         more = f (n+1)
         in first:(merge others more)
     in f 2
-      
---uses only at most n factors      
-products 1 factors = factors
-products n [] = []
-products n factors = let 
-   first = head factors
-   (lowest:rest) = map (*first) (products (n-1) factors)
-   withOneFactorLess = products n (tail factors)
-   in lowest:(merge rest withOneFactorLess)
+            
+products n factors = map product (compositeTerms n factors)
                 
-primes2 :: [Integer]
-primes2 = unmerge [2..] (allProducts (2:primes2))
+                
+--uses only at most n factors                     
+compositeTerms :: Integral a => Int -> [a] -> [[a]]              
+compositeTerms 1 factors = map (:[]) factors
+compositeTerms n [] = []
+compositeTerms n factors = let 
+   first = head factors
+   (lowest:rest) = map (first:) (compositeTerms (n-1) factors)
+   withOneFactorLess = compositeTerms n (tail factors)
+   in lowest:(mergeBy (comparing product) rest withOneFactorLess)
+   
+   
+allCompositeTerms factors  = let 
+    f n = let 
+        (first:others) = compositeTerms n factors
+        more = f (n+1)
+        in first:(mergeBy (comparing product) others more)
+    in f 2
+    
+primeTerms = allCompositeTerms primes
+    
+composites = allProducts (2:primes)
+                
+primes :: [Integer]
+primes = unmerge [2..] composites
+
+isPrime :: Integer -> Bool
+isPrime n = member n primes

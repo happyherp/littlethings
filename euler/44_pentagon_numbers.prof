@@ -1,0 +1,44 @@
+	Sat Nov 19 19:06 2016 Time and Allocation Profiling Report  (Final)
+
+	   44_pentagon_numbers.exe +RTS -p -RTS
+
+	total time  =       14.96 secs   (14959 ticks @ 1000 us, 1 processor)
+	total alloc = 15,829,477,944 bytes  (excludes profiling overheads)
+
+COST CENTRE               MODULE     %time %alloc
+
+mergeBy                   Utils       26.8   34.7
+p                         Main        26.2   21.6
+allPairs.dist             Main        24.6   27.7
+isPentFast.binSearch      Main        17.3   12.9
+isPentFast.findUpperBound Main         2.9    1.7
+
+
+                                                                            individual      inherited
+COST CENTRE                     MODULE                   no.     entries  %time %alloc   %time %alloc
+
+MAIN                            MAIN                      47          0    0.0    0.0   100.0  100.0
+ CAF                            GHC.IO.Encoding.CodePage  83          0    0.0    0.0     0.0    0.0
+ CAF                            GHC.IO.Encoding           80          0    0.0    0.0     0.0    0.0
+ CAF                            GHC.TopHandler            69          0    0.0    0.0     0.0    0.0
+ CAF                            GHC.IO.Handle.FD          67          0    0.0    0.0     0.0    0.0
+ CAF                            GHC.IO.Exception          59          0    0.0    0.0     0.0    0.0
+ CAF                            Main                      55          0    0.0    0.0   100.0  100.0
+  pentagonals                   Main                     101          1    0.1    0.1     0.2    0.2
+   p                            Main                     109      94804    0.2    0.1     0.2    0.1
+  allPairs                      Main                      96          1    0.0    0.0    51.8   62.7
+   allPairs.allpairs            Main                      98          1    0.0    0.0     0.4    0.3
+    n_dist_pairs                Main                     100        435    0.4    0.3     0.4    0.3
+   allPairs.myfold              Main                      97        435    0.0    0.0    51.4   62.4
+    allPairs.combine            Main                      99        435    0.0    0.0    51.4   62.4
+     mergeBy                    Utils                    110   27440682   26.8   34.7    51.4   62.4
+      allPairs.dist             Main                     111   54881348   24.6   27.7    24.6   27.7
+  result                        Main                      95          1    0.3    0.0    47.9   37.1
+   isPentPair                   Main                     102     583229    0.6    0.6    47.7   37.1
+    isPentFast                  Main                     103     584385    0.7    0.4    47.1   36.4
+     isPentFast.upperBound      Main                     106     584385    0.2    0.1     8.8    6.4
+      isPentFast.findUpperBound Main                     107    3710776    2.9    1.7     8.6    6.4
+       p                        Main                     108    3710776    5.7    4.7     5.7    4.7
+     isPentFast.binSearch       Main                     104    3710573   17.3   12.9    37.6   29.6
+      p                         Main                     105   13257365   20.3   16.8    20.3   16.8
+  main                          Main                      94          1    0.0    0.0     0.0    0.0
