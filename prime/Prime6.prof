@@ -1,0 +1,32 @@
+	Thu Dec 01 12:07 2016 Time and Allocation Profiling Report  (Final)
+
+	   Prime6.exe +RTS -p -RTS
+
+	total time  =        2.62 secs   (2618 ticks @ 1000 us, 1 processor)
+	total alloc = 2,740,775,616 bytes  (excludes profiling overheads)
+
+COST CENTRE MODULE             %time %alloc
+
+mergeBy     Data.List.Ordered   97.4   98.6
+multiplesOf Main                 1.5    1.0
+
+
+                                                             individual      inherited
+COST CENTRE      MODULE                   no.     entries  %time %alloc   %time %alloc
+
+MAIN             MAIN                      40          0    0.0    0.0   100.0  100.0
+ CAF             GHC.IO.Encoding.CodePage  68          0    0.0    0.0     0.0    0.0
+ CAF             GHC.IO.Encoding           65          0    0.0    0.0     0.0    0.0
+ CAF             GHC.IO.Handle.Text        62          0    0.0    0.0     0.0    0.0
+ CAF             GHC.IO.Handle.FD          56          0    0.0    0.0     0.0    0.0
+ CAF             Main                      47          0    0.0    0.0   100.0  100.0
+  primemultiples Main                      86          1    0.0    0.0     1.5    1.0
+   multiplesOf   Main                      87       5134    1.5    1.0     1.5    1.0
+  composites     Main                      84          1    0.0    0.0    97.7   98.7
+   mergeAll      Main                      85       5134    0.1    0.0    97.7   98.7
+    merge        Data.List.Ordered         88       5133    0.1    0.0    97.6   98.6
+     mergeBy     Data.List.Ordered         89       5133   97.4   98.6    97.4   98.6
+  primes         Main                      81          1    0.0    0.3     0.7    0.3
+   minus         Data.List.Ordered         82          1    0.0    0.0     0.6    0.0
+    minusBy      Data.List.Ordered         83          1    0.6    0.0     0.6    0.0
+  main           Main                      80          1    0.2    0.0     0.2    0.0

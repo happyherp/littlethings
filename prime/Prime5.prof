@@ -1,0 +1,37 @@
+	Thu Dec 01 12:18 2016 Time and Allocation Profiling Report  (Final)
+
+	   Prime5.exe +RTS -p -RTS
+
+	total time  =        1.07 secs   (1066 ticks @ 1000 us, 1 processor)
+	total alloc = 1,148,758,840 bytes  (excludes profiling overheads)
+
+COST CENTRE MODULE             %time %alloc
+
+mergeBy     Data.List.Ordered   43.4   34.7
+foldt       Data.List.Ordered   39.9   49.6
+multiplesOf Main                11.4    9.5
+minusBy     Data.List.Ordered    2.6    0.1
+mergeAllBy  Data.List.Ordered    1.5    4.5
+
+
+                                                           individual      inherited
+COST CENTRE    MODULE                   no.     entries  %time %alloc   %time %alloc
+
+MAIN           MAIN                      40          0    0.0    0.0   100.0  100.0
+ CAF           GHC.IO.Encoding.CodePage  68          0    0.0    0.0     0.0    0.0
+ CAF           GHC.IO.Encoding           65          0    0.0    0.0     0.0    0.0
+ CAF           GHC.IO.Handle.Text        62          0    0.0    0.0     0.0    0.0
+ CAF           GHC.IO.Handle.FD          56          0    0.0    0.0     0.0    0.0
+ CAF           Main                      47          0    0.1    0.0   100.0  100.0
+  multiples    Main                      88          1    0.5    0.9    11.8   10.4
+   multiplesOf Main                      89      65535   11.4    9.5    11.4    9.5
+  composites   Main                      84          1    0.0    0.0    84.8   88.8
+   mergeAll    Data.List.Ordered         85          1    0.0    0.0    84.8   88.8
+    mergeAllBy Data.List.Ordered         86          1    1.5    4.5    84.8   88.8
+     mergeBy   Data.List.Ordered         90          1    0.0    0.0     0.0    0.0
+     foldt     Data.List.Ordered         87          1   39.9   49.6    83.3   84.3
+      mergeBy  Data.List.Ordered         91          0   43.4   34.7    43.4   34.7
+  primes       Main                      81          1    0.3    0.6     2.9    0.7
+   minus       Data.List.Ordered         82          1    0.0    0.0     2.6    0.1
+    minusBy    Data.List.Ordered         83          1    2.6    0.1     2.6    0.1
+  main         Main                      80          1    0.4    0.1     0.4    0.1

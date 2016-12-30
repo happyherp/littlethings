@@ -1,0 +1,41 @@
+	Thu Dec 01 22:25 2016 Time and Allocation Profiling Report  (Final)
+
+	   Prime8.exe +RTS -p -RTS
+
+	total time  =        1.55 secs   (1548 ticks @ 1000 us, 1 processor)
+	total alloc = 1,417,568,520 bytes  (excludes profiling overheads)
+
+COST CENTRE    MODULE             %time %alloc
+
+mergeBy        Data.List.Ordered   72.5   73.9
+products.(...) Main                20.4   19.6
+minusBy        Data.List.Ordered    2.6    0.4
+primes         Main                 2.5    5.1
+main           Main                 1.1    0.6
+
+
+                                                                           individual      inherited
+COST CENTRE                    MODULE                   no.     entries  %time %alloc   %time %alloc
+
+MAIN                           MAIN                      40          0    0.0    0.0   100.0  100.0
+ CAF                           GHC.IO.Encoding.CodePage  69          0    0.0    0.0     0.0    0.0
+ CAF                           GHC.IO.Encoding           66          0    0.0    0.0     0.0    0.0
+ CAF                           GHC.IO.Handle.Text        63          0    0.0    0.0     0.0    0.0
+ CAF                           GHC.IO.Handle.FD          57          0    0.0    0.0     0.0    0.0
+ CAF                           Main                      47          0    0.0    0.0   100.0  100.0
+  myMergeAll                   Main                      85          1    0.0    0.0     0.0    0.0
+  composites                   Main                      84          1    0.0    0.0    93.8   93.9
+   products                    Main                      88      26786    0.6    0.3    83.3   82.1
+    products.withHigherFactors Main                      95      11159    0.2    0.1     0.2    0.1
+    products.rest              Main                      94      11159    0.0    0.0     0.0    0.0
+    merge                      Data.List.Ordered         92      11159    0.1    0.0    62.0   62.1
+     mergeBy                   Data.List.Ordered         93      11159   62.0   62.1    62.0   62.1
+    products.(...)             Main                      90      15608   20.4   19.6    20.4   19.6
+    products.lowest            Main                      89      15608    0.0    0.0     0.0    0.0
+   myMergeAll                  Main                      86          0    0.0    0.0    10.5   11.9
+    myMergeAllBy               Main                      87         19    0.0    0.0    10.5   11.9
+     mergeBy                   Data.List.Ordered         91         18   10.5   11.9    10.5   11.9
+  primes                       Main                      81          1    2.5    5.1     5.1    5.4
+   minus                       Data.List.Ordered         82          1    0.0    0.0     2.6    0.4
+    minusBy                    Data.List.Ordered         83          1    2.6    0.4     2.6    0.4
+  main                         Main                      80          1    1.1    0.6     1.1    0.6
