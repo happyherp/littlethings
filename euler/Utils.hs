@@ -4,6 +4,7 @@ import Data.Maybe(fromJust)
 import Data.List(find, nub, delete)
 import qualified Data.Set as Set (Set, fromList, empty, (\\), findMax, findMin, delete)
 import Data.Ord(comparing)
+import Data.Char()
 
 primeFactors 1 = []
 primeFactors x =  let 
@@ -38,27 +39,28 @@ permutate xs = concat $ map buildSub xs
   
 variate :: [a] -> [[a]]       
 variate [] = [[]]
-variate (x:xs) = subpermutations++(map (x:) subpermutations)
+variate (x:xs) = subpermutations ++ (map (x:) subpermutations)
    where subpermutations = variate xs
                             
 quersumme :: Integer -> Integer
 quersumme x =  sum $  map (read . (:[])) (show x)                      
 
 toDigits :: Integral a => Show a => Read a => a -> [a]
-toDigits n =  map (read . (:[]) ) $ show n
+--toDigits n =  map (read . (:[]) ) $ show n
+toDigits n =  let 
+    thisDigit = [n `mod` 10]
+    rest = (n `div` 10) 
+    in if rest == 0 then thisDigit else toDigits rest ++ thisDigit
 
 fromDigits :: Integral a => Show a => Read a => [a] -> a
-fromDigits ds = (read) $ concat $ map show ds
+--fromDigits ds = (read) $ concat $ map show ds
+fromDigits ds = foldl (\a d-> a*10+d) 0 ds
 
 keep :: (a->b) -> a -> (a,b)
 keep f a = (a, f a)
-
-
     
 merge :: Ord a => [a] -> [a] -> [a]
 merge = mergeBy (comparing id)
-     
-     
      
 mergeBy :: (a->a->Ordering)->[a]->[a]->[a]     
 mergeBy _ [] ys = ys

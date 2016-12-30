@@ -2,6 +2,8 @@ module Prime2 where
 import Data.List.Ordered(member)
 import Utils(merge, mergeBy)
 import Data.Ord(comparing)
+import qualified LazySet as LSet
+
    
 unmerge :: Ord a => [a] -> [a] -> [a]
 unmerge all [] = all
@@ -46,5 +48,7 @@ composites = allProducts (2:primes)
 primes :: [Integer]
 primes = unmerge [2..] composites
 
+primeSet = LSet.fromList primes
+
 isPrime :: Integer -> Bool
-isPrime n = member n primes
+isPrime n = LSet.member n primeSet
