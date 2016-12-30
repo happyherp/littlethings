@@ -17,8 +17,9 @@ nahrung
 
 --aktuelle preise umgebung 
 ---webweiten edeka, lidle, penny etc checken
+-lebensmittel hersteller direkt nach preisen fragen.
 
 
 -think about how to make sure that the food is enough to make you "full"
+--add attribute (like proteine etc): fullness per 100g. Example: Black bread: 50 fullness; white-bread: 30 fullness
 
--ziel änderbar machen.
