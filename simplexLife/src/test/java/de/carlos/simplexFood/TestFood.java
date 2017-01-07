@@ -183,7 +183,7 @@ public class TestFood {
     	
     	List<IFood> foods = new ArrayList<>(new SwissDB().parseDB()); 
     	Recipe lasagne = new Recipies(foods).lasagne;
-    	Assert.assertEquals(1.0, lasagne.getNutrient(Nutrient.Calories), 0.1);
+    	Assert.assertEquals(1856.97, lasagne.getNutrient(Nutrient.Calories), 0.1);
     	
     }
    
