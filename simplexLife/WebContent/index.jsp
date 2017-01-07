@@ -6,7 +6,7 @@
 <%@page import="de.carlos.simplexFood.FoodService"%>
 <%@page import="de.carlos.simplexFood.NutritionTarget"%>
 <%@page import="de.carlos.simplexFood.food.Nutrient"%>
-<%@page import="de.carlos.simplexFood.food.Meal"%>
+<%@page import="de.carlos.simplexFood.food.Recipe"%>
 <%@page import="de.carlos.simplexFood.FoodOptimize"%>
 <%@page import="java.util.List"%>
 <%@page import="de.carlos.simplexFood.food.IFood"%>
@@ -29,7 +29,7 @@ NutritionTarget target = service.makeTarget(request);
 List<IFood> excluded = service.makeExcluded(request);
 List<IFood> ingredients =  service.getFood(excluded);
 List<IFood> result =  service.run(target, excluded);
-Meal asMeal = new  Meal(result);
+Recipe asMeal = new  Recipe(result);
 
 %>
 
