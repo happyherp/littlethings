@@ -1,7 +1,7 @@
 module Prime8 where 
 import Data.List.Ordered(minus, mergeBy, merge)
 import Data.Ord(comparing)
-import qualified LazySet as LSet
+import qualified Data.Set.Lazy as LSet
 
 
 products :: Integral a =>[a] -> Int -> [a]
