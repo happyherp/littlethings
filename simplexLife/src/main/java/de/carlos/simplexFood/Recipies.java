@@ -6,58 +6,103 @@ import java.util.List;
 
 import de.carlos.simplexFood.food.Food;
 import de.carlos.simplexFood.food.IFood;
-import de.carlos.simplexFood.food.Meal;
+import de.carlos.simplexFood.food.Recipe;
 import de.carlos.simplexFood.food.Nutrient;
 
 public class Recipies {
 	
 	
 	
-	private Collection<? extends IFood> allfoods;
-	public  Meal lasagne;
+	private Collection<? extends IFood> ingredients;
+	public List<Recipe> recipes = new ArrayList<>();
+	public  Recipe lasagne;
 	public IFood hackGemischt;
-	public Meal brot;
+	public Recipe brot;
 	public Food water;
-	public Meal riegel;
+	public Recipe riegel;
 	public List<IFood> vitaminSubsets;
 
-	public Recipies(List<? extends IFood> foods){
-		this.allfoods = foods;
+	public Recipies(List<? extends IFood> ingredients){
+		this.ingredients = ingredients;
+		
 		this.hackGemischt = this.findByName("Hackfleisch gemischt (Migros)");
+		IFood weizenmehl = this.findByName("Weizenmehl, Ruch, Typ 1100");
+		IFood hefe = this.findByName("Trockenhefe (Dr. Oetker)");
+		IFood zucker = this.findByName("Zucker, weiss");
+		IFood disteloel = this.findByName("Distelöl");
+		IFood salz = this.findByName("Kochsalz, jodiert");
+		IFood tomatenmark = this.findByName("Tomatenpüree");
+		
 		this.water = new Food();
 		this.water.setName("Wasser");
 		this.water.setPrice(0.0);
 		
-//		this.lasagne = new Meal()
-//		.addIngredient(this.hackGemischt.gram(250))
-//		.addIngredient(this.findByName("tomatenmark"));
+		//http://www.chefkoch.de/rezepte/1112181217260303/Lasagne-Bolognese.html
+		IFood olivenoel = this.findByName("M-Classic Olivenöl (Migros)");
+		IFood karotte_stueck = this.findByName("Karotte, roh").gram(50);
+		IFood stangensellerie_stueck = this.findByName("Stangensellerie, roh").gram(125);
+		IFood knoblauchzehe = this.findByName("Knoblauch, roh").gram(6);
+		IFood weisswein = this.findByName("Wein, weiss, 11 vol%");
+		IFood gemuesebruehe = this.findByName("Bouillon, Gemüse, zubereitet");
+		IFood butter = this.findByName("M-Budget Butter (Migros)");
+		IFood milch = this.findByName("M-Budget Vollmilch UHT (Migros)");
 		
-		this.brot = new Meal()
-		   .addIngredient(this.findByName("Weizenmehl, Ruch, Typ 1100").gram(500))
+		this.lasagne = newRecipe("Lasagne")
+		.addIngredient(this.hackGemischt.gram(250))
+		.addIngredient(tomatenmark.el(2))
+		.addIngredient(this.findByName("Armando De Angelis Lasagneblätter frisch (Migros)"))
+		.addIngredient(olivenoel.el(3))
+		.addIngredient(karotte_stueck) // Eine
+		.addIngredient(stangensellerie_stueck) // Eine
+		.addIngredient(knoblauchzehe.mult(2))//2 zehen
+		.addIngredient(weisswein.ml(200))
+		.addIngredient(gemuesebruehe.ml(500))
+		.addIngredient(butter.el(2))
+		.addIngredient(weizenmehl.el(3))
+		.addIngredient(milch.ml(500))
+		.addIngredient(this.findByName("Parmesan").gram(100));
+		
+		
+		
+		
+		this.brot = newRecipe("Eigenes Brot")
+		   .addIngredient(weizenmehl.gram(500))
 		   .addIngredient(this.water.gram(350))
-		   .addIngredient(this.findByName("Trockenhefe (Dr. Oetker)").gram(7))
-		   .addIngredient(this.findByName("Zucker, weiss").el(1))
-		   .addIngredient(this.findByName("Distelöl").el(2))
-		   .addIngredient(this.findByName("Kochsalz, jodiert").el(1));
+		   .addIngredient(hefe.gram(7))
+		   .addIngredient(zucker.el(1))
+		   .addIngredient(disteloel.el(2))
+		   .addIngredient(salz.el(1));
 		
 		
 		// http://www.chefkoch.de/rezepte/283921106784138/Vollwertige-Muesliriegel.html
-		this.riegel = new Meal()
-			.addIngredient(this.findByName("Weizenmehl, weiss, Typ 400").gram(300))
-			.addIngredient(this.findByName("Haferflocken").gram(200))
-			.addIngredient(this.findByName("Kokosnuss, getrocknet (Kokosrapseln, Kokosflocken)").gram(200))
-			.addIngredient(this.findByName("Zucker, weiss").gram(150))
+		IFood haferflocken = this.findByName("Haferflocken");
+		IFood kokosflocken = this.findByName("Kokosnuss, getrocknet (Kokosrapseln, Kokosflocken)");
+		IFood margarine = this.findByName("Rama Universelle Margarine (Unilever)");
+		IFood sesamsamen = this.findByName("Sesamsamen");
+		this.riegel = newRecipe("Müsliriegel")
+			.addIngredient(weizenmehl.gram(300))
+			.addIngredient(haferflocken.gram(200))
+			.addIngredient(kokosflocken.gram(200))
+			.addIngredient(zucker.gram(150))
 			//Statt Honig
-			.addIngredient(this.findByName("Rama Universelle Margarine (Unilever)").gram(120))
+			.addIngredient(margarine.gram(120))
 			.addIngredient(this.water.gram(180))
-			.addIngredient(this.findByName("Sesamsamen").el(4));
+			.addIngredient(sesamsamen.el(4));
 		
-		this.brot.setName("Eigenes Brot");
+		
+		
 		
 		this.vitaminSubsets = createVitaminSubsets();
 		
 	}
 	
+	private Recipe newRecipe(String name) {
+		Recipe meal = new Recipe();
+		meal.setName(name);
+		this.recipes.add(meal);
+		return meal;
+	}
+
 	private List<IFood> createVitaminSubsets() {
 		
 		
@@ -79,7 +124,7 @@ public class Recipies {
 	}
 
 	private IFood findByName(String name){
-		return this.allfoods.stream().filter(f->f.getName().equals(name)).findFirst().get();
+		return this.ingredients.stream().filter(f->f.getName().equals(name)).findFirst().get();
 	}
 
 }

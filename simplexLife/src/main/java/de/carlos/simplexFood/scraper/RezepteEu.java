@@ -1,6 +1,7 @@
 package de.carlos.simplexFood.scraper;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -22,7 +23,7 @@ import com.google.gson.stream.JsonReader;
 
 public class RezepteEu {
 	
-	private static final String JSONFILE = "eu5.json";
+	private static final File JSONFILE = new File("data/eu5.json");
 
 	List<String> urlsToSkip=Arrays.asList(new String[]{"http://rezepte.eu5.org/Auflauf/auflauf_r55.html"});
 
@@ -61,7 +62,7 @@ public class RezepteEu {
 
 			Gson gson = new Gson();
 			String asJson = gson.toJson(recipies);
-			File outfile = new File("src/main/resources/"+JSONFILE);
+			File outfile = JSONFILE;
 			PrintWriter writer = new PrintWriter(outfile);
 			writer.print(asJson);
 			writer.close();
@@ -152,7 +153,7 @@ public class RezepteEu {
 		List<Recipie> fromJson;
 		try {
 			fromJson = gson.fromJson(
-					new JsonReader(new InputStreamReader(this.getClass().getResourceAsStream("/"+JSONFILE),"utf-8")), 
+					new JsonReader(new InputStreamReader(new FileInputStream(JSONFILE),"utf-8")), 
 					type.getType());
 			return fromJson;
 		} catch (Exception e) {

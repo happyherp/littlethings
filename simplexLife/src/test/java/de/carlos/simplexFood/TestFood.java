@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import de.carlos.simplexFood.food.Food;
 import de.carlos.simplexFood.food.IFood;
-import de.carlos.simplexFood.food.Meal;
+import de.carlos.simplexFood.food.Recipe;
 import de.carlos.simplexFood.food.Nutrient;
 import de.carlos.simplexFood.swissDB.SwissDB;
 import de.carlos.simplexOO.SimplexOO.Restriction;
@@ -55,8 +55,8 @@ public class TestFood {
 
     	FoodOptimize.printSummary(result);    
     	
-    	Meal m1 = new Meal(result);
-    	Meal m2 = new Meal(new LinkedList(result));
+    	Recipe m1 = new Recipe(result);
+    	Recipe m2 = new Recipe(new LinkedList(result));
     	Assert.assertEquals(m1, m2);
     	
     	
@@ -163,7 +163,7 @@ public class TestFood {
     	result.sort(new IFood.WeightComparator());
     	FoodOptimize.printSummary(result);    	
     	
-    	Meal m1 = new Meal(result);
+    	Recipe m1 = new Recipe(result);
     	
     	
     	Collections.shuffle(foods);
@@ -172,10 +172,19 @@ public class TestFood {
     	result2.sort((a,b)->(int) (b.getWeight() - a.getWeight()));
     	FoodOptimize.printSummary(result);    	    	
     	
-    	Meal m2 = new Meal(result2);
+    	Recipe m2 = new Recipe(result2);
     	Assert.assertEquals(m1, m2);
     	
 
+    }
+    
+    @Test
+    public void testLasagne(){
+    	
+    	List<IFood> foods = new ArrayList<>(new SwissDB().parseDB()); 
+    	Recipe lasagne = new Recipies(foods).lasagne;
+    	Assert.assertEquals(1.0, lasagne.getNutrient(Nutrient.Calories), 0.1);
+    	
     }
    
 

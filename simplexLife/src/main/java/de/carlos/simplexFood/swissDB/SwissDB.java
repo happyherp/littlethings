@@ -122,7 +122,6 @@ public class SwissDB {
 						"sugar, total"));	
 				food.setNutrient(Starch,getGramsFromCell(cells, colNameToIndex,
 						"starch, total"));					
-				
 
 				food.setWeight(100.0);
 
@@ -138,6 +137,19 @@ public class SwissDB {
 				if (!priceOverride.isEmpty()){
 					food.setPrice(readDouble(priceOverride));
 				}
+				
+				
+				String ing = this.getCellByName(cells, colNameToIndex, "NonIngredient");
+				if (!ing.isEmpty()){
+					if (ing.toLowerCase().equals("x")){
+						food.setIsIngredient(true);
+					}else{
+						throw new RuntimeException("Unexpected value for Noningredient in "+food.getName());
+					}
+				}else{
+					food.setIsIngredient(false);
+				}
+				
 
 				foods.add(food);
 				i++;
@@ -168,6 +180,9 @@ public class SwissDB {
 			return 0.0;
 		}
 		String unitName = cells[index + 1];
+		if (!UNIT_FACTOR.containsKey(unitName)){
+			throw new RuntimeException("Unknown Unit "+unitName);
+		}
 		double factor = UNIT_FACTOR.get(unitName);
 
 		return factor * readDouble(val);

@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 import de.carlos.simplexFood.food.Food;
 import de.carlos.simplexFood.food.IFood;
-import de.carlos.simplexFood.food.Meal;
+import de.carlos.simplexFood.food.Recipe;
 import de.carlos.simplexFood.scraper.RezepteEu.Ingredient;
 import de.carlos.simplexFood.scraper.RezepteEu.Recipie;
 import de.carlos.simplexFood.swissDB.SwissDB;
@@ -26,8 +26,8 @@ public class ConnectIngredients {
 	
 	private static final String MAPPING = "/eu50ToSwiss.properties";
 
-	public Meal convert(Recipie recipie, List<IFood> ingredients ){
-		Meal meal = new Meal();
+	public Recipe convert(Recipie recipie, List<IFood> ingredients ){
+		Recipe meal = new Recipe();
 		meal.setName(recipie.name);
 		meal.setSource(recipie.url);
 		

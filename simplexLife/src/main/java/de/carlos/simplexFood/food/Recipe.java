@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.ToDoubleFunction;
 
-public class Meal implements IFood{
+public class Recipe implements IFood{
 	
 	private String name;
 	
@@ -12,14 +12,14 @@ public class Meal implements IFood{
 	
 	private Collection<IFood> ingredients = new ArrayList<>();
 	
-	public Meal(){
+	public Recipe(){
 	}
 	
-	public Meal(Collection<IFood> ingredients) {
+	public Recipe(Collection<IFood> ingredients) {
 		this.ingredients = ingredients;
 	}
 
-	public Meal addIngredient(IFood food){
+	public Recipe addIngredient(IFood food){
 		this.ingredients.add(food);
 		return this;
 	}
@@ -67,8 +67,8 @@ public class Meal implements IFood{
 	
 	@Override
 	public boolean equals(Object o){
-		if (o instanceof Meal){
-			return this.ingredients.equals(((Meal) o).ingredients);
+		if (o instanceof Recipe){
+			return this.ingredients.equals(((Recipe) o).ingredients);
 		}else{
 			return super.equals(o);
 		}
@@ -80,6 +80,11 @@ public class Meal implements IFood{
 
 	public void setSource(String source) {
 		this.source = source;
+	}
+
+	@Override
+	public boolean isIngredient() {
+		return false;
 	}
 
 }

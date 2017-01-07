@@ -12,7 +12,7 @@ import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
 
 import de.carlos.simplexFood.food.Food;
 import de.carlos.simplexFood.food.IFood;
-import de.carlos.simplexFood.food.Meal;
+import de.carlos.simplexFood.food.Recipe;
 import de.carlos.simplexFood.food.Nutrient;
 import de.carlos.simplexOO.SimplexOO;
 import de.carlos.simplexOO.SimplexOO.Restriction;
@@ -46,7 +46,7 @@ public class FoodOptimize {
 			resultFood.add(e.getKey().mult(e.getValue()));
 		}
 		
-		Meal m = new Meal(resultFood);
+		Recipe m = new Recipe(resultFood);
 		if (!target.matches(m)){
 			throw new RuntimeException("Food did not match target. Miscalculation in Simplex.");
 		}
@@ -106,7 +106,7 @@ public class FoodOptimize {
     	int i = 1;
     	for (IFood f : result){
     		System.out.print(String.format("%2d:%-50s %8.3fg %4.2f�",i, f.getName() ,f.getWeight(), f.getPrice()));    		
-    		System.out.println(FoodOptimize.getPercentages(f, new Meal(result)));
+    		System.out.println(FoodOptimize.getPercentages(f, new Recipe(result)));
     		i++;
 
     	}

@@ -46,6 +46,11 @@ public interface IFood {
 	public default IFood gram(double gram){
 		return this.mult(gram / this.getWeight());
 	}
+	
+	public default IFood ml(double ml){
+		//TODO: instead use a ml-gram ratio
+		return this.gram(ml);
+	}
 
 	/**
 	 * 
@@ -78,6 +83,8 @@ public interface IFood {
     		return Double.compare(arg1.getWeight(), arg0.getWeight());
     	}
     }
+    
+    public boolean isIngredient();
 
 
 }
