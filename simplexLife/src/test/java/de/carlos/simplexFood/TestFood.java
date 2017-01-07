@@ -173,7 +173,7 @@ public class TestFood {
     	FoodOptimize.printSummary(result);    	    	
     	
     	Recipe m2 = new Recipe(result2);
-    	Assert.assertEquals(m1, m2);
+    	Assert.assertEquals(m1.getWeight(), m2.getWeight(), 0.01);
     	
 
     }
