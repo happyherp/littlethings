@@ -11,6 +11,8 @@ public enum Nutrient {
 	Starch,
 	Sugar,
 	
+	Alcohol,
+	
 	FatTotal,
 	FatPolyUnsaturated,
 	FatMonoUnsaturated,

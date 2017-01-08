@@ -6,12 +6,14 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
 
 import de.carlos.simplexFood.food.Food;
 import de.carlos.simplexFood.food.IFood;
+import de.carlos.simplexFood.food.MissingIngredient;
 import de.carlos.simplexFood.food.Recipe;
 import de.carlos.simplexFood.food.Nutrient;
 import de.carlos.simplexOO.SimplexOO;
@@ -19,26 +21,26 @@ import de.carlos.simplexOO.SimplexOO.Restriction;
 
 public class FoodOptimize {
 	
+	double precisionFactor = 1.0E-0;
+
+	
 	public List<IFood> optimize(List<? extends IFood> foods, NutritionTarget target) {
 		return this.optimize(foods, new ArrayList<>(), target);
 	}
 
 	public List<IFood> optimize(List<? extends IFood> foods, Collection<Restriction<IFood>> extraRestrictions, NutritionTarget target) {
 		
+		List<IFood> validFoods  = filterValid((List<IFood>) foods);
+		List<IFood> withMissing = addMissing(validFoods);
+
 		List<Restriction<IFood>> constraints = new ArrayList<>();
 		constraints.addAll(extraRestrictions);
 		constraints.addAll(target.createRestrictions());
-		
-		
-		double precisionFactor = 1.0E-0;
+				
 		
 		Map<IFood, Double> result = 
 			new SimplexOO<IFood>(SimplexOO.DEFAULT_EPSILON*precisionFactor,SimplexOO.DEFAULT_ULPS, SimplexOO.DEFAULT_CUT_OFF* precisionFactor)
-				.solve(
-				(Collection<IFood>) Arrays.asList(filterValid(foods).toArray(i->new IFood[i])), 
-				constraints, 
-						f->f.getPrice(), 
-						GoalType.MINIMIZE);
+				.solve((Collection<IFood>) withMissing, constraints, this::getCost, GoalType.MINIMIZE);
 		
 		
 		List<IFood> resultFood = new ArrayList<IFood>();
@@ -55,12 +57,26 @@ public class FoodOptimize {
 		return resultFood;
 	}
 
-	private Stream<? extends IFood> filterValid(List<? extends IFood> foods) {
-		Stream<? extends IFood> valid = foods.stream().filter(p -> p.getPrice() != null);
-		return valid;
+	private Double getCost(IFood food){
+		return food instanceof MissingIngredient ? 9999999.0: food.getPrice();
+	}
+	
+
+	private List<IFood> filterValid(List<IFood> foods) {
+		return foods.stream()
+				.filter(p -> p.getPrice() != null)
+				.collect(Collectors.toList());
 	}
 
-
+	private List<IFood> addMissing(List<IFood> validFoods) {
+		
+		ArrayList<IFood> withMissing = new ArrayList<IFood>(validFoods);
+		for (Nutrient n: Nutrient.values()){
+			withMissing.add(new MissingIngredient(n));
+		}
+		
+		return withMissing;
+	}
 	
 	public static String getPercentages(IFood f, IFood sum) {
 

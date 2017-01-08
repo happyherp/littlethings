@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import de.carlos.simplexFood.food.Food;
 import de.carlos.simplexFood.food.IFood;
@@ -43,10 +44,12 @@ public class Interactive {
 
 		List<IFood> foods = new ArrayList<>(new SwissDB().parseDB());
 		Recipies recipies = new Recipies(foods);
-		//foods.addAll(recipies.vitaminSubsets);
+		foods.addAll(recipies.recipes);
 		NutritionTarget target = NutritionTarget.anyCalories();
+		
+		List<IFood> edible = foods.stream().filter(IFood::isEdible).collect(Collectors.toList());
 
-		new Interactive().start(foods, target);
+		new Interactive().start(edible, target);
 
 	}
 

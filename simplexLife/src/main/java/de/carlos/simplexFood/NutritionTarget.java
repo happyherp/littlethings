@@ -223,7 +223,7 @@ public class NutritionTarget implements Cloneable{
 		target.set(Calcium, 1.0, null);
 		target.set(Eisen, 10.0E-3, 45.0E-3);
 		target.set(Iod, 200.0E-6, 500.0E-6);
-		target.set(Fluorid, 3.8E-3, null);
+		target.set(Fluorid, 1.5E-3, 4.0E-3);
 		target.set(Magnesium, 350.0E-3, null);
 		target.set(Zink, 10.0E-3, 30.0E-3);
 
@@ -266,7 +266,7 @@ public class NutritionTarget implements Cloneable{
 		target.set(Calcium, 1.0, null);
 		target.set(Eisen, 10.0E-3, 45.0E-3);
 		target.set(Iod, 200.0E-6, 500.0E-6);
-		target.set(Fluorid, 3.8E-3, null);
+		target.set(Fluorid, 1.5E-3, 4.0E-3);
 		target.set(Magnesium, 350.0E-3, null);
 		target.set(Zink, 10.0E-3, 30.0E-3);
 
@@ -304,7 +304,7 @@ public static NutritionTarget anyCalories(){
 		target.set(Calcium, 1.0, null);
 		target.set(Eisen, 10.0E-3, 45.0E-3);
 		target.set(Iod, 200.0E-6, 500.0E-6);
-		target.set(Fluorid, 3.8E-3, null);
+		target.set(Fluorid, 1.5E-3, 4.0E-3);
 		target.set(Magnesium, 350.0E-3, null);
 		target.set(Zink, 10.0E-3, 30.0E-3);
 

@@ -11,6 +11,8 @@ import java.util.Map;
 
 import de.carlos.simplexFood.food.Food;
 import de.carlos.simplexFood.food.IFood;
+import de.carlos.simplexFood.food.Nutrient;
+
 import static de.carlos.simplexFood.food.Nutrient.*;
 import au.com.bytecode.opencsv.CSVParser;
 
@@ -26,6 +28,48 @@ public class SwissDB {
 		UNIT_FACTOR.put("alpha-tocopherol equivalent", 1.0E-3);//Vitamin E mg
 		UNIT_FACTOR.put("retinol equivalent", 1.0E-6); //Retinol in Mikrogramm
 		UNIT_FACTOR.put("beta-carotene equivalent",  1.0E-6);
+	}
+	
+	static final Map<String, Nutrient> colToNutrient = new HashMap<>();
+	static{
+		colToNutrient.put("dietary fibre, total",Fiber);
+		
+		colToNutrient.put("fat, total", FatTotal);
+		colToNutrient.put("fatty acids, total saturated", FatSaturated);
+		colToNutrient.put("fatty acids, total mono unsaturated", FatMonoUnsaturated);
+		colToNutrient.put("fatty acids, total poly unsaturated", FatPolyUnsaturated);
+		
+		colToNutrient.put("charbohydrate, total", Carbohydrates);	
+		colToNutrient.put("sugar, total", Sugar);	
+		colToNutrient.put("starch, total", Starch);		
+		colToNutrient.put("alcohol", Alcohol);
+		
+		
+		colToNutrient.put("protein", Protein);
+		
+		colToNutrient.put("calcium", Calcium);
+		colToNutrient.put("iron, total", Eisen);
+		colToNutrient.put("iodide", Iod);				
+		colToNutrient.put("zinc", Zink);
+		colToNutrient.put("magnesium", Magnesium);		
+		colToNutrient.put("sodium", Sodium);	
+		colToNutrient.put("niacine", Niacin);	
+		colToNutrient.put("folate", Folat);
+		colToNutrient.put("potassium", Potassium);					
+		colToNutrient.put("chlorid", Chloride);
+		
+		colToNutrient.put("vit A", VitaminA);	
+		colToNutrient.put("beta-carotene equivalents", BetaCarotene);					
+		colToNutrient.put("B1", VitaminB1);				
+		colToNutrient.put("B2", VitaminB2);
+		colToNutrient.put("B6", VitaminB6);
+		colToNutrient.put("B12", VitaminB12);
+		colToNutrient.put("C", VitaminC);					
+		colToNutrient.put("D", VitaminD);			
+		colToNutrient.put("E", VitaminE);			
+		colToNutrient.put("VitaminK", VitaminK);						
+		colToNutrient.put("pantothenic acid", PantothenicAcid);	
+		
 	}
 
 	public List<Food> parseDB() {
@@ -59,73 +103,12 @@ public class SwissDB {
 				Food food = new Food();
 				food.setName(getCellByName(cells, colNameToIndex, "name D"));
 				
-				food.setNutrient(Fiber,getGramsFromCell(cells, colNameToIndex,
-						"dietary fibre, total"));
-				food.setNutrient(FatTotal,getGramsFromCell(cells, colNameToIndex,
-						"fat, total"));
-				food.setNutrient(FatSaturated,getGramsFromCell(cells, colNameToIndex,
-						"fatty acids, total saturated"));
-				food.setNutrient(FatMonoUnsaturated,getGramsFromCell(cells, colNameToIndex,
-						"fatty acids, total mono unsaturated"));
-				food.setNutrient(FatPolyUnsaturated,getGramsFromCell(cells, colNameToIndex,
-						"fatty acids, total poly unsaturated"));				
-				food.setNutrient(Carbohydrates,getGramsFromCell(cells, colNameToIndex,
-						"charbohydrate, total"));				
-				food.setNutrient(Protein,getGramsFromCell(cells, colNameToIndex,
-								"protein"));
-				
-				food.setNutrient(Calcium,getGramsFromCell(cells, colNameToIndex,
-						"calcium"));
-				food.setNutrient(Eisen,getGramsFromCell(cells, colNameToIndex,
-						"iron, total"));
-				food.setNutrient(Iod,getGramsFromCell(cells, colNameToIndex,
-						"iodide"));				
-				food.setNutrient(Zink,getGramsFromCell(cells, colNameToIndex,
-								"zinc"));
-				food.setNutrient(Magnesium,getGramsFromCell(cells, colNameToIndex,
-						"magnesium"));		
-				food.setNutrient(Fluorid,getGramsFromCell(cells, colNameToIndex,
-						"chlorid"));	
-				food.setNutrient(VitaminA,getGramsFromCell(cells, colNameToIndex,
-						"vit A"));	
-				food.setNutrient(BetaCarotene,getGramsFromCell(cells, colNameToIndex,
-						"beta-carotene equivalents"));					
-				food.setNutrient(VitaminB1,getGramsFromCell(cells, colNameToIndex,
-						"B1"));				
-				food.setNutrient(VitaminB2,getGramsFromCell(cells, colNameToIndex,
-						"B2"));
-				food.setNutrient(VitaminB6,getGramsFromCell(cells, colNameToIndex,
-						"B6"));
-				food.setNutrient(VitaminB12,getGramsFromCell(cells, colNameToIndex,
-						"B12"));
-				food.setNutrient(VitaminC,getGramsFromCell(cells, colNameToIndex,
-						"C"));					
-				food.setNutrient(VitaminD,getGramsFromCell(cells, colNameToIndex,
-						"D"));			
-				food.setNutrient(VitaminE,getGramsFromCell(cells, colNameToIndex,
-						"E"));			
-				food.setNutrient(VitaminK,getGramsFromCell(cells, colNameToIndex,
-						"VitaminK"));						
-				food.setNutrient(Niacin,getGramsFromCell(cells, colNameToIndex,
-						"niacine"));	
-				food.setNutrient(Folat,getGramsFromCell(cells, colNameToIndex,
-						"folate"));
-				food.setNutrient(PantothenicAcid,getGramsFromCell(cells, colNameToIndex,
-						"pantothenic acid"));				
-				food.setNutrient(Sodium,getGramsFromCell(cells, colNameToIndex,
-						"sodium"));	
-				food.setNutrient(Potassium,getGramsFromCell(cells, colNameToIndex,
-						"potassium"));					
-				food.setNutrient(Chloride,getGramsFromCell(cells, colNameToIndex,
-						"chlorid"));			
-				food.setNutrient(Sugar,getGramsFromCell(cells, colNameToIndex,
-						"sugar, total"));	
-				food.setNutrient(Starch,getGramsFromCell(cells, colNameToIndex,
-						"starch, total"));					
+				for (String col: colToNutrient.keySet()){
+					food.setNutrient(colToNutrient.get(col), getGramsFromCell(cells, colNameToIndex, col));
+				}				
 
 				food.setWeight(100.0);
 
- 
 				String priceS = this.getCellByName(cells, colNameToIndex,
 						"Preis").trim();
 				if (priceS.isEmpty()) {
@@ -139,15 +122,15 @@ public class SwissDB {
 				}
 				
 				
-				String ing = this.getCellByName(cells, colNameToIndex, "NonIngredient");
+				String ing = this.getCellByName(cells, colNameToIndex, "Edible");
 				if (!ing.isEmpty()){
 					if (ing.toLowerCase().equals("x")){
-						food.setIsIngredient(true);
+						food.setEdible(true);
 					}else{
 						throw new RuntimeException("Unexpected value for Noningredient in "+food.getName());
 					}
 				}else{
-					food.setIsIngredient(false);
+					food.setEdible(false);
 				}
 				
 

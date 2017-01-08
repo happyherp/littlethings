@@ -25,7 +25,7 @@ public class Food implements IFood {
     
     private Map<Nutrient, FoodNutrient> nutrients = new HashMap<>();
 
-	private boolean isIngredient = true;
+	private boolean edible = true;
     
     public Double getNutrient(Nutrient i){
     	
@@ -130,13 +130,14 @@ public class Food implements IFood {
     }
 
 	@Override
-	public boolean isIngredient() {
-		return isIngredient;
+	public boolean isEdible() {
+		return edible;
+	}
+	
+	public void setEdible(boolean b){
+		this.edible = b;
 	}
 
-	public void setIsIngredient(boolean b){
-		this.isIngredient = b;
-	}
 	
     
 }

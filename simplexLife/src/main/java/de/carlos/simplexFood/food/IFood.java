@@ -84,7 +84,7 @@ public interface IFood {
     	}
     }
     
-    public boolean isIngredient();
+    public boolean isEdible();
 
 
 }

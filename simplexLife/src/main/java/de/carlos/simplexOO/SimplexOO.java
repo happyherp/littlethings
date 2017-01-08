@@ -16,6 +16,9 @@ import org.apache.commons.math3.optim.linear.Relationship;
 import org.apache.commons.math3.optim.linear.SimplexSolver;
 import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
 
+import de.carlos.simplexFood.food.IFood;
+import de.carlos.simplexOO.SimplexOO.Restriction;
+
 public class SimplexOO<T> {
 	
     /** Default amount of error to accept in floating point comparisons (as ulps). */
@@ -99,5 +102,6 @@ public class SimplexOO<T> {
 	public static <Q> Restriction<Q> atLeast(double amount, Q obj){
 		return new Restriction<Q>(e->e.equals(obj)?1:0, Relationship.GEQ, amount);
 	}
+
 	
 }

@@ -18,6 +18,14 @@ import de.carlos.simplexFood.swissDB.SwissDB;
 import de.carlos.simplexOO.SimplexOO.Restriction;
 
 public class TestFood {
+	
+	@Test
+	public void testMissing(){
+    	List<IFood> result = new FoodOptimize().optimize(Collections.EMPTY_LIST, Collections.EMPTY_LIST, NutritionTarget.anyCalories());
+    	FoodOptimize.printSummary(result);    	
+
+	}
+	
     
     @Test
     public void test(){

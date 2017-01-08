@@ -60,7 +60,9 @@ public class FoodNutrient {
 		this.food = food;
 	}
 	
-	
+	public String toString(){
+		return this.amount+"";
+	}
 	
 
 

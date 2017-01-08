@@ -83,8 +83,8 @@ public class Recipe implements IFood{
 	}
 
 	@Override
-	public boolean isIngredient() {
-		return false;
+	public boolean isEdible() {
+		return true;
 	}
 
 }
