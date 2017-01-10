@@ -46,7 +46,7 @@ public class SimplexOO<T> {
 	public SimplexOO(){
 		this(DEFAULT_EPSILON, DEFAULT_ULPS, DEFAULT_CUT_OFF);
 	}
-
+ 
 	public Map<T, Double> solve(Collection<T> elements,
 			Collection<Restriction<T>> restrictions,
 			ToDoubleFunction<T> goalFunction, GoalType goaltype) {

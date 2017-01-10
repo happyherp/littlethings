@@ -177,4 +177,8 @@ public class RezepteEu {
 		String name;
 	}
 
+	public static String cleanName(String name) {
+		return name.replaceAll("[,;\\-]", " ").replaceAll(" +", " ");
+	}
+
 }

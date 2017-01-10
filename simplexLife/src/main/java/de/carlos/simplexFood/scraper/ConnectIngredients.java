@@ -2,17 +2,24 @@ package de.carlos.simplexFood.scraper;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Comparator;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import au.com.bytecode.opencsv.CSVParser;
+import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.CSVWriter;
 import de.carlos.simplexFood.food.Food;
 import de.carlos.simplexFood.food.IFood;
 import de.carlos.simplexFood.food.Recipe;
@@ -24,7 +31,7 @@ import info.debatty.java.stringsimilarity.interfaces.StringDistance;
 
 public class ConnectIngredients {
 	
-	private static final String MAPPING = "/eu50ToSwiss.properties";
+	private static final String MAPPING = "/eu50ToSwiss.csv";
 
 	public Recipe convert(Recipie recipie, List<IFood> ingredients ){
 		Recipe meal = new Recipe();
@@ -79,60 +86,90 @@ public class ConnectIngredients {
 		return result;
 	}
 	
-	public static void main(String[] args){
-		
+	
+	
+	public static Map<String, String> readCSV(){
+		HashMap<String, String> nameToName = new HashMap<String,String>();
 		
 		try {
-			Properties props = new Properties();
-			props.load(ConnectIngredients.class.getResourceAsStream(MAPPING));
-			File outfile = new File("src/main/resources"+MAPPING);
-			PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(outfile, true), "utf-8"));
+			CSVReader csvReader = new CSVReader(new FileReader("src/main/resources" + MAPPING), ';','"');
+			csvReader.readAll().forEach(array->nameToName.put(array[0], array[1]));
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return nameToName;
+	}
+	
+	public static void main(String[] args){
+
+		try {
+			Map<String, String> existing = readCSV();
 			
-			List<Food> swissIngredients = new SwissDB().parseDB();			
+			File outfile = new File("src/main/resources" + MAPPING);
+			CSVWriter csvwriter = new CSVWriter(new OutputStreamWriter(new FileOutputStream(outfile, true), "utf-8"), ';', '\"');
+
+			List<Food> swissIngredients = new SwissDB().parseDB();
 			List<Recipie> eu5Recipies = new RezepteEu().readFromFile();
-			
-			BufferedReader lineIn = new BufferedReader(new InputStreamReader(
-					System.in));
-			
+
+			BufferedReader lineIn = new BufferedReader(new InputStreamReader(System.in));
+
 			StringDistance distanceCalc = new Cosine(3);
-			eu5Recipies.stream()
-			.flatMap(r->r.ingredients.stream())
-			.forEach(ingredientEu50->{
-				
-				
-				if (!props.containsKey(ingredientEu50.name)){
-				
-					System.out.println("Find Match for: "+ingredientEu50.name);
-					List<IFood> bestMatches = swissIngredients.stream()
-							.sorted(Comparator.comparingDouble(
-									ingredientSwiss->distanceCalc.distance(ingredientSwiss.getName(), ingredientEu50.name)))
-							.limit(10)
-							.collect(Collectors.toList());
-					for(int i = 0;i<bestMatches.size();i++){
-						System.out.println((i+1) +" "+bestMatches.get(i).getName()+" score: "+distanceCalc.distance(bestMatches.get(i).getName(), ingredientEu50.name));
+			eu5Recipies.stream().flatMap(r -> r.ingredients.stream()).forEach(ingredientEu50 -> {
+
+				String name = RezepteEu.cleanName(ingredientEu50.name);
+				try {
+					if (!existing.containsKey(name)) {
+
+						IFood selected = selectFromList(swissIngredients, lineIn, distanceCalc, name);
+						if (selected != null){
+							csvwriter.writeNext(new String[]{name, selected.getName()});
+							csvwriter.flush();
+							existing.put( name, selected.getName());
+						}
+						System.out.println("-------------------------------------------------------");
+
 					}
-					System.out.print("Your selection:" );
-					try{
-						IFood selected = bestMatches.get(Integer.parseInt(lineIn.readLine())-1);
-						writer.println(ingredientEu50.name+"="+selected.getName());
-						props.put(ingredientEu50.name, selected.getName());
-						writer.flush();
-					}catch(Exception e){
-						e.printStackTrace(System.out);
-						System.out.flush();
-					}
-					System.out.println("-------------------------------------------------------");
-				}				
+				} catch (Exception e) {
+					e.printStackTrace(System.out);
+					System.out.flush();
+				}
 			});
-			writer.close();
-			
-			
-			
+			csvwriter.close();
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
+	}
+
+	private static IFood selectFromList(List<Food> swissIngredients,
+			BufferedReader lineIn, StringDistance distanceCalc, String ingredientName) throws IOException {
+		List<IFood> bestMatches = swissIngredients.stream()
+				.sorted(Comparator.comparingDouble(ingredientSwiss -> distanceCalc
+						.distance(ingredientSwiss.getName(), ingredientName)))
+				.limit(100).collect(Collectors.toList());
+		for (int i = bestMatches.size() - 1; i >= 0; i--) {
+			System.out.println((i + 1) + " " + bestMatches.get(i).getName() + " score: "
+					+ distanceCalc.distance(bestMatches.get(i).getName(), ingredientName));
+		}
+		System.out.println("Find Match for: " + ingredientName);
+		System.out.print("Your selection:");
+
+		String input = lineIn.readLine();
+
+		if (input.matches("[0-9]+")) {
+			return bestMatches.get(Integer.parseInt(input) - 1);
+
+		} else if (input.equals("x")){
+			System.out.println("Skipping this one.");
+			return null;
+		}else{
+			System.out.println("Switching");
+			return selectFromList( swissIngredients, lineIn, distanceCalc, input);
+		}
 	}
 
 }
