@@ -1,6 +1,8 @@
+module Prime8 where 
 
 import Data.List.Ordered(minus, mergeBy, merge)
 import Data.Ord(comparing)
+
 
 
 products :: Integral a =>[a] -> Int -> [a]
@@ -21,6 +23,3 @@ myMergeAll = myMergeAllBy compare
 myMergeAllBy :: (a->a->Ordering) -> [[a]] -> [a]
 myMergeAllBy _ [] = []
 myMergeAllBy cmp ((x:xs):xxs) = x:(mergeBy cmp xs (myMergeAllBy cmp xxs))
-
-
-main = print $ sum $ takeWhile (< 10^6) primes
