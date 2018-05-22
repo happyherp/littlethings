@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 
 
 //https://www.hackerrank.com/challenges/synchronous-shopping/problem
+
+//Failing: 14,16,17,20,22-29
 public class Solution {
 	
 	static final boolean DEBUG = false;
@@ -172,7 +174,7 @@ public class Solution {
 		SortedSet<Path> stubs = new TreeSet<>(Comparator
 				.<Path,Integer>comparing(p->p.totalCost)
 				.thenComparing(Object::hashCode));//otherwhise TreeSet will treat the paths as equal.
-		Set<Path> processed = new HashSet<>();
+		Map<Center, Set<Path>> processed = new HashMap<>();
 		Walker(Center root){
 			stubs.add(new Path(root));
 		}
@@ -195,7 +197,8 @@ public class Solution {
 				stubs.remove(path);				
 			}
 			if (DEBUG) System.out.println("Processing "+path);
-			processed.add(path);
+			processed.putIfAbsent(path.to, new HashSet<>());
+			processed.get(path.to).add(path);
 			for(Center roadTo:path.to.roads.keySet()){
 				Path stub = new Path(path, roadTo);
 				this.stubs.add(stub);
@@ -204,7 +207,8 @@ public class Solution {
 		}
 			
 		boolean isNoImprovement(Path path) {
-			return processed.stream().anyMatch(other->other.strictlyBetterOrEqual(path));
+			return processed.containsKey(path.to)
+					&& processed.get(path.to).stream().anyMatch(other->other.strictlyBetterOrEqual(path));
 		}
 	}
 
