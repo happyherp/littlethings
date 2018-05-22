@@ -3,6 +3,7 @@ package de.carlos.hackerrank.syncshop;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 
 //https://www.hackerrank.com/challenges/synchronous-shopping/problem
 
-//Failing: 14,16,17,20,22-29
+//Failing: 14,16,22-29
 public class Solution {
 	
 	static final boolean DEBUG = false;
@@ -43,12 +44,13 @@ public class Solution {
     	for(int i = 0;i<n_centers;i++){
     		Center center = new Center();
     		center.id = i+1;
-    		Set<Integer> fishSet =  Arrays.stream(scan.nextLine().split(" "))
-	    		.skip(1)
-	    		.map(Integer::parseInt)
-	    		.collect(Collectors.toSet());
-    		for (int f:fishSet){
-    			center.fishes = center.fishes | i<<(f-1);
+    		Set<Fish> fishes = Arrays.stream(scan.nextLine().split(" "))
+				.skip(1)
+				.map(Integer::parseInt)
+				.map(fishIndex->Fish.values()[fishIndex-1])
+				.collect(Collectors.toSet());
+    		if (!fishes.isEmpty()){    			
+    			center.fishes = EnumSet.copyOf(fishes);
     		}
     		centers.add(center);
     	}
@@ -68,7 +70,10 @@ public class Solution {
 		
     	List<Path> pathsToEnd = new ArrayList<>();
     	
-    	int allFishes = (int)Math.pow(2,problem.fishes)-1;
+    	Set<Fish> allFishes = EnumSet.noneOf(Fish.class);
+    	for (int i = 0;i<problem.fishes;i++){
+    		allFishes.add(Fish.values()[i]);
+    	}
     	
     	Walker walker = new Walker(problem.centers.get(0));
     	
@@ -83,10 +88,11 @@ public class Solution {
     	}
 	}
     
-    static int findMatchingPath(List<Path> pathsToEnd, Path next, int allFishes) {
-		int fishesMissing = allFishes & ~next.fishesCollected;
+    static int findMatchingPath(List<Path> pathsToEnd, Path next, Set<Fish> allFishes) {
+		Set<Fish> fishesMissing = EnumSet.copyOf(allFishes);
+		fishesMissing.removeAll(next.fishesCollected);
 		for (Path other: pathsToEnd){
-			if (fishContainsAll(other.fishesCollected,fishesMissing)){
+			if (other.fishesCollected.containsAll(fishesMissing)){
 				if (DEBUG) System.out.println("Found working combination of "+next+" with "+other);
 				return Math.max(other.totalCost, next.totalCost);
 			}
@@ -111,7 +117,7 @@ public class Solution {
 
 	static class Center{
     	int id;
-    	int fishes = 0;
+    	Set<Fish> fishes =  EnumSet.noneOf(Fish.class);
     	Map<Center,Integer> roads = new HashMap<>();
     	@Override
     	public String toString() {
@@ -123,7 +129,7 @@ public class Solution {
 		Path prev = null;
 		Center to;
 		int totalCost;
-		int fishesCollected = 0;
+		Set<Fish> fishesCollected;
 		
 		Path(Center root){
 			to = root;
@@ -135,15 +141,20 @@ public class Solution {
 			this.prev = prev;
 			this.to = to;
 			this.totalCost = prev.totalCost + prev.to.roads.get(to);
-			this.fishesCollected = prev.fishesCollected | to.fishes;
+			this.fishesCollected = EnumSet.copyOf(prev.fishesCollected);
+			this.fishesCollected.addAll(to.fishes);
 		}
 		
 		boolean strictlyBetterOrEqual(Path other){
 			return  this.to == other.to
 					&& this.totalCost <= other.totalCost 
-					&& fishContainsAll(this.fishesCollected, other.fishesCollected);
+					&& this.fishesCollected.containsAll(other.fishesCollected);
 		}
 		
+		boolean strictlyBetter(Path other){
+			return this.strictlyBetterOrEqual(other) && 
+					(this.totalCost < other.totalCost || this.fishesCollected.size() > other.fishesCollected.size());
+		}
 		@Override
 		public String toString() {
 			return "Path"+getCenterList();
@@ -161,10 +172,6 @@ public class Solution {
 			
 			return l;
 		}
-	}
-	
-	static boolean fishContainsAll(int a , int b){
-		return ~((~a) & b)== -1;
 	}
 	
 	
@@ -208,5 +215,12 @@ public class Solution {
 			return processed.containsKey(path.to)
 					&& processed.get(path.to).stream().anyMatch(other->other.strictlyBetterOrEqual(path));
 		}
-	}	
+	}
+
+
+	enum Fish{
+		F1,F2,F3,F4,F5,F6,F7,F8,F9,F10;
+	}
+		
+    
 }

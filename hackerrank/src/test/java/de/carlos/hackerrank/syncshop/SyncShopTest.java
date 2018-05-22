@@ -12,6 +12,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.carlos.hackerrank.syncshop.Solution.Center;
+import de.carlos.hackerrank.syncshop.Solution.Fish;
 import de.carlos.hackerrank.syncshop.Solution.Path;
 import de.carlos.hackerrank.syncshop.Solution.Problem;
 import de.carlos.hackerrank.syncshop.Solution.Walker;
@@ -19,10 +20,27 @@ import de.carlos.hackerrank.syncshop.Solution.Walker;
 public class SyncShopTest {
 	
 	@Test
-	public void testFull(){
+	public void test0(){
 		
-		Solution.scan = new Scanner(SyncShopTest.class.getResourceAsStream("input"));
-		Solution.main(null);
+		Solution.scan = new Scanner(SyncShopTest.class.getResourceAsStream("input0.txt"));
+    	Problem problem = Solution.readProblem();
+    	
+    	int solution = Solution.solve(problem);
+    	System.out.println(solution);
+    	Assert.assertEquals(30, solution);
+		
+	}
+	
+	
+	@Test
+	public void test1(){
+		
+		Solution.scan = new Scanner(SyncShopTest.class.getResourceAsStream("input1.txt"));
+    	Problem problem = Solution.readProblem();
+    	
+    	int solution = Solution.solve(problem);
+    	System.out.println(solution);
+    	Assert.assertEquals(792, solution);
 		
 	}
 	
@@ -51,6 +69,8 @@ public class SyncShopTest {
 		
 		System.out.println("Solution: "+result);
 		Assert.assertEquals(102837, result);
+		
+		//Bisher ca 13s
 
 	}
 
@@ -63,12 +83,13 @@ public class SyncShopTest {
 		int n = 1000;
 		for (int i = 0;i<n;i++){
 			Center center = new Center();
+			center.id=i+1;
 			centers.add(center);
 		}
 		
 		int k = 10;
 		for (int i = 0;i<k;i++){
-			centers.get(rnd.nextInt(n)).fishes |= 1<<i;
+			centers.get(rnd.nextInt(n)).fishes.add(Fish.values()[i]);
 		}
 		for (int i = 0;i<n*2;i++){
 			Center from = centers.get(rnd.nextInt(n));
