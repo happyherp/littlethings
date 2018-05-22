@@ -43,10 +43,13 @@ public class Solution {
     	for(int i = 0;i<n_centers;i++){
     		Center center = new Center();
     		center.id = i+1;
-    		center.fishes = Arrays.stream(scan.nextLine().split(" "))
+    		Set<Integer> fishSet =  Arrays.stream(scan.nextLine().split(" "))
 	    		.skip(1)
 	    		.map(Integer::parseInt)
 	    		.collect(Collectors.toSet());
+    		for (int f:fishSet){
+    			center.fishes = center.fishes | i<<(f-1);
+    		}
     		centers.add(center);
     	}
     	assert centers.size() == n_centers;
@@ -61,14 +64,11 @@ public class Solution {
 		return problem;
 	}
     
-    private static int solve(Problem problem) {
+    static int solve(Problem problem) {
 		
     	List<Path> pathsToEnd = new ArrayList<>();
     	
-    	Set<Integer> allFishes = new HashSet<>();
-    	for (int i = 0;i<problem.fishes;i++){
-    		allFishes.add(i+1);
-    	}
+    	int allFishes = (int)Math.pow(2,problem.fishes)-1;
     	
     	Walker walker = new Walker(problem.centers.get(0));
     	
@@ -83,11 +83,10 @@ public class Solution {
     	}
 	}
     
-    static int findMatchingPath(List<Path> pathsToEnd, Path next, Set<Integer> allFishes) {
-		Set<Integer> fishesMissing = new HashSet<>(allFishes);
-		fishesMissing.removeAll(next.fishesCollected);
+    static int findMatchingPath(List<Path> pathsToEnd, Path next, int allFishes) {
+		int fishesMissing = allFishes & ~next.fishesCollected;
 		for (Path other: pathsToEnd){
-			if (other.fishesCollected.containsAll(fishesMissing)){
+			if (fishContainsAll(other.fishesCollected,fishesMissing)){
 				if (DEBUG) System.out.println("Found working combination of "+next+" with "+other);
 				return Math.max(other.totalCost, next.totalCost);
 			}
@@ -112,7 +111,7 @@ public class Solution {
 
 	static class Center{
     	int id;
-    	Set<Integer> fishes;
+    	int fishes = 0;
     	Map<Center,Integer> roads = new HashMap<>();
     	@Override
     	public String toString() {
@@ -124,7 +123,7 @@ public class Solution {
 		Path prev = null;
 		Center to;
 		int totalCost;
-		Set<Integer> fishesCollected;
+		int fishesCollected = 0;
 		
 		Path(Center root){
 			to = root;
@@ -136,20 +135,15 @@ public class Solution {
 			this.prev = prev;
 			this.to = to;
 			this.totalCost = prev.totalCost + prev.to.roads.get(to);
-			this.fishesCollected = new HashSet<>(prev.fishesCollected);
-			this.fishesCollected.addAll(to.fishes);
+			this.fishesCollected = prev.fishesCollected | to.fishes;
 		}
 		
 		boolean strictlyBetterOrEqual(Path other){
 			return  this.to == other.to
 					&& this.totalCost <= other.totalCost 
-					&& this.fishesCollected.containsAll(other.fishesCollected);
+					&& fishContainsAll(this.fishesCollected, other.fishesCollected);
 		}
 		
-		boolean strictlyBetter(Path other){
-			return this.strictlyBetterOrEqual(other) && 
-					(this.totalCost < other.totalCost || this.fishesCollected.size() > other.fishesCollected.size());
-		}
 		@Override
 		public String toString() {
 			return "Path"+getCenterList();
@@ -167,6 +161,10 @@ public class Solution {
 			
 			return l;
 		}
+	}
+	
+	static boolean fishContainsAll(int a , int b){
+		return ~((~a) & b)== -1;
 	}
 	
 	
@@ -210,10 +208,5 @@ public class Solution {
 			return processed.containsKey(path.to)
 					&& processed.get(path.to).stream().anyMatch(other->other.strictlyBetterOrEqual(path));
 		}
-	}
-
-
-	
-		
-    
+	}	
 }
