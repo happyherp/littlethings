@@ -205,11 +205,7 @@ public class Solution {
 		}
 
 		public Path processNextStub() {
-			Path path = removeNextPath();
-			while (isNoImprovement(path)){
-				if (DEBUG) System.out.println("Skipping "+path);
-				path = removeNextPath();			
-			}
+			Path path = findNextRelevantPath();
 			if (DEBUG) System.out.println("Processing "+path);
 			if (!processed.containsKey(path.to)) processed.put(path.to, new HashMap<>());
 			
@@ -230,7 +226,16 @@ public class Solution {
 			return path;
 		}
 
-		public Path removeNextPath() {
+		public Path findNextRelevantPath() {
+			Path path = removeNextStub();
+			while (isNoImprovement(path)){
+				if (DEBUG) System.out.println("Skipping "+path);
+				path = removeNextStub();			
+			}
+			return path;
+		}
+
+		public Path removeNextStub() {
 			List<Path> shortestStubs = stubs.get(stubs.firstKey());
 			Path path = shortestStubs.get(0);
 			shortestStubs.remove(path);
@@ -242,12 +247,13 @@ public class Solution {
 			
 		boolean isNoImprovement(Path path) {
 			
-			if (processed.containsKey(path.to)){
-				Map<Set<Fish>, Path> pathsToCenter = processed.get(path.to);
-				if (pathsToCenter.containsKey(path.fishesCollected)){
-					return pathsToCenter.get(path.fishesCollected).totalCost <= path.totalCost;
+			Map<Set<Fish>, Path> pathsToSameCenter = processed.get(path.to);
+			if (pathsToSameCenter != null){
+				if (pathsToSameCenter.containsKey(path.fishesCollected)){
+					return true;
 				}
-				for (Path other:pathsToCenter.values()){
+				if (DEBUG) System.out.println("Checking "+pathsToSameCenter.size()+" paths ");
+				for (Path other:pathsToSameCenter.values()){
 					if (other.strictlyBetterOrEqual(path)){
 						return true;
 					}
