@@ -44,10 +44,26 @@ public class SyncShopTest {
 		
 	}
 	
+	/**
+	 * 
+	 * Takes 5.4s
+	 */
+	@Test
+	public void test14(){
+		
+		Solution.scan = new Scanner(SyncShopTest.class.getResourceAsStream("input14.txt"));
+    	Problem problem = Solution.readProblem();
+    	//waitForMe();
+    	int solution = Solution.solve(problem);
+    	System.out.println(solution);
+    	Assert.assertEquals(7461, solution);
+		
+	}
+	
 	@Test
 	public void testWalker(){
 		
-		Solution.scan = new Scanner(SyncShopTest.class.getResourceAsStream("input"));
+		Solution.scan = new Scanner(SyncShopTest.class.getResourceAsStream("input0.txt"));
 		Problem problem = Solution.readProblem();
 		
 		
@@ -60,18 +76,28 @@ public class SyncShopTest {
 	}
 	
 	@Test
-	public void testBig() throws IOException{
+	public void testBig(){
 		Problem problem = buildProblem();
-		System.out.println("Waiting for keystroke");
-		System.in.read();
-		System.out.println("Starting");
+//		waitForMe();
 		int result = Solution.solve(problem);
 		
 		System.out.println("Solution: "+result);
 		Assert.assertEquals(102837, result);
 		
-		//Bisher ca 13s
+		//Bisher ca 6s
 
+	}
+
+
+	public void waitForMe() {
+		System.out.println("Waiting for enter");
+		try {
+			System.in.read();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Starting");
 	}
 
 	public Problem buildProblem() {

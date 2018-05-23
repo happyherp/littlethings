@@ -2,15 +2,20 @@ package de.carlos.hackerrank.syncshop;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -130,11 +135,13 @@ public class Solution {
 		Center to;
 		int totalCost;
 		Set<Fish> fishesCollected;
+		int hashCode;
 		
 		Path(Center root){
 			to = root;
 			totalCost=0;
 			fishesCollected = root.fishes;
+			this.hashCode = getCenterList().hashCode();
 		}
 		
 		Path(Path prev, Center to){
@@ -143,6 +150,7 @@ public class Solution {
 			this.totalCost = prev.totalCost + prev.to.roads.get(to);
 			this.fishesCollected = EnumSet.copyOf(prev.fishesCollected);
 			this.fishesCollected.addAll(to.fishes);
+			this.hashCode = getCenterList().hashCode();
 		}
 		
 		boolean strictlyBetterOrEqual(Path other){
@@ -172,16 +180,19 @@ public class Solution {
 			
 			return l;
 		}
+		
+		@Override
+		public int hashCode() {
+			return hashCode;
+		}
 	}
 	
 	
 	static class Walker{
-		SortedSet<Path> stubs = new TreeSet<>(Comparator
-				.<Path,Integer>comparing(p->p.totalCost)
-				.thenComparing(Object::hashCode));//otherwhise TreeSet will treat the paths as equal.
-		Map<Center, Set<Path>> processed = new HashMap<>();
+		SortedMap<Integer, List<Path>> stubs = new TreeMap<>();
+		Map<Center, Map<Set<Fish>,Path>> processed = new HashMap<>();
 		Walker(Center root){
-			stubs.add(new Path(root));
+			stubs.put(0,new LinkedList<>(Collections.singleton(new Path(root))));
 		}
 		
 		public Path findNextToFinish(Center end){
@@ -194,26 +205,55 @@ public class Solution {
 		}
 
 		public Path processNextStub() {
-			Path path = stubs.first();
-			stubs.remove(path);
+			Path path = removeNextPath();
 			while (isNoImprovement(path)){
 				if (DEBUG) System.out.println("Skipping "+path);
-				path = stubs.first();
-				stubs.remove(path);				
+				path = removeNextPath();			
 			}
 			if (DEBUG) System.out.println("Processing "+path);
-			processed.putIfAbsent(path.to, new HashSet<>());
-			processed.get(path.to).add(path);
+			if (!processed.containsKey(path.to)) processed.put(path.to, new HashMap<>());
+			
+			//Remove paths that are worse than the new one.
+			Iterator<Set<Fish>> otherFishIter = processed.get(path.to).keySet().iterator();
+			while (otherFishIter.hasNext()){
+				Set<Fish> otherFishes = otherFishIter.next();
+				if (path.fishesCollected.containsAll(otherFishes)){
+					otherFishIter.remove();
+				}
+			}
+			processed.get(path.to).put(path.fishesCollected, path);
 			for(Center roadTo:path.to.roads.keySet()){
 				Path stub = new Path(path, roadTo);
-				this.stubs.add(stub);
+				if (!stubs.containsKey(stub.totalCost))stubs.put(stub.totalCost, new LinkedList<>());
+				this.stubs.get(stub.totalCost).add(stub);
+			}
+			return path;
+		}
+
+		public Path removeNextPath() {
+			List<Path> shortestStubs = stubs.get(stubs.firstKey());
+			Path path = shortestStubs.get(0);
+			shortestStubs.remove(path);
+			if (shortestStubs.isEmpty()){
+				stubs.remove(stubs.firstKey());
 			}
 			return path;
 		}
 			
 		boolean isNoImprovement(Path path) {
-			return processed.containsKey(path.to)
-					&& processed.get(path.to).stream().anyMatch(other->other.strictlyBetterOrEqual(path));
+			
+			if (processed.containsKey(path.to)){
+				Map<Set<Fish>, Path> pathsToCenter = processed.get(path.to);
+				if (pathsToCenter.containsKey(path.fishesCollected)){
+					return pathsToCenter.get(path.fishesCollected).totalCost <= path.totalCost;
+				}
+				for (Path other:pathsToCenter.values()){
+					if (other.strictlyBetterOrEqual(path)){
+						return true;
+					}
+				}
+			}
+			return false;
 		}
 	}
 
