@@ -40,7 +40,7 @@ public class SyncShopTest {
 	
 	/**
 	 * 
-	 * Takes 5.4s
+	 * Takes 1.4s
 	 */
 	@Test
 	public void test14(){
@@ -78,7 +78,7 @@ public class SyncShopTest {
 		System.out.println("Solution: "+result);
 		Assert.assertEquals(102837, result);
 		
-		//Bisher ca 6s
+		//Bisher ca 2.6s
 
 	}
 
