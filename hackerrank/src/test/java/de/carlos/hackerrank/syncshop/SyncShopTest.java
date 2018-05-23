@@ -21,7 +21,6 @@ public class SyncShopTest {
 	
 	@Test
 	public void test0(){
-		
 		Solution.scan = new Scanner(SyncShopTest.class.getResourceAsStream("input0.txt"));
     	Problem problem = Solution.readProblem();
     	
