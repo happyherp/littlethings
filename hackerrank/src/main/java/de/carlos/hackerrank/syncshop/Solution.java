@@ -3,10 +3,8 @@ package de.carlos.hackerrank.syncshop;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,9 +12,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 
@@ -67,8 +63,7 @@ public class Solution {
     		from.roads.put(to, cost);
     		to.roads.put(from, cost);
     	}
-    	Problem problem = new Problem(centers, k_fishes);
-		return problem;
+		return new Problem(centers, k_fishes);
 	}
     
     static int solve(Problem problem) {
@@ -80,7 +75,7 @@ public class Solution {
     		allFishes.add(Fish.values()[i]);
     	}
     	
-    	Walker walker = new Walker(problem.centers.get(0));
+    	Walker walker = new Walker(problem);
     	
     	while (true){
     		Path next = walker.findNextToFinish(problem.endPoint());
@@ -99,7 +94,7 @@ public class Solution {
 		for (Path other: pathsToEnd){
 			if (other.fishesCollected.containsAll(fishesMissing)){
 				if (DEBUG) System.out.println("Found working combination of "+next+" with "+other);
-				return Math.max(other.totalCost, next.totalCost);
+				return Math.max(other.cost, next.cost);
 			}
 		}
 		return -1;
@@ -117,7 +112,10 @@ public class Solution {
 		Center endPoint() {
 			return centers.get(centers.size()-1);
 		}
-    	
+
+        public Center start() {
+            return this.centers.get(0);
+        }
     }
 
 	static class Center{
@@ -133,13 +131,13 @@ public class Solution {
 	static class Path{
 		Path prev = null;
 		Center to;
-		int totalCost;
+		int cost;
 		Set<Fish> fishesCollected;
 		int hashCode;
 		
 		Path(Center root){
 			to = root;
-			totalCost=0;
+			cost =0;
 			fishesCollected = root.fishes;
 			this.hashCode = getCenterList().hashCode();
 		}
@@ -147,7 +145,7 @@ public class Solution {
 		Path(Path prev, Center to){
 			this.prev = prev;
 			this.to = to;
-			this.totalCost = prev.totalCost + prev.to.roads.get(to);
+			this.cost = prev.cost + prev.to.roads.get(to);
 			this.fishesCollected = EnumSet.copyOf(prev.fishesCollected);
 			this.fishesCollected.addAll(to.fishes);
 			this.hashCode = getCenterList().hashCode();
@@ -155,13 +153,13 @@ public class Solution {
 		
 		boolean strictlyBetterOrEqual(Path other){
 			return  this.to == other.to
-					&& this.totalCost <= other.totalCost 
+					&& this.cost <= other.cost
 					&& this.fishesCollected.containsAll(other.fishesCollected);
 		}
 		
 		boolean strictlyBetter(Path other){
 			return this.strictlyBetterOrEqual(other) && 
-					(this.totalCost < other.totalCost || this.fishesCollected.size() > other.fishesCollected.size());
+					(this.cost < other.cost || this.fishesCollected.size() > other.fishesCollected.size());
 		}
 		@Override
 		public String toString() {
@@ -217,8 +215,8 @@ public class Solution {
 				//Find new ways to go.
 				for (Center roadTo:stub.to.roads.keySet()){
 					Path newStub = new Path(stub, roadTo);
-					stubs.putIfAbsent(newStub.totalCost, new LinkedList<>());
-					stubs.get(newStub.totalCost).add(newStub);
+					stubs.putIfAbsent(newStub.cost, new LinkedList<>());
+					stubs.get(newStub.cost).add(newStub);
 				}
 			}
 
@@ -231,8 +229,11 @@ public class Solution {
 	static class Walker{
 		SortedMap<Integer, List<Path>> stubs = new TreeMap<>();
 		Map<Center, List<Path>> processed = new HashMap<>();
-		Walker(Center root){
-			stubs.put(0,new LinkedList<>(Collections.singleton(new Path(root))));
+        Map<Center, Path> fastestWayToEnd;
+
+		Walker(Problem problem){
+            fastestWayToEnd = findFastestWayToEnd(problem);
+            stubs.put(fastestWayToEnd.get(problem.start()).cost,new LinkedList<>(Collections.singleton( new Path(problem.start()))));
 		}
 		
 		public Path findNextToFinish(Center end){
@@ -260,8 +261,9 @@ public class Solution {
 			processed.get(path.to).add(path);
 			for(Center roadTo:path.to.roads.keySet()){
 				Path stub = new Path(path, roadTo);
-				if (!stubs.containsKey(stub.totalCost))stubs.put(stub.totalCost, new LinkedList<>());
-				this.stubs.get(stub.totalCost).add(stub);
+                int costToEnd = stub.cost + fastestWayToEnd.get(roadTo).cost;
+                if (!stubs.containsKey(costToEnd))stubs.put(costToEnd, new LinkedList<>());
+				this.stubs.get(costToEnd).add(stub);
 			}
 			return path;
 		}

@@ -61,7 +61,7 @@ public class SyncShopTest {
 		Problem problem = Solution.readProblem();
 		
 		
-		Solution.Walker walker = new Walker(problem.centers.get(0));
+		Solution.Walker walker = new Walker(problem);
 		Path nextStub = walker.processNextStub();
 		Assert.assertEquals(problem.centers.get(0), nextStub.to);
 		
@@ -131,8 +131,8 @@ public class SyncShopTest {
         Problem problem = Solution.readProblem();
         Map<Center, Path> fastestWayToEnd = Solution.findFastestWayToEnd(problem);
         Assert.assertEquals(5,fastestWayToEnd.size());
-        Assert.assertEquals(0, fastestWayToEnd.get(problem.centers.get(4)).totalCost);
-        Assert.assertEquals(20, fastestWayToEnd.get(problem.centers.get(0)).totalCost);
+        Assert.assertEquals(0, fastestWayToEnd.get(problem.centers.get(4)).cost);
+        Assert.assertEquals(20, fastestWayToEnd.get(problem.centers.get(0)).cost);
 
 
         Assert.assertEquals(5, fastestWayToEnd.get(problem.centers.get(0)).to.id);
