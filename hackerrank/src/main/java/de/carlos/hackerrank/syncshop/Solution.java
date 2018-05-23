@@ -190,7 +190,7 @@ public class Solution {
 	
 	static class Walker{
 		SortedMap<Integer, List<Path>> stubs = new TreeMap<>();
-		Map<Center, Map<Set<Fish>,Path>> processed = new HashMap<>();
+		Map<Center, List<Path>> processed = new HashMap<>();
 		Walker(Center root){
 			stubs.put(0,new LinkedList<>(Collections.singleton(new Path(root))));
 		}
@@ -207,17 +207,17 @@ public class Solution {
 		public Path processNextStub() {
 			Path path = findNextRelevantPath();
 			if (DEBUG) System.out.println("Processing "+path);
-			if (!processed.containsKey(path.to)) processed.put(path.to, new HashMap<>());
+			if (!processed.containsKey(path.to)) processed.put(path.to, new LinkedList<>());
 			
 			//Remove paths that are worse than the new one.
-			Iterator<Set<Fish>> otherFishIter = processed.get(path.to).keySet().iterator();
-			while (otherFishIter.hasNext()){
-				Set<Fish> otherFishes = otherFishIter.next();
-				if (path.fishesCollected.containsAll(otherFishes)){
-					otherFishIter.remove();
+			Iterator<Path> otherPaths = processed.get(path.to).iterator();
+			while (otherPaths.hasNext()){
+				Path other = otherPaths.next();
+				if (path.fishesCollected.containsAll(other.fishesCollected)){
+					otherPaths.remove();
 				}
 			}
-			processed.get(path.to).put(path.fishesCollected, path);
+			processed.get(path.to).add(path);
 			for(Center roadTo:path.to.roads.keySet()){
 				Path stub = new Path(path, roadTo);
 				if (!stubs.containsKey(stub.totalCost))stubs.put(stub.totalCost, new LinkedList<>());
@@ -247,13 +247,10 @@ public class Solution {
 			
 		boolean isNoImprovement(Path path) {
 			
-			Map<Set<Fish>, Path> pathsToSameCenter = processed.get(path.to);
+			List<Path> pathsToSameCenter = processed.get(path.to);
 			if (pathsToSameCenter != null){
-				if (pathsToSameCenter.containsKey(path.fishesCollected)){
-					return true;
-				}
 				if (DEBUG) System.out.println("Checking "+pathsToSameCenter.size()+" paths ");
-				for (Path other:pathsToSameCenter.values()){
+				for (Path other:pathsToSameCenter){
 					if (other.strictlyBetterOrEqual(path)){
 						return true;
 					}
