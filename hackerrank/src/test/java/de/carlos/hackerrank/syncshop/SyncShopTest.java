@@ -1,12 +1,7 @@
 package de.carlos.hackerrank.syncshop;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -129,5 +124,19 @@ public class SyncShopTest {
 		
 		return new Problem(centers, k);
 	}
+
+	@Test
+    public void testFastestToEnd(){
+        Solution.scan = new Scanner(SyncShopTest.class.getResourceAsStream("input0.txt"));
+        Problem problem = Solution.readProblem();
+        Map<Center, Path> fastestWayToEnd = Solution.findFastestWayToEnd(problem);
+        Assert.assertEquals(5,fastestWayToEnd.size());
+        Assert.assertEquals(0, fastestWayToEnd.get(problem.centers.get(4)).totalCost);
+        Assert.assertEquals(20, fastestWayToEnd.get(problem.centers.get(0)).totalCost);
+
+
+        Assert.assertEquals(5, fastestWayToEnd.get(problem.centers.get(0)).to.id);
+        Assert.assertEquals(1, fastestWayToEnd.get(problem.centers.get(0)).getCenterList().get(0).id);
+    }
 
 }

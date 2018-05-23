@@ -168,7 +168,7 @@ public class Solution {
 			return "Path"+getCenterList();
 		}
 
-		private List<Center> getCenterList() {
+		List<Center> getCenterList() {
 			
 			List<Center> l;
 			if (this.prev == null){
@@ -180,11 +180,51 @@ public class Solution {
 			
 			return l;
 		}
+
+		Path returnTrip(){
+			List<Center> centers = getCenterList();
+			Collections.reverse(centers);
+			Path reversed = new Path(centers.remove(0));
+			while(!centers.isEmpty()){
+				reversed = new Path(reversed, centers.remove(0));
+			}
+			return reversed;
+		}
 		
 		@Override
 		public int hashCode() {
 			return hashCode;
 		}
+	}
+
+	static Map<Center, Path> findFastestWayToEnd(Problem problem){
+		Map<Center, Path> fastestPaths = new HashMap<>();
+
+		SortedMap<Integer,List<Path>> stubs = new TreeMap<>();
+		stubs.put(0, new LinkedList<>());
+		stubs.get(0).add(new Path(problem.endPoint()));
+
+		while(!stubs.isEmpty()){
+			int cost = stubs.firstKey();
+			List<Path> cheapestPaths = stubs.get(cost);
+			Path stub = cheapestPaths.remove(0);
+			if (cheapestPaths.isEmpty()){
+				stubs.remove(cost);
+			}
+			if (!fastestPaths.containsKey(stub.to)){
+				fastestPaths.put(stub.to, stub.returnTrip());
+
+				//Find new ways to go.
+				for (Center roadTo:stub.to.roads.keySet()){
+					Path newStub = new Path(stub, roadTo);
+					stubs.putIfAbsent(newStub.totalCost, new LinkedList<>());
+					stubs.get(newStub.totalCost).add(newStub);
+				}
+			}
+
+		}
+
+		return fastestPaths;
 	}
 	
 	
