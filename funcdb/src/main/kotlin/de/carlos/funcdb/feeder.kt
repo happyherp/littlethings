@@ -2,23 +2,23 @@ package de.carlos.funcdb
 
 interface Feeder{
 
-    fun feed(data: Data)
+    fun feed(data: FeederData)
 
     fun addListener(l:FeederListener)
 
 }
 
 interface FeederListener {
-    fun onNew(data:Data)
+    fun onNew(data:FeederData)
 }
 
 class SimpleFeeder: Feeder {
 
     private val listeners = mutableListOf<FeederListener>()
 
-    val datalog = mutableListOf<Data>()
+    val datalog = mutableListOf<FeederData>()
 
-    override fun feed(data: Data) {
+    override fun feed(data: FeederData) {
         datalog.add(data)
         listeners.forEach { it.onNew(data) }
     }
@@ -30,7 +30,7 @@ class SimpleFeeder: Feeder {
 
 }
 
-class Data(
+class FeederData(
     val source:String,
     val payload:String
 )

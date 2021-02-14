@@ -1,7 +1,5 @@
 package de.carlos.funcdb
 
-import de.carlos.funcdb.Data
-import de.carlos.funcdb.SimpleFeeder
 import org.junit.Assert
 import org.junit.Test
 
@@ -11,18 +9,18 @@ class SimpleFeederTest{
     fun testFeed(){
 
         val feeder = SimpleFeeder()
-        feeder.feed(Data("inmem","Hello World"))
+        feeder.feed(FeederData("inmem","Hello World"))
 
         val listener = object : FeederListener {
             var wordcount = 0
-            override fun onNew(data: Data) {
+            override fun onNew(data: FeederData) {
                 wordcount += data.payload.split(" ").size
             }
         }
         feeder.addListener(listener)
         Assert.assertEquals(2, listener.wordcount)
 
-        feeder.feed(Data("inmem","Bye Bye, World"))
+        feeder.feed(FeederData("inmem","Bye Bye, World"))
         Assert.assertEquals(5, listener.wordcount)
     }
 
@@ -33,7 +31,7 @@ class SimpleFeederTest{
         val students = JacksonListener(Student::class.java)
         feeder.addListener(students)
 
-        feeder.feed(Data("/students", """
+        feeder.feed(FeederData("/students", """
             {"id":1, "name":"Carlos"}
         """.trimIndent()))
 

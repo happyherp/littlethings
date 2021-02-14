@@ -1,6 +1,5 @@
 package de.carlos.funcdb
 
-import com.fasterxml.jackson.core.JsonFactory
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 
@@ -17,7 +16,7 @@ val mapper = makeMapper()
 class JacksonListener<T>(val clazz:Class<T>):FeederListener {
     val collected = mutableListOf<T>()
 
-    override fun onNew(data: Data) {
+    override fun onNew(data: FeederData) {
 
         val obj = mapper.readValue(data.payload, clazz)
         collected.add(obj)
