@@ -6,3 +6,6 @@ RemoteSystemsTempFiles/
 *.classpath
 .gradle
 .recommenders/
+.idea/
+target/
+*.iml
