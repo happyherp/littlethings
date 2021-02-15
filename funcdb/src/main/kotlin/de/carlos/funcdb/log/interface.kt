@@ -1,8 +1,8 @@
 package de.carlos.funcdb.log
 
-interface Log {
+import de.carlos.funcdb.view.View
 
-    val currentState: StateId
+interface Log : View<Data> {
 
     fun write(data: Data): StateId
 
