@@ -28,7 +28,7 @@ class MapViewTest {
                 "Hello".toByteArray().size,
                 "World".toByteArray().size
             ),
-            mapView.getAll(id1)
+            mapView.getAll(log.currentState)
         )
     }
 
@@ -48,9 +48,6 @@ class MapViewTest {
         val id2 = log.write("World".toByteArray())
         assertEquals(listOf("INIT", "HELLO", "WORLD"), upperCaseMap.getAll(id2))
         assertEquals(listOf('I', 'H', 'W'), firstCharOnly.getAll(id2))
-
-
-
     }
 
 

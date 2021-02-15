@@ -26,7 +26,7 @@ class MapView<S, T>(
     }
 
     override fun getAll(atState: StateId): List<T> {
-        if (atState != currentState) throw RuntimeException("REquested state $atState is not currentState $currentState")
+        if (atState != currentState) throw RuntimeException("Requested state $atState is not currentState $currentState")
         return content
     }
 
