@@ -15,6 +15,9 @@ class InMemoryLog : (Log) {
     private val rootId = FIRST_ID
     private var headId = rootId
 
+    override val currentState: StateId
+        get() = headId
+
     override fun read(id: StateId): Data {
         return log[id] ?: throw RuntimeException("Unknown State-Id: $id")
     }

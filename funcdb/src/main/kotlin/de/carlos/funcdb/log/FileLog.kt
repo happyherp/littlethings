@@ -7,6 +7,9 @@ class FileLog(private val dataDir: File) : Log {
 
     private var headId: StateId = InMemoryLog.Companion.FIRST_ID
 
+    override val currentState: StateId
+        get() = headId
+
     private val headFile: File = File(dataDir, "head.id")
 
     init {

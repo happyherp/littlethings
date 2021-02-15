@@ -1,8 +1,8 @@
 package de.carlos.funcdb.log
 
-import java.util.*
-
 interface Log {
+
+    val currentState: StateId
 
     fun write(data: Data): StateId
 
