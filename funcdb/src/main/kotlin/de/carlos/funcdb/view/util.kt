@@ -18,4 +18,4 @@ fun <T>jsonView(source:ListView<String>, clazz:Class<T>):MapView<String,T>{
 
 fun stringView(source:ListView<Data>):MapView<Data, String> = MapView(source){it.toString(Charset.defaultCharset())}
 
-fun noInitView(source:ListView<Data>):ListView<Data> = FilterView(source){ it.contentEquals(InMemoryLog.FIRST_VALUE)}
+fun noInitView(source:ListView<Data>):ListView<Data> = FilterView(source){ !it.contentEquals(InMemoryLog.FIRST_VALUE)}
