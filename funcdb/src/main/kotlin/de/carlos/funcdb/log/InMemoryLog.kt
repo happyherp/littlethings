@@ -14,8 +14,8 @@ class InMemoryLog : ViewBase<Data>(), Log {
     private val log = mutableMapOf<StateId, Data>(FIRST_ID to FIRST_VALUE)
 
 
-    override fun read(id: StateId): Data {
-        return log[id] ?: throw RuntimeException("Unknown State-Id: $id")
+    override fun read(stateId: StateId): Data {
+        return log[stateId] ?: throw RuntimeException("Unknown State-Id: $stateId")
     }
 
     override fun write(data: Data): StateId {

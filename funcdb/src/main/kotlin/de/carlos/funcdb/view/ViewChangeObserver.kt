@@ -22,6 +22,6 @@ class ViewChangeObserver<T> {
 interface ViewChangeListener<T> {
     fun onAdd(obj: T, state: StateId)
     fun onChange(oldVal: T, newVal: T, state: StateId) {
-        TODO("Not yet implemented")
+        throw NotImplementedError()
     }
 }

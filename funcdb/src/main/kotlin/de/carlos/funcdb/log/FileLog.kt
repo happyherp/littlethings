@@ -28,8 +28,8 @@ class FileLog(private val dataDir: File) : Log, ViewBase<Data>() {
         return headId
     }
 
-    override fun read(from: StateId): Data {
-        val sourceFile = File(dataDir, from.toString())
+    override fun read(stateId: StateId): Data {
+        val sourceFile = File(dataDir, stateId.toString())
         return sourceFile.readBytes()
     }
 

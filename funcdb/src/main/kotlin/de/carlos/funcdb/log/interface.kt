@@ -6,7 +6,7 @@ interface Log : ListView<Data> {
 
     fun write(data: Data): StateId
 
-    fun read(from: StateId): Data
+    fun read(stateId: StateId): Data
 }
 
 
