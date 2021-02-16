@@ -74,10 +74,6 @@ class JoinViewTest {
         include = JsonTypeInfo.As.PROPERTY,
         property = "type"
     )
-    @JsonSubTypes(
-        JsonSubTypes.Type(value = Author::class),
-        JsonSubTypes.Type(value = Book::class)
-    )
     sealed class RootObject {
         data class Author(val name: String) : RootObject()
         data class Book(val name: String, val authorName: String) : RootObject()
