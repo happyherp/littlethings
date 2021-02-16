@@ -12,9 +12,16 @@ class ViewChangeObserver<T> {
         listeners.forEach { it.onAdd(obj, state) }
     }
 
+    fun fireChange(oldVal: T, newVal: T, state: StateId) {
+        listeners.forEach { it.onChange(oldVal, newVal, state) }
+    }
+
 
 }
 
 interface ViewChangeListener<T> {
     fun onAdd(obj: T, state: StateId)
+    fun onChange(oldVal: T, newVal: T, state: StateId) {
+        TODO("Not yet implemented")
+    }
 }

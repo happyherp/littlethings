@@ -4,9 +4,9 @@ import de.carlos.funcdb.log.StateId
 
 class IndexView<T, K>(
 
-    val source: View<T>,
+    val source: ListView<T>,
     val indexKey: (T) -> K
-) : ViewBase<T>() {
+) : ViewBase<T>(), ListView<T> {
 
 
     val index:MutableMap<K, MutableList<T>> =

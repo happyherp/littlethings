@@ -3,9 +3,9 @@ package de.carlos.funcdb.view
 import de.carlos.funcdb.log.StateId
 
 class FilterView<T>(
-    val source: View<T>,
+    val source: ListView<T>,
     val filter: (T) -> Boolean
-) : ViewBase<T>() {
+) : ViewBase<T>(), ListView<T> {
 
     private val filtered: MutableList<T> = source.getAll(source.currentState)
         .filter(filter)

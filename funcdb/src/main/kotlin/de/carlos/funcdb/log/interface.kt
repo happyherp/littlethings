@@ -1,8 +1,8 @@
 package de.carlos.funcdb.log
 
-import de.carlos.funcdb.view.View
+import de.carlos.funcdb.view.ListView
 
-interface Log : View<Data> {
+interface Log : ListView<Data> {
 
     fun write(data: Data): StateId
 

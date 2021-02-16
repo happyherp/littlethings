@@ -3,9 +3,9 @@ package de.carlos.funcdb.view
 import de.carlos.funcdb.log.StateId
 
 class MapView<S, T>(
-    val source: View<S>,
+    val source: ListView<S>,
     val mapFunction: (S) -> T
-) : ViewBase<T>() {
+) : ViewBase<T>(), ListView<T> {
 
 
     val content: MutableList<T> = source.getAll(source.currentState)

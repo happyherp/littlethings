@@ -7,7 +7,6 @@ import java.nio.charset.Charset
 
 class IndexViewTest{
 
-
     @Test
     fun testIndex(){
         val log = InMemoryLog()
@@ -16,10 +15,7 @@ class IndexViewTest{
 
         assertEquals(emptyList<String>(), lengthIndex.findWithIndex(5))
 
-
         log.write("Hello".toByteArray())
         assertEquals(listOf("Hello"), lengthIndex.findWithIndex(5))
-
-
     }
 }
