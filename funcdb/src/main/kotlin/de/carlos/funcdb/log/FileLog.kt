@@ -12,6 +12,7 @@ class FileLog(private val dataDir: File) : Log, ViewBase<Data>() {
             headId = headFile.readText().toLong()
         } else {
             headFile.createNewFile()
+            headFile.writeText(headId.toString())
         }
     }
 
