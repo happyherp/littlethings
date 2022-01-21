@@ -28,7 +28,7 @@ class MinimumBribes {
     public static class DisplacedList {
 
         Map<Integer, Displaced> byIndex = new HashMap<>();
-        SortedMap<Integer, List<Displaced>> byDisplacement = new TreeMap<>();
+        SortedMap<Integer, SortedSet<Displaced>> byDisplacement = new TreeMap<>();
 
         public DisplacedList(List<Integer> q) {
             for (int i = 0; i < q.size(); i++) {
@@ -39,7 +39,7 @@ class MinimumBribes {
 
         private void insertDisplaced(Displaced displaced){
             byIndex.put(displaced.index, displaced);
-            byDisplacement.putIfAbsent(displaced.displacement, new ArrayList<>());
+            byDisplacement.putIfAbsent(displaced.displacement, new TreeSet<>(Comparator.comparing(d->d.index)));
             byDisplacement.get(displaced.displacement).add(displaced);
         }
         private void removeDisplaced(Displaced displaced){
@@ -55,7 +55,7 @@ class MinimumBribes {
         }
 
         public Displaced findNext() {
-            return byDisplacement.values().iterator().next().get(0);
+            return byDisplacement.values().iterator().next().first();
         }
 
         public void swapLeft(Displaced right) {
