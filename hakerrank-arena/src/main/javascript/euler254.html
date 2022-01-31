@@ -1,0 +1,87 @@
+<html>
+<script>
+
+
+doDebug = false;
+
+
+
+function cached(f){
+	const cache = {};	
+	return function(){
+		const args = Array.from(arguments);	
+		if (cache[args] == null){
+			cache[args] = f.apply(null, arguments);
+		}
+		return cache[args];
+	}
+}
+
+
+function debug(){
+    if (doDebug) console.log.apply(console, arguments);
+}
+
+function digits(n){
+    return (n+"").split("").map(d=>parseInt(d));
+}
+
+function sum(a) {
+    return a.reduce((a,b)=>a+b);
+}
+
+function fak(n){
+    if (n == 0) return 1;
+    else return n*fak(n-1);
+}
+
+function f(n) {
+    return sum(digits(n).map(fak));
+}
+
+function sf(n) {
+    return sum(digits(f(n)));
+}
+sfcached = cached(sf);
+
+function g(i){
+    var n = 1;
+    while(sfcached(n) !== i)n++;
+    debug("g(",i,")=",n);
+    return n;
+}
+
+function sg(i) {
+    return sum(digits(g(i)));
+}
+
+function solve(n,m){
+    
+    var sum = 0;
+    for(var i = 1;i<=n;i++){
+        const result = sg(i);
+        debug("sg(",i,") = ",result);
+        sum += result;
+    }
+        
+    return sum%m;
+}
+
+
+function sampleSf(max){
+	const hits = {};
+	for (var i = 1;i<max;i++){
+		const val = sf(i);
+		if (hits[val] == null){
+			hits[val] = i;
+			console.log("sf",i,val);
+		}
+	}
+	return hits;
+}
+
+
+</script>
+n <input type="text" id="n" value="10" />
+<input type="submit" value="run" onclick="console.log(solve(parseInt(document.getElementById('n').value),1000000));" />
+</html>
