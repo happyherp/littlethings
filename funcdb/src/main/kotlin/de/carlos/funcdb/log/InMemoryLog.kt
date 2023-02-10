@@ -1,33 +1,36 @@
 package de.carlos.funcdb.log
 
 import de.carlos.funcdb.view.ViewBase
+import java.time.Instant
 
 class InMemoryLog : ViewBase<Data>(), Log {
 
 
 
     companion object {
-        const val FIRST_ID:StateId = -1
+        val FIRST_ID:StateId = StateId(Instant.ofEpochMilli(-1), -1)
         val FIRST_VALUE:Data = "init".toByteArray(Charsets.UTF_8)
     }
 
-    private val log = mutableMapOf<StateId, Data>(FIRST_ID to FIRST_VALUE)
+    private val dataById = mutableMapOf<StateId, Data>(FIRST_ID to FIRST_VALUE)
+    private val dataLog = mutableListOf<StateId>()
 
 
     override fun read(stateId: StateId): Data {
-        return log[stateId] ?: throw RuntimeException("Unknown State-Id: $stateId")
+        return dataById[stateId] ?: throw RuntimeException("Unknown State-Id: $stateId")
     }
 
     override fun write(data: Data): StateId {
-        headId += 1
-        log[headId] = data
+        headId = StateId.new()
+        dataById[headId] = data
+        dataLog.add(headId)
         observer.fireAdd(data, currentState)
         return headId
     }
 
     override fun getAll(atState: StateId): List<Data> {
-        if (!log.containsKey(atState)) throw RuntimeException("Unknown State: $atState")
-        return log.toList()
+        if (!dataById.containsKey(atState)) throw RuntimeException("Unknown State: $atState")
+        return dataById.toList()
             .takeWhile { it.first <= atState }
             .map { it.second }
     }
