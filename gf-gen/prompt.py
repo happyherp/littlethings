@@ -10,16 +10,20 @@ class Person:
     hair: str = 'black'  # description of hair
     ethnicity: str = 'european'  # expecting values like 'european', 'african', 'asian'
     attractiveness: float = 1.0  # a float representing attractiveness
+    features: tuple[str] = () # extra attributes
+    eyes: str = "brown" 
     
     def createPrompt(self) -> str:
         nos = ["airbrush", "filter", "make up"]
         
         #basic
-        prompt = f"/imagine \n{NEUTRAL_POSE} a {self.age} year old {self.gender} with {self.hair} hair, "
-        prompt += f"of {self.ethnicity} descent, "
-        prompt += "wearing jeans and a white T-Shirt and sneakers, "
-        prompt += "full body, making eye contact, hands, "
-        prompt += "photoshoot, Studio Lighting, "
+        prompt = (f"/imagine \n{NEUTRAL_POSE} a {self.age} year old {self.gender} with {self.hair} hair, "
+                  f"of {self.ethnicity} descent, "
+                  f"with {self.eyes} eyes, "
+                  "wearing jeans and a white T-Shirt and sneakers, "
+                  "full body, making eye contact, hands, "
+                  "photoshoot, Studio Lighting, ")
+        prompt += ", ".join(self.features)
         prompt += " ::1 "
         #prompt += "shoes :: 2 face :: 2 " #force full body
         
@@ -57,3 +61,6 @@ print("skinnyGrandma:", skinnyGrandma.createPrompt())
 
 ugly18 = Person(age=18, attractiveness=0.0)
 print("ugly18:", ugly18.createPrompt())
+
+ginger_nerd = Person(age=25, hair="long ginger", features = ("freckles", "glasses"), eyes="green")
+print("ginger_nerd:", ginger_nerd.createPrompt())
