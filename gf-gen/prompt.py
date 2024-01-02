@@ -48,19 +48,33 @@ class Person:
         return prompt
 
 
+def permutate():
+    
+    i = 1
+    for age in (18, 25, 32):
+        for fat in (0.3, 1.0, 1.3, 2.0):
+            person = Person(age=age, fatness=fat)
+            print(i, person.createPrompt())
+            i+=1
 
 
-me = Person(age=35, gender="male", hair="brown")
-print("me", me.createPrompt());
+def makeSomePeople():
 
-fatKid = Person(age=12, gender="male", fatness = 1.8)
-print("fatKid", fatKid.createPrompt());
+    me = Person(age=35, gender="male", hair="brown")
+    print("me", me.createPrompt());
 
-skinnyGrandma = Person(age=80, fatness=0.5)
-print("skinnyGrandma:", skinnyGrandma.createPrompt())
+    fatKid = Person(age=12, gender="male", fatness = 1.8)
+    print("fatKid", fatKid.createPrompt());
 
-ugly18 = Person(age=18, attractiveness=0.0)
-print("ugly18:", ugly18.createPrompt())
+    skinnyGrandma = Person(age=80, fatness=0.5)
+    print("skinnyGrandma:", skinnyGrandma.createPrompt())
 
-ginger_nerd = Person(age=25, hair="long ginger", features = ("freckles", "glasses"), eyes="green")
-print("ginger_nerd:", ginger_nerd.createPrompt())
+    ugly18 = Person(age=18, attractiveness=0.0)
+    print("ugly18:", ugly18.createPrompt())
+
+    ginger_nerd = Person(age=25, hair="long ginger", features = ("freckles", "glasses"), eyes="green")
+    print("ginger_nerd:", ginger_nerd.createPrompt())
+    
+    
+    
+permutate()
