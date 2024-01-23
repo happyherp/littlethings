@@ -21,6 +21,7 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.kstream.Consumed;
 
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
@@ -40,8 +41,7 @@ public class Pipe {
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 
         final StreamsBuilder builder = new StreamsBuilder();
-
-        builder.stream("quickstart-events")
+        builder.stream("quickstart-events", Consumed.with(Topology.AutoOffsetReset.LATEST))
                 .filter((key, value)->!((String)value).startsWith("X"))
                 .to("streams-pipe-output");
 
