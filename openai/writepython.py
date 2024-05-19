@@ -5,6 +5,12 @@ from describe import describe
 import sys, os, subprocess
 
 goal = sys.argv[1]
+
+if len(sys.argv) > 2: 
+    with open(sys.argv[2], "r") as f:
+        startProgram = f.read()
+else: 
+    startProgram = None
 client = createClient()
 
 
@@ -35,19 +41,6 @@ def runCode(code):
     return responseContent    
     
 
-mainPrompt="""
-Create a python3 programm. 
-
-The programm should: {goal}
-
-After you submit the programm it will be executed and its 
-output read back to you. 
-
-{schema}
-
-
-""".format(goal=goal, schema=describe(ResponseContent))
-
 class Iteration(BaseModel):
     ai:ResponseContent
     userinput:str
@@ -57,7 +50,23 @@ def main():
     iterations = []
     
     def buildPrompt():
+        mainPrompt="""
+        Create or update a python3 programm. 
+
+        The programm should: {goal}
+
+        After you submit the programm it will be executed and its 
+        output read back to you. 
+
+        {schema}
+
+
+        """.format(goal=goal, schema=describe(ResponseContent))
         messages = [systemMsg("You are a helpful assistant."), userMsg(mainPrompt)]  
+
+        if startProgram:
+            messages.append(userMsg("Update the existing program: \n```python\n"+startProgram))
+
         if iterations:
             lastRun = iterations[-1]
             lastRunMessage = "The current Code: \n```python\n"
@@ -67,7 +76,6 @@ def main():
             if (lastRun.userinput != ""):
                 lastRunMessage += "Message from the user: "+lastRun.userinput
             messages.append(userMsg(lastRunMessage))
-        #print("messages", messages)
         return messages
         
     done = False
@@ -80,14 +88,16 @@ def main():
         obj = ResponseContent.parse_raw(response.choices[0].message.content)
         print("PLAN>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
         print(obj.plan)
-        print("\nCODE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n", obj.pythonCode)
+        print("\nCODE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+        print(obj.pythonCode)
         print("Done", obj.done)
         userinput = input("continue?(no, new command)")
         if userinput == "no": break
         
         if (obj.done and userinput == ""): break
 
-        programResponse = runCode(obj.pythonCode)
+        if obj.pythonCode:
+            programResponse = runCode(obj.pythonCode)
         
         iterations.append(Iteration(ai=obj, userinput=userinput, programOutput=programResponse))
 
