@@ -10,3 +10,4 @@ RemoteSystemsTempFiles/
 target/
 *.iml
 /lib/
+openai/.vscode/settings.json
