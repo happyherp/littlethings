@@ -1,0 +1,91 @@
+# Hierarchical Conversation JSON Format Specification
+
+This document describes a JSON format for representing conversations in a hierarchical, tree-like structure. The format is designed to:
+
+- **Efficiently summarize and organize large texts.**
+- **Allow for expandable nodes to display more detailed information as needed.**
+- **Ensure the original conversation can be reconstructed by concatenating all "body" values.**
+
+## Overview
+
+- **Tree Structure**: The conversation is represented as a tree of nodes.
+- **Node Components**:
+  - `headline`: A short title for the node.
+  - `summary`: A brief summary of the node's content (maximum of 4 sentences).
+  - `body`: Contains the exact text from the conversation (up to 500 words).
+  - `subnodes`: An array of child nodes (maximum of 5 per node).
+- **Constraints**:
+  - A node must have either a `body` or `subnodes`, **not both**.
+  - `subnodes` allow for recursive structuring if the `body` exceeds 500 words.
+  - The structure ensures that concatenating all `body` values in order reconstructs the original conversation.
+
+## Node Structure
+
+Each node in the JSON structure must include the following keys:
+
+1. **`headline`** *(string)*: A concise headline summarizing the node.
+2. **`summary`** *(string)*: A brief summary of the node's content, limited to 4 sentences.
+3. **`body`** *(string, optional)*: The exact text from the conversation relevant to this node, up to 500 words. Only included if the node does not have `subnodes`.
+4. **`subnodes`** *(array, optional)*: An array of up to 5 child nodes. Each child node follows the same structure as the parent. Only included if the node does not have a `body`.
+
+### Constraints
+
+- **Either `body` or `subnodes`**: A node cannot have both a `body` and `subnodes`.
+- **Subnode Limit**: A node can have a maximum of 5 `subnodes`.
+- **Recursive Structure**: Each `subnode` is itself a node and follows the same rules.
+- **Body Word Limit**: The `body` must not exceed 500 words. If it does, the content must be divided among `subnodes`.
+
+## Rules for Creating the JSON Structure
+
+1. **Start with the Entire Conversation**
+
+   Begin by considering the full text of the conversation.
+
+2. **Determine if Splitting is Necessary**
+
+   - If the entire conversation is under 500 words, place it in the `body` of the root node.
+   - If it exceeds 500 words, split it into logical sections to create `subnodes`.
+
+3. **Creating Nodes**
+
+   - **`headline`**: Provide a short, descriptive title that captures the essence of the node's content.
+   - **`summary`**: Write a brief summary, no more than 4 sentences, encapsulating the main points of the node.
+   - **`body`** or **`subnodes`**:
+     - If the content is under 500 words, include it in the `body`.
+     - If over 500 words, divide the content into up to 5 logical sections and assign them to `subnodes`.
+
+4. **Splitting Content into Subnodes**
+
+   - **Logical Segmentation**: Divide the content at natural breaking points, such as topic changes or different questions.
+   - **Even Distribution**: Aim to balance the content among the `subnodes`.
+   - **Recursive Application**: Apply the same rules to each `subnode` if their content exceeds 500 words.
+
+5. **Ensuring Reconstructability**
+
+   When all `body` texts are concatenated in the order they appear (depth-first traversal), they should reproduce the original conversation without omissions or alterations.
+
+## Example Structure
+
+Here is an illustrative example based on a hypothetical conversation:
+
+```json
+{
+  "headline": "Conversation Transcript",
+  "summary": "A discussion covering AI capabilities, data formats, and programming languages.",
+  "subnodes": [
+    {
+      "headline": "Discussion on AI Capabilities",
+      "summary": "User asks about AI self-awareness; assistant explains its capabilities.",
+      "body": "User: To which extent are you aware of your own capabilities?\n\nAssistant: I am designed to be aware of my training data, capabilities, and limitations up to my knowledge cutoff..."
+    },
+    {
+      "headline": "Discussion on Data Formats",
+      "summary": "User seeks advice on data formats; assistant recommends JSON and discusses efficiency.",
+      "subnodes": [
+        {
+          "headline": "Preferred Data Format",
+          "summary": "Assistant recommends using JSON for communication.",
+          "body": "User: I need a structured data format that supports hierarchies and uses few tokens...\n\nAssistant: Certainly! For communication between your program and the AI using the OpenAI API, I recommend using JSON..."
+        },
+        {
+          "headline": "Impact of JSON Indentation
