@@ -11,7 +11,7 @@ if len(sys.argv) > 2:
         startProgram = f.read()
 else: 
     startProgram = None
-client = createClient()
+client = create_client()
 
 
 class ResponseContent(BaseModel):
@@ -62,10 +62,10 @@ def main():
 
 
         """.format(goal=goal, schema=describe(ResponseContent))
-        messages = [systemMsg("You are a helpful assistant."), userMsg(mainPrompt)]  
+        messages = [system_msg("You are a helpful assistant."), user_msg(mainPrompt)]
 
         if startProgram:
-            messages.append(userMsg("Update the existing program: \n```python\n"+startProgram))
+            messages.append(user_msg("Update the existing program: \n```python\n" + startProgram))
 
         if iterations:
             lastRun = iterations[-1]
@@ -75,7 +75,7 @@ def main():
             lastRunMessage += "Output: \n"+lastRun.programOutput
             if (lastRun.userinput != ""):
                 lastRunMessage += "Message from the user: "+lastRun.userinput
-            messages.append(userMsg(lastRunMessage))
+            messages.append(user_msg(lastRunMessage))
         return messages
         
     done = False
@@ -85,7 +85,7 @@ def main():
             response_format={ "type": "json_object" }
         )
 
-        obj = ResponseContent.parse_raw(response.choices[0].message.content)
+        obj = ResponseContent.model_validate_json(response.choices[0].message.content)
         print("PLAN>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
         print(obj.plan)
         print("\nCODE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
