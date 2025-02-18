@@ -38,7 +38,7 @@ while True:
                 break
         enemies.append(Enemy(enemy_x, enemy_y))
         last_spawn_time = current_time
-        enemy_spawn_time = max(500, enemy_spawn_time - 100)  # Decrease spawn time
+        enemy_spawn_time = max(50, enemy_spawn_time * 0.9)  # Decrease spawn time
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -51,6 +51,11 @@ while True:
 
     # Update the player
     player.update()
+
+    # Check for projectile collisions with enemies
+    for projectile in player.projectiles[:]:
+        if projectile.check_collision(enemies):
+            player.projectiles.remove(projectile)
 
     # Update enemies
     for enemy in enemies:

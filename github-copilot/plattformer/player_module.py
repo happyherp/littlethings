@@ -19,6 +19,13 @@ class Projectile:
     def draw(self, screen):
         screen.blit(self.image, self.rect.topleft)
 
+    def check_collision(self, enemies):
+        for enemy in enemies:
+            if self.rect.colliderect(enemy.rect):
+                enemies.remove(enemy)
+                return True
+        return False
+
 class Player:
     def __init__(self, x, y):
         self.image = pygame.Surface((50, 50))
