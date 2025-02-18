@@ -11,6 +11,19 @@ pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("2D Platformer")
 
+# Load the grass image
+grass_image = pygame.image.load('img/grass_100x100.png').convert()
+
+def draw_background(screen, player):
+    tile_width = grass_image.get_width()
+    tile_height = grass_image.get_height()
+    start_x = -player.camera_x % tile_width - tile_width
+    start_y = -player.camera_y % tile_height - tile_height
+
+    for x in range(start_x, SCREEN_WIDTH, tile_width):
+        for y in range(start_y, SCREEN_HEIGHT, tile_height):
+            screen.blit(grass_image, (x, y))
+
 # Create a clock object to control the frame rate
 clock = pygame.time.Clock()
 
@@ -68,6 +81,7 @@ while True:
 
     # Draw everything
     screen.fill((0, 0, 0))  # Fill the screen with black
+    draw_background(screen, player)
     player.draw(screen)
     for enemy in enemies:
         enemy.draw(screen, player.camera_x, player.camera_y)
