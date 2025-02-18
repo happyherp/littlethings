@@ -14,5 +14,5 @@ class Enemy:
         self.rect.x += math.cos(angle) * self.speed
         self.rect.y += math.sin(angle) * self.speed
 
-    def draw(self, screen):
-        screen.blit(self.image, self.rect.topleft)
+    def draw(self, screen, camera_x, camera_y):
+        screen.blit(self.image, (self.rect.x - camera_x, self.rect.y - camera_y))
