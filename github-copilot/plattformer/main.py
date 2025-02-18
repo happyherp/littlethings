@@ -5,6 +5,7 @@ from player_module import Player
 from enemy_module import Enemy
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, TILE_SIZE
 from map_module import Map
+from constants import MIN_SPAWN_DISTANCE
 
 # Initialize Pygame
 pygame.init()
@@ -55,7 +56,7 @@ while True:
         while True:
             enemy_x = random.randint(0, SCREEN_WIDTH)
             enemy_y = random.randint(0, SCREEN_HEIGHT)
-            if abs(enemy_x - player.rect.x) > 100 and abs(enemy_y - player.rect.y) > 100:
+            if abs(enemy_x - player.rect.x) > MIN_SPAWN_DISTANCE and abs(enemy_y - player.rect.y) > MIN_SPAWN_DISTANCE:
                 break
         enemies.append(Enemy(enemy_x, enemy_y))
         last_spawn_time = current_time

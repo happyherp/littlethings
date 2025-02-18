@@ -24,6 +24,10 @@ class Map:
         tile_x2 = (rect.right-1) // TILE_SIZE
         tile_y2 = (rect.bottom-1) // TILE_SIZE
 
+        #out of map
+        if tile_x1 < 0 or tile_y1 < 0 or tile_x2 >= self.width or tile_y2 >= self.height:
+            return True
+
         for x in range(tile_x1, tile_x2 + 1):
             for y in range(tile_y1, tile_y2 + 1):
                 if self.tiles[y][x] == 1:
