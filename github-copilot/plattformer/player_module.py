@@ -1,6 +1,6 @@
 import pygame
 import math
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT, TILE_SIZE
 
 class Projectile:
     def __init__(self, x, y, target_x, target_y):
@@ -37,17 +37,36 @@ class Player:
         self.projectiles = []
         self.camera_x = 0
         self.camera_y = 0
+        self.velocity_x = 0
+        self.velocity_y = 0
 
-    def update(self):
+    def update(self, game_map):
         keys = pygame.key.get_pressed()
+        self.velocity_x = 0
+        self.velocity_y = 0
         if keys[pygame.K_w]:
-            self.rect.y -= self.speed
+            self.velocity_y = -self.speed
         if keys[pygame.K_s]:
-            self.rect.y += self.speed
+            self.velocity_y = self.speed
         if keys[pygame.K_a]:
-            self.rect.x -= self.speed
+            self.velocity_x = -self.speed
         if keys[pygame.K_d]:
-            self.rect.x += self.speed
+            self.velocity_x = self.speed
+
+        self.rect.x += self.velocity_x
+        if game_map.check_collision(self.rect):
+            if self.velocity_x > 0:  # Moving right; hit the left side of the stone
+                self.rect.right = (self.rect.right // TILE_SIZE) * TILE_SIZE
+            elif self.velocity_x < 0:  # Moving left; hit the right side of the stone
+                self.rect.left = (self.rect.left // TILE_SIZE + 1) * TILE_SIZE
+
+        self.rect.y += self.velocity_y
+        if game_map.check_collision(self.rect):
+            if self.velocity_y > 0:  # Moving down; hit the top side of the stone
+                self.rect.bottom = (self.rect.bottom // TILE_SIZE) * TILE_SIZE
+            elif self.velocity_y < 0:  # Moving up; hit the bottom side of the stone
+                self.rect.top = (self.rect.top // TILE_SIZE + 1) * TILE_SIZE
+
         self.camera_x = self.rect.centerx - SCREEN_WIDTH // 2
         self.camera_y = self.rect.centery - SCREEN_HEIGHT // 2
         for projectile in self.projectiles:

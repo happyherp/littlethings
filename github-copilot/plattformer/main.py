@@ -3,7 +3,8 @@ import sys
 import random
 from player_module import Player
 from enemy_module import Enemy
-from constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, TILE_SIZE
+from map_module import Map
 
 # Initialize Pygame
 pygame.init()
@@ -13,6 +14,8 @@ pygame.display.set_caption("2D Platformer")
 
 # Load the grass image
 grass_image = pygame.image.load('img/grass_100x100.png').convert()
+# Load the rock image
+rock_image = pygame.image.load('img/rock_50x50.png').convert()
 
 def draw_background(screen, player):
     tile_width = grass_image.get_width()
@@ -24,11 +27,20 @@ def draw_background(screen, player):
         for y in range(start_y, SCREEN_HEIGHT, tile_height):
             screen.blit(grass_image, (x, y))
 
+def draw_map(screen, game_map, player):
+    for y, row in enumerate(game_map.tiles):
+        for x, tile in enumerate(row):
+            if tile == 1:  # Stone
+                screen.blit(rock_image, (x * TILE_SIZE - player.camera_x, y * TILE_SIZE - player.camera_y))
+
 # Create a clock object to control the frame rate
 clock = pygame.time.Clock()
 
 # Create a player instance
 player = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+
+# Create a map instance
+game_map = Map(100, 100, 0.2)
 
 # Create a list to hold enemies
 enemies = []
@@ -59,16 +71,16 @@ while True:
                 player.shoot(target_x, target_y)
 
     # Update the player
-    player.update()
+    player.update(game_map)
 
-    # Check for projectile collisions with enemies
+    # Check for projectile collisions with enemies and stones
     for projectile in player.projectiles[:]:
-        if projectile.check_collision(enemies):
+        if projectile.check_collision(enemies) or game_map.check_collision(projectile.rect):
             player.projectiles.remove(projectile)
 
     # Update enemies
     for enemy in enemies:
-        enemy.update(player.rect.centerx, player.rect.centery)
+        enemy.update(player.rect.centerx, player.rect.centery, game_map)
         if enemy.rect.colliderect(player.rect):
             # Game over
             font = pygame.font.Font(None, 74)
@@ -82,6 +94,7 @@ while True:
     # Draw everything
     screen.fill((0, 0, 0))  # Fill the screen with black
     draw_background(screen, player)
+    draw_map(screen, game_map, player)
     player.draw(screen)
     for enemy in enemies:
         enemy.draw(screen, player.camera_x, player.camera_y)
