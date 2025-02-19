@@ -6,6 +6,7 @@ from enemy_module import Enemy
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, TILE_SIZE
 from map_module import Map
 from constants import MIN_SPAWN_DISTANCE
+from weapon_module import Rifle, Pistol, Shotgun
 
 # Initialize Pygame
 pygame.init()
@@ -36,6 +37,26 @@ def draw_map(screen, game_map, player):
             if tile == 1:  # Stone
                 screen.blit(rock_image, (x * TILE_SIZE - player.camera_x, y * TILE_SIZE - player.camera_y))
 
+def spawn_weapons(game_map):
+    weapons = []
+    for _ in range(100): 
+        while True:
+            x = random.randint(0, game_map.width * TILE_SIZE)
+            y = random.randint(0, game_map.height * TILE_SIZE)
+            weapon_type = random.choice([Rifle, Pistol, Shotgun])
+            weapon = weapon_type()
+            weapon.rect = pygame.Rect(x, y, 20, 20)
+            if not game_map.check_collision(weapon.rect):
+                weapons.append(weapon)
+                break
+    return weapons
+
+def draw_weapons(screen, weapons, player):
+    font = pygame.font.Font(None, 24)
+    for weapon in weapons:
+        text = font.render(weapon.name, True, (0, 0, 0))
+        screen.blit(text, (weapon.rect.x - player.camera_x, weapon.rect.y - player.camera_y))
+
 # Create a clock object to control the frame rate
 clock = pygame.time.Clock()
 
@@ -55,6 +76,9 @@ while True:
 enemies = []
 enemy_spawn_time = 3000  # Initial spawn time in milliseconds
 last_spawn_time = pygame.time.get_ticks()
+
+# Create a list to hold weapons
+weapons = spawn_weapons(game_map)
 
 # Main game loop
 while True:
@@ -81,7 +105,7 @@ while True:
                 player.shoot(target_x, target_y)
 
     # Update the player
-    player.update(game_map)
+    player.update(game_map, weapons)
 
     # Check for projectile collisions with enemies and stones
     for projectile in player.projectiles[:]:
@@ -106,6 +130,7 @@ while True:
     draw_background(screen, player, game_map)
     draw_map(screen, game_map, player)
     player.draw(screen)
+    draw_weapons(screen, weapons, player)
     for enemy in enemies:
         enemy.draw(screen, player.camera_x, player.camera_y)
     for projectile in player.projectiles:

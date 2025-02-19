@@ -1,31 +1,8 @@
 import pygame
 import math
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT, TILE_SIZE
-
-class Projectile:
-    def __init__(self, x, y, target_x, target_y):
-        self.image = pygame.Surface((10, 10))
-        self.image.fill((0, 255, 0))  # Fill the projectile with green color
-        self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
-        self.speed = 10
-        angle = math.atan2(target_y - y, target_x - x)
-        self.dx = math.cos(angle) * self.speed
-        self.dy = math.sin(angle) * self.speed
-
-    def update(self):
-        self.rect.x += self.dx
-        self.rect.y += self.dy
-
-    def draw(self, screen, camera_x, camera_y):
-        screen.blit(self.image, (self.rect.x - camera_x, self.rect.y - camera_y))
-
-    def check_collision(self, enemies):
-        for enemy in enemies:
-            if self.rect.colliderect(enemy.rect):
-                enemies.remove(enemy)
-                return True
-        return False
+from projectile_module import Projectile
+from weapon_module import Rifle, Pistol, Shotgun
 
 class Player:
     def __init__(self, x, y):
@@ -39,8 +16,9 @@ class Player:
         self.camera_y = 0
         self.velocity_x = 0
         self.velocity_y = 0
+        self.weapon = None
 
-    def update(self, game_map):
+    def update(self, game_map, weapons):
         keys = pygame.key.get_pressed()
         self.velocity_x = 0
         self.velocity_y = 0
@@ -72,14 +50,23 @@ class Player:
         for projectile in self.projectiles:
             projectile.update()
 
+        self.check_weapon_pickup(weapons)
+
+    def check_weapon_pickup(self, weapons):
+        for weapon in weapons:
+            if self.rect.colliderect(weapon.rect):
+                self.weapon = weapon
+                weapons.remove(weapon)
+                break
+
     def draw(self, screen):
         screen.blit(self.image, (self.rect.x - self.camera_x, self.rect.y - self.camera_y))
         for projectile in self.projectiles:
             projectile.draw(screen, self.camera_x, self.camera_y)
 
     def shoot(self, target_x, target_y):
-        # Adjust target position based on camera position
-        adjusted_target_x = target_x + self.camera_x
-        adjusted_target_y = target_y + self.camera_y
-        projectile = Projectile(self.rect.centerx, self.rect.centery, adjusted_target_x, adjusted_target_y)
-        self.projectiles.append(projectile)
+        if self.weapon:
+             # Adjust target position based on camera position
+            adjusted_target_x = target_x + self.camera_x
+            adjusted_target_y = target_y + self.camera_y
+            self.weapon.shoot(self, adjusted_target_x, adjusted_target_y)
