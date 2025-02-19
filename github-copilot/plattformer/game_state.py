@@ -92,12 +92,15 @@ class GameState:
             for x, tile in enumerate(row):
                 if tile == 1:  # Stone
                     self.screen.blit(self.rock_image, (x * TILE_SIZE - self.player.camera_x, y * TILE_SIZE - self.player.camera_y))
-
+    
     def draw_weapons(self):
         font = pygame.font.Font(None, 24)
         for weapon in self.weapons:
-            text = font.render(weapon.name, True, (0, 0, 0))
-            self.screen.blit(text, (weapon.rect.x - self.player.camera_x, weapon.rect.y - self.player.camera_y))
+            screen_x = weapon.rect.x - self.player.camera_x
+            screen_y = weapon.rect.y - self.player.camera_y
+            if 0 <= screen_x <= SCREEN_WIDTH and 0 <= screen_y <= SCREEN_HEIGHT:
+                text = font.render(weapon.name, True, (0, 0, 0))
+                self.screen.blit(text, (screen_x, screen_y))
 
     def game_over(self):
         font = pygame.font.Font(None, 74)
