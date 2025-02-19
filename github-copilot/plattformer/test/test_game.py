@@ -30,14 +30,10 @@ class DummyRandom:
 
 class TestGameLogic(unittest.TestCase):
     def setUp(self):
-        pygame.init()
         self.dummy_time = DummyTime(500)
         self.dummy_random = DummyRandom(42)
         # Create a simple map without stones for predictable movement
         self.game_map = Map(20, 20, 0, random_instance=self.dummy_random)
-    
-    def tearDown(self):
-        pygame.quit()
 
     def test_enemy_pathfinding(self):
         enemy = Enemy(0, 0)
