@@ -1,5 +1,6 @@
 import pygame
 import random
+import sys
 from player_module import Player
 from enemy_module import Enemy
 from map_module import Map

@@ -1,8 +1,5 @@
 import pygame
-import math
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT, TILE_SIZE
-from projectile_module import Projectile
-from weapon_module import Rifle, Pistol, Shotgun
 
 class Player:
     def __init__(self, x, y):
