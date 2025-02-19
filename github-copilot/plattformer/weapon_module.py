@@ -25,6 +25,10 @@ class Rifle(Weapon):
         projectile = Projectile(player.rect.centerx, player.rect.centery, target_x, target_y)
         player.projectiles.append(projectile)
 
+    def shoot(self, player, target_x, target_y):
+        proj = Projectile(player.rect.centerx, player.rect.centery, target_x, target_y)
+        player.projectiles.append(proj)
+
 class Pistol(Weapon):
     def __init__(self):
         super().__init__("Pistol", 500)
@@ -32,6 +36,10 @@ class Pistol(Weapon):
     def _fire(self, player, target_x, target_y):
         projectile = Projectile(player.rect.centerx, player.rect.centery, target_x, target_y)
         player.projectiles.append(projectile)
+
+    def shoot(self, player, target_x, target_y):
+        proj = Projectile(player.rect.centerx, player.rect.centery, target_x, target_y)
+        player.projectiles.append(proj)
 
 class Shotgun(Weapon):
     def __init__(self):
@@ -44,3 +52,7 @@ class Shotgun(Weapon):
             dy = math.sin(angle) * 10
             projectile = Projectile(player.rect.centerx, player.rect.centery, player.rect.centerx + dx, player.rect.centery + dy)
             player.projectiles.append(projectile)
+
+    def shoot(self, player, target_x, target_y):
+        proj = Projectile(player.rect.centerx, player.rect.centery, target_x, target_y)
+        player.projectiles.append(proj)

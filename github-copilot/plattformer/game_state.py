@@ -8,16 +8,21 @@ from weapon_module import Rifle, Pistol, Shotgun
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT, TILE_SIZE, MIN_SPAWN_DISTANCE
 
 class GameState:
-    def __init__(self):
+    def __init__(self, time_provider=None, random_instance=None):
+        # Optional dependency injections for testing
+        self.time_provider = time_provider if time_provider else pygame.time.get_ticks
+        self.random = random_instance if random_instance else random
+
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption("2D Platformer")
         self.clock = pygame.time.Clock()
         self.player = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
-        self.game_map = Map(100, 100, 0.2)
+        # Pass the random instance to Map
+        self.game_map = Map(100, 100, 0.2, random_instance=self.random)
         self.enemies = []
         self.weapons = self.spawn_weapons()
         self.enemy_spawn_time = 3000  # Initial spawn time in milliseconds
-        self.last_spawn_time = pygame.time.get_ticks()
+        self.last_spawn_time = self.time_provider()
         self.grass_image = pygame.image.load('img/grass_100x100.png').convert()
         self.rock_image = pygame.image.load('img/rock_50x50.png').convert()
 
@@ -25,9 +30,9 @@ class GameState:
         weapons = []
         for _ in range(100):
             while True:
-                x = random.randint(0, self.game_map.width * TILE_SIZE)
-                y = random.randint(0, self.game_map.height * TILE_SIZE)
-                weapon_type = random.choice([Rifle, Pistol, Shotgun])
+                x = self.random.randint(0, self.game_map.width * TILE_SIZE)
+                y = self.random.randint(0, self.game_map.height * TILE_SIZE)
+                weapon_type = self.random.choice([Rifle, Pistol, Shotgun])
                 weapon = weapon_type()
                 weapon.rect = pygame.Rect(x, y, 20, 20)
                 if not self.game_map.check_collision(weapon.rect):
@@ -36,12 +41,12 @@ class GameState:
         return weapons
 
     def update(self):
-        current_time = pygame.time.get_ticks()
+        current_time = self.time_provider()
         if current_time - self.last_spawn_time > self.enemy_spawn_time:
             # Spawn a new enemy
             while True:
-                enemy_x = random.randint(0, self.game_map.width * TILE_SIZE)
-                enemy_y = random.randint(0, self.game_map.height * TILE_SIZE)
+                enemy_x = self.random.randint(0, self.game_map.width * TILE_SIZE)
+                enemy_y = self.random.randint(0, self.game_map.height * TILE_SIZE)
                 enemy = Enemy(enemy_x, enemy_y)
                 if abs(enemy_x - self.player.rect.x) > MIN_SPAWN_DISTANCE and abs(enemy_y - self.player.rect.y) > MIN_SPAWN_DISTANCE and not self.game_map.check_collision(enemy.rect):
                     break

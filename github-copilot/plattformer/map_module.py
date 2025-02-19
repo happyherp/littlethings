@@ -2,18 +2,19 @@ import random
 from constants import TILE_SIZE
 
 class Map:
-    def __init__(self, width, height, stone_density):
+    def __init__(self, width, height, stone_density, random_instance=None):
         self.width = width
         self.height = height
         self.tiles = [[0 for _ in range(width)] for _ in range(height)]
+        self.random = random_instance if random_instance else random
         self.generate_stones(stone_density)
 
     def generate_stones(self, stone_density):
         num_stones = int(self.width * self.height * stone_density)
         for _ in range(num_stones):
             while True:
-                x = random.randint(0, self.width - 1)
-                y = random.randint(0, self.height - 1)
+                x = self.random.randint(0, self.width - 1)
+                y = self.random.randint(0, self.height - 1)
                 if self.tiles[y][x] == 0:
                     self.tiles[y][x] = 1
                     break
